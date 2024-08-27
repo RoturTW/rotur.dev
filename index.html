@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>rotur</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="rotur" property="og:title" />
+  <meta content="A websocket based networking and account system" property="og:description" />
+  <meta content="https://rotur.dev" property="og:url" />
+  <meta
+    content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4"
+    property="og:image" />
+  <meta content="#3f2f3c" name="theme-color" />
+  <title>rotur</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+  <style>
+    body {
+      font-family: 'Poppins';
+      font-size: 22px;
+      user-select: none;
+      color: aliceblue;
+      background: rgb(63, 47, 60);
+      background: linear-gradient(45deg, rgba(63, 47, 60, 1) 0%, rgba(17, 17, 17, 1) 10%, rgba(17, 17, 17, 1) 90%, rgba(53, 59, 100, 1) 100%);
+      height: max(100vh, 100%);
+    }
+
+    .hero {
+      max-width: 2000px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin: 200px auto;
+    }
+
+    .hero .headings {
+      font-size: 50px;
+      float: left;
+      padding-left: 10px;
+      padding-right: 50px;
+      margin-left: 50px;
+      top: 50px;
+    }
+
+    .hero img {
+      border-radius: 50%;
+      user-select: none;
+      float: right;
+      width: 500px;
+      height: 500px;
+      margin-right: 50px;
+      box-shadow: 20px 20px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav {
+      max-width: 2000px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .nav .left {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px;
+      margin-top: 20px;
+      margin-left: 20px;
+      background-color: #222;
+      overflow: hidden;
+      float: left;
+      text-decoration: none;
+      border-radius: 20px;
+      box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav .right {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px;
+      margin-top: 20px;
+      margin-right: 20px;
+      background-color: #222;
+      overflow: hidden;
+      float: right;
+      border-radius: 20px;
+      box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav a {
+      color: white;
+      text-align: center;
+      padding: 4px 15px;
+      text-decoration: none;
+    }
+
+    .about {
+      max-width: 1500px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin: 200px auto;
+    }
+
+    .about h1 {
+      font-size: 50px;
+      float: left;
+      padding-left: 10px;
+      padding-right: 50px;
+      margin-left: 50px;
+      top: 50px;
+    }
+
+    .about img {
+      border-radius: 50%;
+      user-select: none;
+      width: 140px;
+      height: 140px;
+      box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .about .devs {
+      text-align: center;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px;
+      margin-top: 20px;
+      margin-right: 20px;
+      align-self: auto;
+      margin: auto;
+    }
+
+    .about .devs a {
+      color: white;
+      text-align: center;
+      padding: 4px 15px;
+      text-decoration: none;
+    }
+
+    .about .devs p {
+      color: white;
+      text-align: center;
+      padding: 4px 15px;
+      text-decoration: none;
+    }
+
+    .features {
+      max-width: 1500px;
+      padding: 10px;
+      margin: 200px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .features h1 {
+      width: 100%;
+      font-size: 50px;
+      padding-left: 10px;
+      padding-right: 50px;
+      margin-left: 50px;
+    }
+
+    .features .feature {
+      flex: 1 1 calc(50% - 40px);
+      /* Two columns */
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #222;
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+      box-sizing: border-box;
+      box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .features .feature h1 {
+      font-size: 30px;
+      padding: 5px;
+      margin-left: 10px;
+    }
+
+    .features .feature p {
+      padding: 5px;
+      margin-left: 10px;
+    }
+
+    .features .feature i {
+      font-size: 50px;
+      padding: 5px;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<div class="nav">
+  <div class="left">
+    <img src="./Rotur Logo.png" alt="Rotur Logo" style="width: 40px; height: 40px; border-radius: 50%;">
+    <a href="./index.html">Rotur.dev</a>
+  </div>
+  <div class="right">
+    <a href="./about.html">About</a>
+    <a href="./features.html">Features</a>
+    <a href="./support.html">Systems</a>
+  </div>
+</div>
+<div class="hero">
+  <div class="headings">
+    <h1>Rotur</h1>
+    <p>A networking standard<br>over websockets</p>
+  </div>
+  <img src="./Rotur Logo.png" alt="Rotur Logo">
+</div>
+<div class="about">
+  <h1>About</h1>
+  <p>Rotur is a cloudlink based, networking packet standard and accounts system packaged into an easy to use extension.
+  </p>
+  <div class="devs">
+    <a href="https://github.com/mistium">
+      <img src="https://avatars.githubusercontent.com/u/92952823?v=4" width="140px">
+      <p>Mistium</p>
+    </a>
+    <a href="https://github.com/ThatBeaverDev">
+      <img src="https://avatars.githubusercontent.com/u/107750535?v=4" width="140px">
+      <p>ThatBeaverDev</p>
+    </a>
+    <a href="https://github.com/ThePandaDever">
+      <img src="https://avatars.githubusercontent.com/u/73702185?v=4" width="140px">
+      <p>ThePandaDever</p>
+    </a>
+  </div>
+</div>
+<div class="features">
+  <h1>Features</h1>
+  <div class="feature" id="friends">
+    <i class="fa-solid fa-user-group"></i>
+    <h1>Friends</h1>
+    <p>Rotur has a friends system out of the box, just authenticate into an account and you can add or remove friends,
+      and send requests</p>
+  </div>
+  <div class="feature" id="networking">
+    <i class="fa-solid fa-wifi"></i>
+    <h1>Networking</h1>
+    <p>Rotur uses a modified version of cloudlink to send and recieve packets with much more user data that can be
+      useful to the reciever.</p>
+  </div>
+  <div class="feature" id="accounts">
+    <i class="fa-solid fa-right-to-bracket"></i>
+    <h1>Accounts</h1>
+    <p>Accounts are fully handled for you! No need to worry about hosting your own servers</p>
+  </div>
+  <div class="feature" id="oneacc">
+    <i class="fa-solid fa-ring"></i>
+    <h1>One Account To Rule Them All</h1>
+    <p>Rotur uses a single account system, so you can use the same account on any game or operating system that uses
+      Rotur, allowing for incredible interconnectivity</p>
+  </div>
+  <div class="feature" id="rmail">
+    <i class="fa-solid fa-envelope"></i>
+    <h1>Rmail</h1>
+    <p>Included with rotur and any account is a fully functioning emails system that works cross platform. Allowing you
+      to get to working on the important stuff faster!</p>
+  </div>
+  <div class="feature" id="credits">
+    <i class="fa-solid fa-credit-card"></i>
+    <h1>Rotur Credits</h1>
+    <p>Handle user currency simply and easily, allowing transfers and an overarching rotur economy. Each user that logs
+      in gets 1 credit per day.</p>
+  </div>
+  <div class="feature" id="storage">
+    <i class="fa-solid fa-database"></i>
+    <h1>Cloud Keys</h1>
+    <p>Store and access key value pairs on the cloud in a user account. Allowing for cloud storage of files, game data,
+      saves, and more!</p>
+  </div>
+  <div class="feature" id="items">
+    <i class="fa-solid fa-shop"></i>
+    <h1>Rotur Items</h1>
+    <p>An online marketplace for items and data using rotur credits!</p>
+  </div>
+</div>
+
+
+<script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
+
+</html>
