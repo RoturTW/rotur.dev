@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>rotur</title>
@@ -9,9 +10,7 @@
   <meta content="rotur" property="og:title" />
   <meta content="A websocket based networking and account system" property="og:description" />
   <meta content="https://rotur.dev" property="og:url" />
-  <meta
-    content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4"
-    property="og:image" />
+  <meta content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4" property="og:image" />
   <meta content="#3f2f3c" name="theme-color" />
   <title>rotur</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
@@ -102,6 +101,12 @@
       text-decoration: none;
     }
 
+    .nav a:hover {
+      background-color: #111;
+      box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+    }
+
     .about {
       max-width: 1500px;
       display: flex;
@@ -138,6 +143,7 @@
       margin-right: 20px;
       align-self: auto;
       margin: auto;
+      transition: 0.2s;
     }
 
     .about .devs a {
@@ -145,6 +151,12 @@
       text-align: center;
       padding: 4px 15px;
       text-decoration: none;
+    }
+
+    .about .devs:hover {
+      box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+      scale: 1.03;
+      cursor: pointer;
     }
 
     .about .devs p {
@@ -182,6 +194,13 @@
       text-decoration: none;
       box-sizing: border-box;
       box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+      transition: 0.2s;
+    }
+
+    .features .feature:hover {
+      box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+      scale: 1.03;
+      cursor: pointer;
     }
 
     .features .feature h1 {
@@ -200,6 +219,20 @@
       padding: 5px;
       margin-left: 10px;
     }
+
+    /* Styles for the tilt block */
+    #tilt {
+      display: block;
+      width: 500px;
+      height: 500px;
+      background-color: grey;
+      transition: box-shadow 0.1s, transform 0.1s;
+    }
+
+    #tilt:hover {
+      box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
   </style>
 </head>
 <div class="nav">
@@ -209,8 +242,8 @@
   </div>
   <div class="right">
     <a href="./about.html">About</a>
-    <a href="./features.html">Features</a>
-    <a href="./support.html">Systems</a>
+    <a href="#features">Features</a>
+    <a href="./systems.html">Systems</a>
   </div>
 </div>
 <div class="hero">
@@ -218,7 +251,7 @@
     <h1>Rotur</h1>
     <p>A networking standard<br>over websockets</p>
   </div>
-  <img src="./Rotur Logo.png" alt="Rotur Logo">
+  <img src="./Rotur Logo.png" id="tilt" alt="Rotur Logo">
 </div>
 <div class="about">
   <h1>About</h1>
@@ -291,5 +324,29 @@
 
 
 <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
+<script>
+  let el = document.getElementById('tilt')
+  const height = el.clientHeight
+  const width = el.clientWidth
+  el.addEventListener('mousemove', handleMove)
+
+  function handleMove(e) {
+    const xVal = e.layerX
+    const yVal = e.layerY
+    const yRotation = 20 * ((xVal - width / 2) / width)
+    const xRotation = -20 * ((yVal - height / 2) / height)
+    const string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)'
+    el.style.transform = string
+  }
+  el.addEventListener('mouseout', function () {
+    el.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
+  })
+  el.addEventListener('mousedown', function () {
+    el.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)'
+  })
+  el.addEventListener('mouseup', function () {
+    el.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)'
+  })
+</script>
 
 </html>
