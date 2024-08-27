@@ -237,136 +237,19 @@
 </head>
 <div class="nav">
   <div class="left">
-    <img src="/Rotur Logo.png" alt="Rotur Logo" style="width: 40px; height: 40px; border-radius: 50%;">
+    <img src="./Rotur Logo.png" alt="Rotur Logo" style="width: 40px; height: 40px; border-radius: 50%;">
     <a href="/">Rotur.dev</a>
   </div>
   <div class="right">
     <a href="/about">About</a>
-    <a href="#features">Features</a>
     <a href="/systems">Systems</a>
   </div>
 </div>
 <div class="hero">
   <div class="headings">
-    <h1>Rotur</h1>
-    <p>A networking standard<br>over websockets</p>
+    <h1>Systems</h1>
+    <p>Information About Which<br>Systems Support Rotur</p>
   </div>
-  <img src="./Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false">
+  <img src="/Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false">
 </div>
-<div class="about">
-  <h1>About</h1>
-  <p>Rotur is a cloudlink based, networking packet standard and accounts system packaged into an easy to use extension.
-  </p>
-  <div class="devs">
-    <a href="https://github.com/mistium">
-      <img src="https://avatars.githubusercontent.com/u/92952823?v=4" width="140px" draggable="false">
-      <p>Mistium</p>
-    </a>
-    <a href="https://github.com/ThatBeaverDev">
-      <img src="https://avatars.githubusercontent.com/u/107750535?v=4" width="140px" draggable="false">
-      <p>ThatBeaverDev</p>
-    </a>
-    <a href="https://github.com/ThePandaDever">
-      <img src="https://avatars.githubusercontent.com/u/73702185?v=4" width="140px" draggable="false">
-      <p>ThePandaDever</p>
-    </a>
-  </div>
-</div>
-<div class="features">
-  <h1>Features</h1>
-  <div class="feature" id="friends">
-    <i class="fa-solid fa-user-group"></i>
-    <h1>Friends</h1>
-    <p>Rotur has a friends system out of the box, just authenticate into an account and you can add or remove friends,
-      and send requests</p>
-  </div>
-  <div class="feature" id="networking">
-    <i class="fa-solid fa-wifi"></i>
-    <h1>Networking</h1>
-    <p>Rotur uses a modified version of cloudlink to send and recieve packets with much more user data that can be
-      useful to the reciever.</p>
-  </div>
-  <div class="feature" id="accounts">
-    <i class="fa-solid fa-right-to-bracket"></i>
-    <h1>Accounts</h1>
-    <p>Accounts are fully handled for you! No need to worry about hosting your own servers</p>
-  </div>
-  <div class="feature" id="oneacc">
-    <i class="fa-solid fa-ring"></i>
-    <h1>One Account To Rule Them All</h1>
-    <p>Rotur uses a single account system, so you can use the same account on any game or operating system that uses
-      Rotur, allowing for incredible interconnectivity</p>
-  </div>
-  <div class="feature" id="rmail">
-    <i class="fa-solid fa-envelope"></i>
-    <h1>Rmail</h1>
-    <p>Included with rotur and any account is a fully functioning emails system that works cross platform. Allowing you
-      to get to working on the important stuff faster!</p>
-  </div>
-  <div class="feature" id="credits">
-    <i class="fa-solid fa-credit-card"></i>
-    <h1>Rotur Credits</h1>
-    <p>Handle user currency simply and easily, allowing transfers and an overarching rotur economy. Each user that logs
-      in gets 1 credit per day.</p>
-  </div>
-  <div class="feature" id="storage">
-    <i class="fa-solid fa-database"></i>
-    <h1>Cloud Keys</h1>
-    <p>Store and access key value pairs on the cloud in a user account. Allowing for cloud storage of files, game data,
-      saves, and more!</p>
-  </div>
-  <div class="feature" id="items">
-    <i class="fa-solid fa-shop"></i>
-    <h1>Rotur Items</h1>
-    <p>An online marketplace for items and data using rotur credits!</p>
-  </div>
-</div>
-
-
-<script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
-<script>
-  let el = document.getElementById('tilt');
-const height = el.clientHeight;
-const width = el.clientWidth;
-
-// Add will-change to optimize rendering
-el.style.willChange = 'transform';
-
-el.addEventListener('mousemove', handleMove);
-
-function handleMove(e) {
-  const rect = el.getBoundingClientRect();
-  const xVal = e.clientX - rect.left; // Mouse position relative to element
-  const yVal = e.clientY - rect.top; // Mouse position relative to element
-
-  const yRotation = 20 * ((xVal - width / 2) / width);
-  const xRotation = -20 * ((yVal - height / 2) / height);
-
-  const string = `perspective(500px) scale(1.1) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
-
-  // Use requestAnimationFrame for smoother animations
-  requestAnimationFrame(() => {
-    el.style.transform = string;
-  });
-}
-
-el.addEventListener('mouseout', function () {
-  requestAnimationFrame(() => {
-    el.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
-  });
-});
-
-el.addEventListener('mousedown', function () {
-  requestAnimationFrame(() => {
-    el.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)';
-  });
-});
-
-el.addEventListener('mouseup', function () {
-  requestAnimationFrame(() => {
-    el.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)';
-  });
-});
-
-</script>
 </html>
