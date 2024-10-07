@@ -1,13 +1,14 @@
-    body {
+    html {
       font-family: 'Poppins';
       font-size: 22px;
       user-select: none;
       color: aliceblue;
       background: rgb(63, 47, 60);
       background: linear-gradient(45deg, rgba(63, 47, 60, 1) 0%, rgba(17, 17, 17, 1) 10%, rgba(17, 17, 17, 1) 90%, rgba(53, 59, 100, 1) 100%);
-      height: max(100vh, 100%);
+      min-height: 100vh;
+      background-repeat: no-repeat;
+      background-size: cover;
     }
-
     .hero {
       max-width: 2000px;
       display: flex;
@@ -146,7 +147,7 @@
       text-decoration: none;
     }
 
-    .features {
+    .cards {
       max-width: 1500px;
       padding: 10px;
       margin: 200px auto;
@@ -155,7 +156,7 @@
       gap: 20px;
     }
 
-    .features h1 {
+    .cards h1 {
       width: 100%;
       font-size: 50px;
       padding-left: 10px;
@@ -163,7 +164,7 @@
       margin-left: 50px;
     }
 
-    .features .feature {
+    .cards .card {
       flex: 1 1 calc(50% - 40px);
       /* Two columns */
       margin-top: 20px;
@@ -177,27 +178,32 @@
       transition: 0.2s;
     }
 
-    .features .feature:hover {
+    .cards .card:hover {
       box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
       scale: 1.03;
       cursor: pointer;
     }
 
-    .features .feature h1 {
+    .cards .card h1 {
       font-size: 30px;
       padding: 5px;
       margin-left: 10px;
     }
 
-    .features .feature p {
+    .cards .card p {
       padding: 5px;
       margin-left: 10px;
     }
 
-    .features .feature i {
+    .cards .card i {
       font-size: 50px;
       padding: 5px;
       margin-left: 10px;
+    }
+
+    .cards .card img {
+      width: 100%;
+      border-radius: 10px;
     }
 
     /* Styles for the tilt block */

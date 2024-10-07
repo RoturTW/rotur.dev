@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Constellinux</title>
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+  <style>
+    html {
+      background: #000;
+      background-image: url("https://images.pexels.com/photos/1421903/pexels-photo-1421903.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1");
+      filter: blur(10px);
+      background-size: cover;
+      min-height: 100vh;
+      transition: filter 1s;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+    h1 {
+      font-size: 4em;
+      color: white;
+    }
+    p {
+      color: white;
+      font-size: 1.5em;
+      text-align: center;
+    }
+    .links {
+      margin-top: 20px;
+    }
+    .links a {
+      color: white;
+      font-size: 1.2em;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    .links i {
+      font-size: 0.8em;
+      color: #fff;
+      margin: 0px 10px;
+      scale: 0.5;
+      position: relative;
+      top: -2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="navbar-placeholder"></div>
+  <h1>Constellinux</h1>
+  <p>
+    The Constellinux Project is a group of Projects,
+    built around Constello Container and Oskee Network.
+  </p>
+  <div class="links">
+    <a href="https://github.com/Constellinux" target="_blank">GitHub</a><i class="fa-solid fa-circle"></i>
+    <a href="https://github.com/Constellinux/Constello/wiki" target="_blank">Documentation</a>
+  </div>
+  
+  <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
+  <script src="../nav.js"></script>
+  <script>
+    window.onload = function() {
+      var largeImage = new Image();
+      largeImage.crossOrigin = "Anonymous";
+      largeImage.src = "https://images.pexels.com/photos/1421903/pexels-photo-1421903.jpeg";
+      largeImage.onload = function() {
+        var canvas = document.createElement('canvas');
+        canvas.width = largeImage.width;
+        canvas.height = largeImage.height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(largeImage, 0, 0);
+        var dataURI = canvas.toDataURL('image/jpeg');
+        document.documentElement.style.backgroundImage = 'url(' + dataURI + ')';
+        document.documentElement.style.filter = 'blur(0px)';
+      };
+    };
+  </script>
+</body>
+</html>
