@@ -20,26 +20,26 @@
 <div class="hero">
   <div class="headings">
     <h1>Rotur</h1>
-    <p>A networking standard<br>over websockets</p>
+    <p>A networking standard<br>over websockets</p><br>
   </div>
   <img src="./Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false">
 </div>
 <div class="about">
   <h1>About</h1>
-  <p>Rotur is a cloudlink based, networking packet standard and accounts system packaged into an easy to use extension.
+  <p>Rotur is a cloudlink based, networking packet standard and accounts system packaged into an easy to use extension. Made to make turbowarp operating systems more interconnected and easier to develop.
   </p>
   <div class="devs">
     <a href="https://github.com/mistium">
-      <img src="https://avatars.githubusercontent.com/u/92952823?v=4" width="140px" draggable="false">
+      <img src="https://avatars.githubusercontent.com/u/92952823?v=4&s=200" width="140px" draggable="false">
       <p>Mistium</p>
     </a>
     <a href="https://github.com/Constellinux">
-      <img src="https://avatars.githubusercontent.com/u/178028063?s=200&v=4" width="140px" draggable="false">
-      <p style="white-space: nowrap;">The Constellinux Project</p>
+      <img src="https://avatars.githubusercontent.com/u/178028063?v=4&s=200" width="140px" draggable="false">
+      <p style="white-space: nowrap;">Constellinux</p>
     </a>
-    <a href="https://github.com/ThePandaDever">
-      <img src="https://avatars.githubusercontent.com/u/73702185?v=4" width="140px" draggable="false">
-      <p>ThePandaDever</p>
+    <a href="https://flufi.gay">
+      <img src="https://flufi.gay/yapcat.gif" width="140px" draggable="false">
+      <p>Flufi</p>
     </a>
   </div>
 </div>
@@ -104,6 +104,18 @@
   </div>
 </div>
 
+<button id="get_button" onclick="downloadExtension()">Get The Extension</button>
+    <script>
+      function downloadExtension() {
+        const link = document.createElement('a');
+        link.href = 'https://raw.githubusercontent.com/RoturTW/main/refs/heads/main/Implementations/SCRATCH/roturV5.js';
+        link.download = 'roturV5.js';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    </script>
 
 <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
 <script>

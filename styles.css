@@ -37,6 +37,28 @@
       box-shadow: 20px 20px 5px rgba(0, 0, 0, 0.5);
     }
 
+    #get_button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 40px;
+      margin: auto;
+      margin-bottom: 100px;
+      transition: 0.2s;
+      background-color: #222;
+      border-radius: 10px;
+      color: white;
+      box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+      border: none;
+      font-size: 24px;
+    }
+
+    #get_button:hover {
+      box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+      scale: 1.03;
+      cursor: pointer;
+    }
+
     .nav {
       max-width: 2000px;
       margin: auto;
@@ -124,17 +146,18 @@
       margin-right: 20px;
       align-self: auto;
       margin: auto;
-      transition: 0.2s;
     }
 
     .about .devs a {
       color: white;
+      border-radius: 10px;
       text-align: center;
       padding: 4px 15px;
       text-decoration: none;
+      transition: 0.2s;
     }
 
-    .about .devs:hover {
+    .about .devs a:hover {
       box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
       scale: 1.03;
       cursor: pointer;
