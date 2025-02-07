@@ -26,20 +26,61 @@
     <img src="../Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false">
   </div>
 
-  <div class="cards">
-    <div class="card" onclick="window.location.href='https://origin.mistium.com'">
-      <img src="https://mistium.com/images/originOS.png" alt="originOS">
-      <h1>originOS</h1>
-      <p>With a fully working high level programming language built right in, rendered with 0 costumes. A full desktop simulation, often mistaken for linux distrobutions and unrecognisable as a scratch project.</p>
-    </div>
-    <div class="card" onclick="window.location.href='/systems/constellinux'">
-      <h1>Constellinux</h1>
-      <p>Constellinux is a system built with CRL on the Constello Container. It is currently in development.</p>
-    </div>
-  </div>
+  <div class="cards"></div>
 
   <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
   <script src="../nav.js"></script>
+  <script>
+   async function fetchURL(url) {
+   	const response = await fetch(url);
+   	const data = await response.json();
+   	return data;
+   }
+
+   async function loadInfo() {
+   	let cards = document.getElementsByClassName("cards")
+   	let data = await fetchURL("https://raw.githubusercontent.com/RoturTW/main/refs/heads/main/systems.json")
+   	console.log(data)
+   	let systems = Object.keys(data)
+   	let html = ""
+   	for (const i in systems) {
+   		console.log(systems[i])
+   		let systemData = data[systems[i]]
+   		let card = '<div class="card" onclick="window.location.href=\'' + systemData.URL + "'\">\n"
+      if (!["", undefined, null].includes(systemData.logoURL)) {
+        card += "<img style=\"width: 2em; height: auto; margin-top: 20.1px; margin-left: 10px\" src=\"" + systemData.logoURL + "\" alt=\"" + systems[i] + " Logo\">\n"
+        card += "<h1 style=\"float: left; width: auto;\">" + systems[i] + "</h1>\n"
+   		} else {
+        card += "<h1>" + systems[i] + "</h1>\n"
+      }
+      if (!["", undefined, null].includes(systemData.showOffURL)) {
+        card += "<img src=\"" + systemData.showOffURL + "\" alt=\"" + systems[i] + "\">\n"
+      }
+      card += "<p>"
+        if (!["", undefined, null].includes(systemData.description)) {
+          card += systemData.description
+        } else {
+          card += "No Description Was Provided."
+        }
+        card += "</p>\n"
+        card += "<note>Created By " + systemData.author + " On Rotur.</note><br>\n"
+        if (!["", undefined, null].includes(systemData.designation)) {
+          card += "<note>Designated '" + systemData.designation + "'' on Rotur.<note><br>\n"
+        } else {
+          card += "<note>This system has no Rotur designation right now.<note><br>\n"
+        }
+      if (systemData.languages.length !== 0) {
+      card += "<note>Languages:  " + systemData.languages.join(", ") + ".</note>\n"
+      }
+      card += "</div>\n"
+   		html += card
+   	}
+   	console.log(html)
+   	cards[0].innerHTML = html
+   }
+
+   loadInfo()
+  </script>
 </body>
 
 </html>

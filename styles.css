@@ -213,9 +213,13 @@
       margin-left: 10px;
     }
 
-    .cards .card p {
+    .cards .card p, note {
       padding: 5px;
       margin-left: 10px;
+    }
+
+    note {
+      font-size: 14px;
     }
 
     .cards .card i {
