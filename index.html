@@ -177,8 +177,16 @@ let server = "wss://rotur.mistium.com";
 let username = localStorage.getItem("username");
 let password = localStorage.getItem("password");
 if (username && password) {
-  document.getElementById("roturTXT").innerText = username;
-  document.getElementById("roturIMG").src = `https://avatars.rotur.dev/${username}`;
+  (function waitForElements() {
+    const txt = document.getElementById("roturTXT");
+    const img = document.getElementById("roturIMG");
+    if (txt && img) {
+      txt.innerText = username;
+      img.src = `https://avatars.rotur.dev/${username}`;
+    } else {
+      setTimeout(waitForElements, 100);
+    }
+  })();
 }
 
 </script>
