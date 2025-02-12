@@ -182,20 +182,8 @@ let server = "wss://rotur.mistium.com";
 let username = localStorage.getItem("username");
 let password = localStorage.getItem("password");
 if (username && password) {
-  connectToWebsocket(server, accounts, username, password);
-  waitForAccount(() => {
-    document.getElementById("roturTXT").innerText = window.account.username;
-    document.getElementById("roturIMG").src = `https://avatars.rotur.dev/${window.account.username}`;
-  });
-}
-
-function waitForAccount(callback) {
-  const checkAccount = setInterval(() => {
-    if (window.account !== undefined) {
-      clearInterval(checkAccount);
-      callback();
-    }
-  }, 100);
+  document.getElementById("roturTXT").innerText = username;
+  document.getElementById("roturIMG").src = `https://avatars.rotur.dev/${username}`;
 }
 
 </script>
