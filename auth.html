@@ -238,6 +238,13 @@
           <button id="logoutButton">Logout</button>
           `;
 
+          document.getElementById('allowAccess').addEventListener('click', () => {
+            // redirect to the previous page with args of the user token
+            window.location.href = document
+              .referrer
+              .replace(/(\/|\?|&|;|!|#)/g, '$1token=' + window.account.token + '&');
+          });
+
           document.getElementById('profileButton').addEventListener('click', () => {
             // Handle profile button click
           });
@@ -253,6 +260,8 @@
       const username = getCookie('username');
       const password = getCookie('password');
       if (username && password) {
+        setCookie('username', username, 7);
+        setCookie('password', hash, 7);
         connectToWebsocket(server, accounts, username, password);
       }
     };
