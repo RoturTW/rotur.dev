@@ -272,13 +272,17 @@
       function updateModalForLoggedInUser() {
         const modalContent = document.querySelector(".modal-content");
         modalContent.innerHTML = `
-          <img src="${window.account.pfp}" width="40%" alt="Profile Picture" draggable="false" style="border-radius: 50%;">
+          <img src="https://avatars.rotur.dev/${window.account.username}" width="40%" alt="Profile Picture" draggable="false" style="border-radius: 50%;">
           <h1>Welcome, ${window.account.username}</h1>
           <button id="allowAccess">Allow Account Access To: ${document.referrer}</button>
           <button id="logoutButton">Logout</button>
         `;
         document.getElementById("allowAccess").addEventListener("click", () => {
-          window.location.href = document.referrer.replace(/(\/|\?|&|;|!|#)/g, '$1token=' + window.account.token + '&');
+          if (window.account.key) {
+            window.location.href = document.referrer.replace(/(\/|\?|&|;|!|#)/g, '$1token=' + window.account.key + '&');
+          } else {
+            console.error("Token is undefined");
+          }
         });
         document.getElementById("logoutButton").addEventListener("click", () => {
           // Handle logout button click
