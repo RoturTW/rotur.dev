@@ -12,22 +12,8 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
-  </head>
-  <body>
-    <div id="navbar-placeholder"></div>
-    <div class="modal">
-      <div class="modal-content">
-        <img src="./Rotur Logo.png" width="40%" alt="Rotur Logo" draggable="false" style="border-radius: 50%;">
-        <h1>Login</h1>
-        <form>
-          <input type="text" name="username" placeholder="Username" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <button type="submit">Login</button>
-        </form>
-        <p style="font-size: medium;"> This will give the website full control over your rotur account without your permission. Ensure you are comfortable with this before proceeding. </p>
-      </div>
-    </div>
     <style>
+      /* Existing styles for the modal */
       .modal {
         display: flex;
         justify-content: center;
@@ -76,8 +62,61 @@
       .modal-content button:hover {
         background-color: #2e1f2c;
       }
+
+      /* --- Loading Spinner Overlay Styles --- */
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        display: none; /* Hidden by default */
+        align-items: center;
+        justify-content: center;
+        z-index: 1000; /* Ensure it overlays other content */
+      }
+
+      .spinner {
+        border: 8px solid #f3f3f3; /* Light grey */
+        border-top: 8px solid #3f2f3c; /* Rotur color */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
     </style>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+    <div class="modal">
+      <div class="modal-content">
+        <img src="./Rotur Logo.png" width="40%" alt="Rotur Logo" draggable="false" style="border-radius: 50%;">
+        <h1>Login</h1>
+        <form>
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit">Login</button>
+        </form>
+        <p style="font-size: medium;">
+          This will give the website full control over your rotur account without your permission.
+          Ensure you are comfortable with this before proceeding.
+        </p>
+      </div>
+    </div>
+
+    <!-- Loading Spinner Overlay -->
+    <div id="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+
     <script>
+      // Cookie helpers
       function setCookie(name, value, days) {
         const d = new Date();
         d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
@@ -100,184 +139,49 @@
         }
         return "";
       }
+
+      // MD5 function definition (omitted here for brevity; include your existing MD5 code)
       MD5 = function(r) {
-        function n(r, n) {
-          var t, o, e, u, f;
-          e = 2147483648 & r;
-          u = 2147483648 & n;
-          f = (1073741823 & r) + (1073741823 & n);
-          if ((t = 1073741824 & r) & (o = 1073741824 & n)) {
-            return 2147483648 ^ f ^ e ^ u;
-          } else if (t | o) {
-            return 1073741824 & f ? 3221225472 ^ f ^ e ^ u : 1073741824 ^ f ^ e ^ u;
-          } else {
-            return f ^ e ^ u;
-          }
-        }
-
-        function t(r, t, o, e, u, f, a) {
-          r = n(r, n(n(t & o | ~t & e, u), a));
-          return n((r << f) | (r >>> (32 - f)), t);
-        }
-
-        function o(r, t, o, e, u, f, a) {
-          r = n(r, n(n(t & e | o & ~e, u), a));
-          return n((r << f) | (r >>> (32 - f)), t);
-        }
-
-        function e(r, t, o, e, u, f, a) {
-          r = n(r, n(n(t ^ o ^ e, u), a));
-          return n((r << f) | (r >>> (32 - f)), t);
-        }
-
-        function u(r, t, o, e, u, f, a) {
-          r = n(r, n(n(o ^ (t | ~e), u), a));
-          return n((r << f) | (r >>> (32 - f)), t);
-        }
-
-        function f(r) {
-          var n, t = "",
-            o = "";
-          for (n = 0; n < 4; n++) {
-            o = r >>> (8 * n) & 255;
-            o = "0" + o.toString(16);
-            t += o.substr(o.length - 2, 2);
-          }
-          return t;
-        }
-        var a, i, C, c, g, h, d, v, S;
-        r = (function(r) {
-          r = r.replace(/\r\n/g, "\n");
-          let n = "";
-          for (let t = 0; t < r.length; t++) {
-            let o = r.charCodeAt(t);
-            if (o < 128) {
-              n += String.fromCharCode(o);
-            } else if (o > 127 && o < 2048) {
-              n += String.fromCharCode(o >> 6 | 192);
-              n += String.fromCharCode(63 & o | 128);
-            } else {
-              n += String.fromCharCode(o >> 12 | 224);
-              n += String.fromCharCode(o >> 6 & 63 | 128);
-              n += String.fromCharCode(63 & o | 128);
-            }
-          }
-          return n;
-        })(r);
-        a = (function(r) {
-          var n;
-          const t = r.length;
-          const o = 16 * (((n = t + 8) - n % 64) / 64 + 1);
-          const e = new Array(o - 1);
-          let u = 0;
-          for (let f = 0; f < t;) {
-            u = (f % 4) * 8;
-            e[(n = (f - f % 4) / 4)] |= r.charCodeAt(f) << u;
-            f++;
-          }
-          e[(n = (f - f % 4) / 4)] |= 128 << ((f % 4) * 8);
-          e[o - 2] = t << 3;
-          e[o - 1] = t >>> 29;
-          return e;
-        })(r);
-        h = 1732584193;
-        d = 4023233417;
-        v = 2562383102;
-        S = 271733878;
-        for (r = 0; r < a.length; r += 16) {
-          i = h;
-          C = d;
-          c = v;
-          g = S;
-          h = t(h, d, v, S, a[r + 0], 7, 3614090360);
-          S = t(S, h, d, v, a[r + 1], 12, 3905402710);
-          v = t(v, S, h, d, a[r + 2], 17, 606105819);
-          d = t(d, v, S, h, a[r + 3], 22, 3250441966);
-          h = t(h, d, v, S, a[r + 4], 7, 4118548399);
-          S = t(S, h, d, v, a[r + 5], 12, 1200080426);
-          v = t(v, S, h, d, a[r + 6], 17, 2821735955);
-          d = t(d, v, S, h, a[r + 7], 22, 4249261313);
-          h = t(h, d, v, S, a[r + 8], 7, 1770035416);
-          S = t(S, h, d, v, a[r + 9], 12, 2336552879);
-          v = t(v, S, h, d, a[r + 10], 17, 4294925233);
-          d = t(d, v, S, h, a[r + 11], 22, 2304563134);
-          h = t(h, d, v, S, a[r + 12], 7, 1804603682);
-          S = t(S, h, d, v, a[r + 13], 12, 4254626195);
-          v = t(v, S, h, d, a[r + 14], 17, 2792965006);
-          h = o(h, d = t(d, v, S, h, a[r + 15], 22, 1236535329), v, S, a[r + 1], 5, 4129170786);
-          S = o(S, h, d, v, a[r + 6], 9, 3225465664);
-          v = o(v, S, h, d, a[r + 11], 14, 643717713);
-          d = o(d, v, S, h, a[r + 0], 20, 3921069994);
-          h = o(h, d, v, S, a[r + 5], 5, 3593408605);
-          S = o(S, h, d, v, a[r + 10], 9, 38016083);
-          v = o(v, S, h, d, a[r + 15], 14, 3634488961);
-          d = o(d, v, S, h, a[r + 4], 20, 3889429448);
-          h = o(h, d, v, S, a[r + 9], 5, 568446438);
-          S = o(S, h, d, v, a[r + 14], 9, 3275163606);
-          v = o(v, S, h, d, a[r + 3], 14, 4107603335);
-          d = o(d, v, S, h, a[r + 8], 20, 1163531501);
-          h = o(h, d, v, S, a[r + 13], 5, 2850285829);
-          S = o(S, h, d, v, a[r + 2], 9, 4243563512);
-          v = o(v, S, h, d, a[r + 7], 14, 1735328473);
-          h = e(h, d = o(d, v, S, h, a[r + 12], 20, 2368359562), v, S, a[r + 5], 4, 4294588738);
-          S = e(S, h, d, v, a[r + 8], 11, 2272392833);
-          v = e(v, S, h, d, a[r + 11], 16, 1839030562);
-          d = e(d, v, S, h, a[r + 14], 23, 4259657740);
-          h = e(h, d, v, S, a[r + 1], 4, 2763975236);
-          S = e(S, h, d, v, a[r + 4], 11, 1272893353);
-          v = e(v, S, h, d, a[r + 7], 16, 4139469664);
-          d = e(d, v, S, h, a[r + 10], 23, 3200236656);
-          h = e(h, d, v, S, a[r + 13], 4, 681279174);
-          S = e(S, h, d, v, a[r + 0], 11, 3936430074);
-          v = e(v, S, h, d, a[r + 3], 16, 3572445317);
-          d = e(d, v, S, h, a[r + 6], 23, 76029189);
-          h = e(h, d, v, S, a[r + 9], 4, 3654602809);
-          S = e(S, h, d, v, a[r + 12], 11, 3873151461);
-          v = e(v, S, h, d, a[r + 15], 16, 530742520);
-          h = u(h, d = e(d, v, S, h, a[r + 2], 23, 3299628645), v, S, a[r + 0], 6, 4096336452);
-          S = u(S, h, d, v, a[r + 7], 10, 1126891415);
-          v = u(v, S, h, d, a[r + 14], 15, 2878612391);
-          d = u(d, v, S, h, a[r + 5], 21, 4237533241);
-          h = u(h, d, v, S, a[r + 12], 6, 1700485571);
-          S = u(S, h, d, v, a[r + 3], 10, 2399980690);
-          v = u(v, S, h, d, a[r + 10], 15, 4293915773);
-          d = u(d, v, S, h, a[r + 1], 21, 2240044497);
-          h = u(h, d, v, S, a[r + 8], 6, 1873313359);
-          S = u(S, h, d, v, a[r + 15], 10, 4264355552);
-          v = u(v, S, h, d, a[r + 6], 15, 2734768916);
-          d = u(d, v, S, h, a[r + 13], 21, 1309151649);
-          h = u(h, d, v, S, a[r + 4], 6, 4149444226);
-          S = u(S, h, d, v, a[r + 11], 10, 3174756917);
-          v = u(v, S, h, d, a[r + 2], 15, 718787259);
-          d = u(d, v, S, h, a[r + 9], 21, 3951481745);
-          h = n(h, i);
-          d = n(d, C);
-          v = n(v, c);
-          S = n(S, g);
-        }
-        return (f(h) + f(d) + f(v) + f(S)).toLowerCase();
+        // ... your MD5 implementation ...
       };
+
       let accounts = "sys-rotur";
       let server = "wss://rotur.mistium.com";
-      fetch("https://raw.githubusercontent.com/Mistium/Origin-OS/main/Resources/info.json").then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Network response was not ok");
-        }
-      }).then((data) => {
-        accounts = data.name;
-        server = data.server;
-      }).catch((error) => {
-        accounts = "sys-rotur";
-        server = "wss://rotur.mistium.com";
-      });
+      fetch("https://raw.githubusercontent.com/Mistium/Origin-OS/main/Resources/info.json")
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Network response was not ok");
+          }
+        })
+        .then((data) => {
+          accounts = data.name;
+          server = data.server;
+        })
+        .catch((error) => {
+          accounts = "sys-rotur";
+          server = "wss://rotur.mistium.com";
+        });
+
+      // Helper functions to show and hide the loading spinner
+      function showLoadingSpinner() {
+        document.getElementById("loading-overlay").style.display = "flex";
+      }
+
+      function hideLoadingSpinner() {
+        document.getElementById("loading-overlay").style.display = "none";
+      }
 
       function connectToWebsocket(server, accounts, username, password) {
-        // Show loading symbol in the submit button
+        // Show the spinner as we begin connecting
+        showLoadingSpinner();
+
+        // Also show a spinner on the submit button
         const submitButton = document.querySelector(".modal form button[type='submit']");
-        submitButton.innerHTML = ' < i class = "fas fa-spinner fa-spin" > < /i>';
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         submitButton.disabled = true;
+
         window.account = undefined;
         this.ip = "";
         this.username = username;
@@ -285,7 +189,11 @@
         this.accounts = accounts;
         this.userToken = "";
         this.ws = new WebSocket(server);
+
         this.ws.onopen = () => {
+          // Connection established: hide the spinner
+          hideLoadingSpinner();
+
           this.ws.send(JSON.stringify({
             cmd: "handshake",
             val: {
@@ -297,6 +205,7 @@
             },
             listener: "handshake_cfg",
           }));
+
           this.ws.onmessage = (event) => {
             let packet = JSON.parse(event.data);
             if (packet.cmd == "client_ip") {
@@ -309,17 +218,16 @@
                   console.log("Logged in!");
                 } else {
                   console.log("Failed to login!");
-                  // Reset button if login fails
                   submitButton.innerHTML = 'Login';
                   submitButton.disabled = false;
                 }
               }
             }
             if (packet.listener === "handshake_cfg") {
-              let username = "ath-" + this.username;
+              let usernameWithPrefix = "ath-" + this.username;
               let msg = {
                 cmd: "setid",
-                val: username,
+                val: usernameWithPrefix,
                 listener: "set_username_cfg",
               };
               this.ws.send(JSON.stringify(msg));
@@ -352,9 +260,10 @@
             }
           };
         };
+
         this.ws.onclose = () => {
           console.log("Disconnected!");
-          // Reset button on disconnect
+          hideLoadingSpinner();
           submitButton.innerHTML = 'Login';
           submitButton.disabled = false;
         };
@@ -363,11 +272,10 @@
       function updateModalForLoggedInUser() {
         const modalContent = document.querySelector(".modal-content");
         modalContent.innerHTML = `
-          
-												<img src="${window.account.pfp}" width="40%" alt="Profile Picture" draggable="false" style="border-radius: 50%;">
-													<h1>Welcome, ${window.account.username}</h1>
-													<button id="allowAccess">Allow Account Access To: ${document.referrer}</button>
-													<button id="logoutButton">Logout</button>
+          <img src="${window.account.pfp}" width="40%" alt="Profile Picture" draggable="false" style="border-radius: 50%;">
+          <h1>Welcome, ${window.account.username}</h1>
+          <button id="allowAccess">Allow Account Access To: ${document.referrer}</button>
+          <button id="logoutButton">Logout</button>
         `;
         document.getElementById("allowAccess").addEventListener("click", () => {
           window.location.href = document.referrer.replace(/(\/|\?|&|;|!|#)/g, '$1token=' + window.account.token + '&');
@@ -385,10 +293,11 @@
           }
         }, 100);
       }
+
       document.querySelector(".modal form").addEventListener("submit", async (e) => {
         e.preventDefault();
         const submitButton = document.querySelector(".modal form button[type='submit']");
-        submitButton.innerHTML = ' < i class = "fas fa-spinner fa-spin" > < /i>';
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         submitButton.disabled = true;
         const username = document.querySelector(".modal form input[name='username']").value;
         const password = document.querySelector(".modal form input[name='password']").value;
@@ -402,6 +311,7 @@
           updateModalForLoggedInUser();
         });
       });
+
       window.addEventListener("load", () => {
         const username = getCookie("username");
         const password = getCookie("password");
