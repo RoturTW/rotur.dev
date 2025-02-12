@@ -176,6 +176,7 @@ let accounts = "sys-rotur";
 let server = "wss://rotur.mistium.com";
 let username = localStorage.getItem("username");
 let password = localStorage.getItem("password");
+console.log(username, password);
 if (username && password) {
   (function waitForElements() {
     const txt = document.getElementById("roturTXT");
