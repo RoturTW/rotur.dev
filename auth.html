@@ -142,9 +142,6 @@
         return "";
       }
 
-      // MD5 function definition (omitted here for brevity; include your existing MD5 code)
-      MD5 = CryptoJS.MD5;
-
       let accounts = "sys-rotur";
       let server = "wss://rotur.mistium.com";
       fetch("https://raw.githubusercontent.com/Mistium/Origin-OS/main/Resources/info.json")
@@ -212,7 +209,7 @@
               this.ip = packet.val;
             } else if (packet.cmd == "pmsg") {
               if (packet.val.source_command == "login") {
-                if (packet.val.payload.username.toLowerCase() === this.username.toLowerCase()) {
+                if ((""+packet.val.payload.username).toLowerCase() === this.username.toLowerCase()) {
                   this.userToken = packet.val.token;
                   window.account = packet.val.payload;
                   console.log("Logged in!");
@@ -290,7 +287,7 @@
         document.getElementById("logoutButton").addEventListener("click", () => {
           document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          window.location.reload();
+          document.location.reload();
         });
       }
 
@@ -310,7 +307,7 @@
         submitButton.disabled = true;
         const username = document.querySelector(".modal form input[name='username']").value;
         const password = document.querySelector(".modal form input[name='password']").value;
-        const hash = MD5(password);
+        const hash = CryptoJS.MD5(password).toString();
         setCookie("username", username, 7);
         setCookie("password", hash, 7);
         connectToWebsocket(server, accounts, username, hash);
