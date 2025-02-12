@@ -93,5 +93,3 @@ function connectToWebsocket(server, accounts, username, password) {
     submitButton.disabled = false;
   };
 }
-
-export { connectToWebsocket };
