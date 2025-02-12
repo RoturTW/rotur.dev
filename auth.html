@@ -24,13 +24,9 @@
           <input type="password" name="password" placeholder="Password" required>
           <button type="submit">Login</button>
         </form>
-        <p style="font-size: medium;">
-          This will give the website full control over your rotur account without your permission.
-          Ensure you are comfortable with this before proceeding.
-        </p>
+        <p style="font-size: medium;"> This will give the website full control over your rotur account without your permission. Ensure you are comfortable with this before proceeding. </p>
       </div>
     </div>
-
     <style>
       .modal {
         display: flex;
@@ -81,7 +77,6 @@
         background-color: #2e1f2c;
       }
     </style>
-
     <script>
       function setCookie(name, value, days) {
         const d = new Date();
@@ -105,8 +100,7 @@
         }
         return "";
       }
-
-      MD5 = function (r) {
+      MD5 = function(r) {
         function n(r, n) {
           var t, o, e, u, f;
           e = 2147483648 & r;
@@ -120,22 +114,27 @@
             return f ^ e ^ u;
           }
         }
+
         function t(r, t, o, e, u, f, a) {
           r = n(r, n(n(t & o | ~t & e, u), a));
           return n((r << f) | (r >>> (32 - f)), t);
         }
+
         function o(r, t, o, e, u, f, a) {
           r = n(r, n(n(t & e | o & ~e, u), a));
           return n((r << f) | (r >>> (32 - f)), t);
         }
+
         function e(r, t, o, e, u, f, a) {
           r = n(r, n(n(t ^ o ^ e, u), a));
           return n((r << f) | (r >>> (32 - f)), t);
         }
+
         function u(r, t, o, e, u, f, a) {
           r = n(r, n(n(o ^ (t | ~e), u), a));
           return n((r << f) | (r >>> (32 - f)), t);
         }
+
         function f(r) {
           var n, t = "",
             o = "";
@@ -147,7 +146,7 @@
           return t;
         }
         var a, i, C, c, g, h, d, v, S;
-        r = (function (r) {
+        r = (function(r) {
           r = r.replace(/\r\n/g, "\n");
           let n = "";
           for (let t = 0; t < r.length; t++) {
@@ -165,7 +164,7 @@
           }
           return n;
         })(r);
-        a = (function (r) {
+        a = (function(r) {
           var n;
           const t = r.length;
           const o = 16 * (((n = t + 8) - n % 64) / 64 + 1);
@@ -258,28 +257,27 @@
         }
         return (f(h) + f(d) + f(v) + f(S)).toLowerCase();
       };
-
       let accounts = "sys-rotur";
       let server = "wss://rotur.mistium.com";
-
-      fetch("https://raw.githubusercontent.com/Mistium/Origin-OS/main/Resources/info.json")
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("Network response was not ok");
-          }
-        })
-        .then((data) => {
-          accounts = data.name;
-          server = data.server;
-        })
-        .catch((error) => {
-          accounts = "sys-rotur";
-          server = "wss://rotur.mistium.com";
-        });
+      fetch("https://raw.githubusercontent.com/Mistium/Origin-OS/main/Resources/info.json").then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Network response was not ok");
+        }
+      }).then((data) => {
+        accounts = data.name;
+        server = data.server;
+      }).catch((error) => {
+        accounts = "sys-rotur";
+        server = "wss://rotur.mistium.com";
+      });
 
       function connectToWebsocket(server, accounts, username, password) {
+        // Show loading symbol in the submit button
+        const submitButton = document.querySelector(".modal form button[type='submit']");
+        submitButton.innerHTML = ' < i class = "fas fa-spinner fa-spin" > < /i>';
+        submitButton.disabled = true;
         window.account = undefined;
         this.ip = "";
         this.username = username;
@@ -287,25 +285,20 @@
         this.accounts = accounts;
         this.userToken = "";
         this.ws = new WebSocket(server);
-
         this.ws.onopen = () => {
-          this.ws.send(
-            JSON.stringify({
-              cmd: "handshake",
-              val: {
-                language: "Javascript",
-                version: {
-                  editorType: "Scratch",
-                  versionNumber: null,
-                },
+          this.ws.send(JSON.stringify({
+            cmd: "handshake",
+            val: {
+              language: "Javascript",
+              version: {
+                editorType: "Scratch",
+                versionNumber: null,
               },
-              listener: "handshake_cfg",
-            })
-          );
-
+            },
+            listener: "handshake_cfg",
+          }));
           this.ws.onmessage = (event) => {
             let packet = JSON.parse(event.data);
-
             if (packet.cmd == "client_ip") {
               this.ip = packet.val;
             } else if (packet.cmd == "pmsg") {
@@ -316,10 +309,12 @@
                   console.log("Logged in!");
                 } else {
                   console.log("Failed to login!");
+                  // Reset button if login fails
+                  submitButton.innerHTML = 'Login';
+                  submitButton.disabled = false;
                 }
               }
             }
-
             if (packet.listener === "handshake_cfg") {
               let username = "ath-" + this.username;
               let msg = {
@@ -327,10 +322,8 @@
                 val: username,
                 listener: "set_username_cfg",
               };
-
               this.ws.send(JSON.stringify(msg));
             }
-
             if (packet.listener == "set_username_cfg") {
               let room = "roturTW";
               let msg = {
@@ -338,50 +331,47 @@
                 val: [room],
                 listener: "link_cfg",
               };
-
               this.ws.send(JSON.stringify(msg));
             }
-
             if (packet.listener == "link_cfg") {
-              this.ws.send(
-                JSON.stringify({
-                  cmd: "pmsg",
-                  val: {
-                    ip: this.ip,
-                    client: {
-                      system: "rotur",
-                      version: "1.0",
-                    },
-                    command: "login",
-                    id: this.userToken,
-                    payload: [this.username, this.password],
+              this.ws.send(JSON.stringify({
+                cmd: "pmsg",
+                val: {
+                  ip: this.ip,
+                  client: {
+                    system: "rotur",
+                    version: "1.0",
                   },
-                  id: this.accounts,
-                })
-              );
+                  command: "login",
+                  id: this.userToken,
+                  payload: [this.username, this.password],
+                },
+                id: this.accounts,
+              }));
               console.log("Connected!");
             }
           };
         };
-
         this.ws.onclose = () => {
           console.log("Disconnected!");
+          // Reset button on disconnect
+          submitButton.innerHTML = 'Login';
+          submitButton.disabled = false;
         };
       }
 
       function updateModalForLoggedInUser() {
         const modalContent = document.querySelector(".modal-content");
         modalContent.innerHTML = `
-          <img src="${window.account.pfp}" width="40%" alt="Profile Picture" draggable="false" style="border-radius: 50%;">
-          <h1>Welcome, ${window.account.username}</h1>
-          <button id="allowAccess">Allow Account Access To: ${document.referrer}</button>
-          <button id="logoutButton">Logout</button>
+          
+												<img src="${window.account.pfp}" width="40%" alt="Profile Picture" draggable="false" style="border-radius: 50%;">
+													<h1>Welcome, ${window.account.username}</h1>
+													<button id="allowAccess">Allow Account Access To: ${document.referrer}</button>
+													<button id="logoutButton">Logout</button>
         `;
-
         document.getElementById("allowAccess").addEventListener("click", () => {
           window.location.href = document.referrer.replace(/(\/|\?|&|;|!|#)/g, '$1token=' + window.account.token + '&');
         });
-
         document.getElementById("logoutButton").addEventListener("click", () => {
           // Handle logout button click
         });
@@ -395,27 +385,23 @@
           }
         }, 100);
       }
-
       document.querySelector(".modal form").addEventListener("submit", async (e) => {
         e.preventDefault();
         const submitButton = document.querySelector(".modal form button[type='submit']");
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        submitButton.innerHTML = ' < i class = "fas fa-spinner fa-spin" > < /i>';
         submitButton.disabled = true;
-
         const username = document.querySelector(".modal form input[name='username']").value;
         const password = document.querySelector(".modal form input[name='password']").value;
         const hash = MD5(password);
         setCookie("username", username, 7);
         setCookie("password", hash, 7);
         connectToWebsocket(server, accounts, username, hash);
-
         waitForAccount(() => {
           submitButton.innerHTML = "Login";
           submitButton.disabled = false;
           updateModalForLoggedInUser();
         });
       });
-
       window.addEventListener("load", () => {
         const username = getCookie("username");
         const password = getCookie("password");
@@ -425,7 +411,6 @@
         }
       });
     </script>
-
     <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
     <script src="./nav.js"></script>
   </body>
