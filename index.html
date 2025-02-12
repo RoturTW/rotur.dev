@@ -15,6 +15,7 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
   <link rel="stylesheet" href="./styles.css">
+  <script src="./connectToRotur.js"></script>
 </head>
 <div id="navbar-placeholder"></div>
 <div class="hero">
@@ -115,6 +116,7 @@
 
 <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
 <script>
+
   let el = document.getElementById('tilt');
 const height = el.clientHeight;
 const width = el.clientWidth;
@@ -157,6 +159,28 @@ el.addEventListener('mouseup', function () {
     el.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)';
   });
 });
+
+
+let accounts = "sys-rotur";
+let server = "wss://rotur.mistium.com";
+let username = localStorage.getItem("username");
+let password = localStorage.getItem("password");
+if (username && password) {
+  connectToWebsocket(server, accounts, username, password)
+  waitForAccount(() => {
+    document.getElementById("roturTXT").innerText = account.username;
+    document.getElementById("roturIMG").src = `https://avatars.rotur.dev/${account.username}`;
+  });
+}
+
+function waitForAccount(callback) {
+        const checkAccount = setInterval(() => {
+          if (window.account !== undefined) {
+            clearInterval(checkAccount);
+            callback();
+          }
+        }, 100);
+      }
 
 </script>
 <script src="./nav.js"></script>
