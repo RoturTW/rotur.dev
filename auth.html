@@ -12,6 +12,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
     <style>
       /* Existing styles for the modal */
       .modal {
@@ -116,6 +117,7 @@
     </div>
 
     <script>
+
       // Cookie helpers
       function setCookie(name, value, days) {
         const d = new Date();
@@ -141,9 +143,7 @@
       }
 
       // MD5 function definition (omitted here for brevity; include your existing MD5 code)
-      MD5 = function(r) {
-        // ... your MD5 implementation ...
-      };
+      MD5 = CryptoJS.MD5;
 
       let accounts = "sys-rotur";
       let server = "wss://rotur.mistium.com";
@@ -277,7 +277,8 @@
           <button id="allowAccess">Allow Account Access To: ${document.referrer}</button>
           <button id="logoutButton">Logout</button>
         `;
-        document.getElementById("allowAccess").addEventListener("click", () => {
+
+        allowAccess.addEventListener("click", () => {
           if (window.account.key) {
             const refUrl = new URL(document.referrer);
             refUrl.searchParams.set('token', window.account.key);
@@ -287,7 +288,9 @@
           }
         });
         document.getElementById("logoutButton").addEventListener("click", () => {
-          // Handle logout button click
+          document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          window.location.reload();
         });
       }
 
