@@ -19,7 +19,6 @@
     <link href='https://fonts.googleapis.com/css?family=Poppins'
       rel='stylesheet'>
     <link rel="stylesheet" href="./styles.css">
-    <script src="./connectToRotur.js"></script>
   </head>
   <div id="navbar-placeholder"></div>
   <div class="hero">
@@ -130,8 +129,8 @@
       }
     </script>
 
-  <script src="https://kit.fontawesome.com/16f6b70bf6.js"
-    crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
+  <script src="./connectToRotur.js"></script>
   <script>
 
   let el = document.getElementById('tilt');
@@ -183,21 +182,21 @@ let server = "wss://rotur.mistium.com";
 let username = localStorage.getItem("username");
 let password = localStorage.getItem("password");
 if (username && password) {
-  connectToWebsocket(server, accounts, username, password)
+  connectToWebsocket(server, accounts, username, password);
   waitForAccount(() => {
-    document.getElementById("roturTXT").innerText = account.username;
-    document.getElementById("roturIMG").src = `https://avatars.rotur.dev/${account.username}`;
+    document.getElementById("roturTXT").innerText = window.account.username;
+    document.getElementById("roturIMG").src = `https://avatars.rotur.dev/${window.account.username}`;
   });
 }
 
 function waitForAccount(callback) {
-        const checkAccount = setInterval(() => {
-          if (window.account !== undefined) {
-            clearInterval(checkAccount);
-            callback();
-          }
-        }, 100);
-      }
+  const checkAccount = setInterval(() => {
+    if (window.account !== undefined) {
+      clearInterval(checkAccount);
+      callback();
+    }
+  }, 100);
+}
 
 </script>
   <script src="./nav.js"></script>
