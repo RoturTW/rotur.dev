@@ -2,107 +2,123 @@
 
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <title>Rotur: A Web Standard for Communication.</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta content="A websocket based networking and account system" property="og:description" />
-  <meta content="https://rotur.dev" property="og:url" />
-  <meta content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4" property="og:image" />
-  <meta content="#3f2f3c" name="theme-color" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-  <link rel="stylesheet" href="./styles.css">
-  <script src="./connectToRotur.js"></script>
-</head>
-<div id="navbar-placeholder"></div>
-<div class="hero">
-  <div class="headings">
-    <h1>Rotur</h1>
-    <p>A networking standard<br>over websockets</p><br>
+  <head>
+    <meta charset="UTF-8">
+    <title>Rotur: A Web Standard for Communication.</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A websocket based networking and account system"
+      property="og:description" />
+    <meta content="https://rotur.dev" property="og:url" />
+    <meta content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4"
+      property="og:image" />
+    <meta content="#3f2f3c" name="theme-color" />
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href='https://fonts.googleapis.com/css?family=Poppins'
+      rel='stylesheet'>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./connectToRotur.js"></script>
+  </head>
+  <div id="navbar-placeholder"></div>
+  <div class="hero">
+    <div class="headings">
+      <h1>Rotur</h1>
+      <p>A networking standard<br>over websockets</p><br>
+    </div>
+    <img src="./Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false">
   </div>
-  <img src="./Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false">
-</div>
-<div class="about">
-  <h1>About</h1>
-  <p>Rotur is a cloudlink based, networking packet standard and accounts system packaged into an easy to use extension. Made to make turbowarp operating systems more interconnected and easier to develop.
-  </p>
-  <div class="devs">
-    <a href="https://github.com/mistium">
-      <img src="https://avatars.githubusercontent.com/u/92952823?v=4&s=200" width="140px" draggable="false">
-      <p>Mistium</p>
-    </a>
-    <a href="https://github.com/ThePandaDever">
-      <img src="https://flufi.gay/yapcat.gif" width="140px" draggable="false">
-      <p>Flufi</p>
-    </a>
+  <div class="about">
+    <h1>About</h1>
+    <p>Rotur is a cloudlink based, networking packet standard and accounts
+      system packaged into an easy to use extension. Made to make turbowarp
+      operating systems more interconnected and easier to develop.
+    </p>
+    <div class="devs">
+      <a href="https://github.com/mistium">
+        <img src="https://avatars.githubusercontent.com/u/92952823?v=4&s=200"
+          width="140px" draggable="false">
+        <p>Mistium</p>
+      </a>
+      <a href="https://github.com/ThePandaDever">
+        <img src="https://flufi.gay/yapcat.gif" width="140px" draggable="false">
+        <p>Flufi</p>
+      </a>
+    </div>
   </div>
-</div>
-<div class="cards">
-  <h1>Features</h1>
-  <div class="card" id="friends">
-    <i class="fa-solid fa-user-group"></i>
-    <h1>Friends</h1>
-    <p>Rotur has a friends system out of the box, just authenticate into an account and you can add or remove friends,
-      and send requests</p>
+  <div class="cards">
+    <h1>Features</h1>
+    <div class="card" id="friends">
+      <i class="fa-solid fa-user-group"></i>
+      <h1>Friends</h1>
+      <p>Rotur has a friends system out of the box, just authenticate into an
+        account and you can add or remove friends,
+        and send requests</p>
+    </div>
+    <div class="card" id="networking">
+      <i class="fa-solid fa-wifi"></i>
+      <h1>Networking</h1>
+      <p>Rotur uses a modified version of cloudlink to send and recieve packets
+        with much more user data that can be
+        useful to the reciever.</p>
+    </div>
+    <div class="card" id="oneacc">
+      <i class="fa-solid fa-ring"></i>
+      <h1>One Account To Rule Them All</h1>
+      <p>Rotur uses a single account system, so you can use the same account on
+        any game or operating system that uses
+        Rotur, allowing for incredible interconnectivity</p>
+    </div>
+    <div class="card" id="rmail">
+      <i class="fa-solid fa-envelope"></i>
+      <h1>Rmail</h1>
+      <p>Included with rotur and any account is a fully functioning emails
+        system that works cross platform. Allowing you
+        to get to working on the important stuff faster!</p>
+    </div>
+    <div class="card" id="credits">
+      <i class="fa-solid fa-credit-card"></i>
+      <h1>Rotur Credits</h1>
+      <p>Handle user currency simply and easily, allowing transfers and an
+        overarching rotur economy. Each user that logs
+        in gets 1 credit per day.</p>
+    </div>
+    <div class="card" id="storage">
+      <i class="fa-solid fa-database"></i>
+      <h1>Cloud Keys</h1>
+      <p>Store and access key value pairs on the cloud in a user account.
+        Allowing for cloud storage of files, game data,
+        saves, and more!</p>
+    </div>
+    <div class="card" id="items">
+      <i class="fa-solid fa-shop"></i>
+      <h1>Rotur Items</h1>
+      <p>An online marketplace for items and data using rotur credits!</p>
+    </div>
+    <div class="card" id="badges">
+      <i class="fa-solid fa-certificate"></i>
+      <h1>Rotur Badges</h1>
+      <p>Collect and show badges on your profile!</p>
+    </div>
+    <div class="card" id="calling">
+      <i class="fa-solid fa-phone"></i>
+      <h1>Voice Calling</h1>
+      <p>(Coming Soon) In collaboration with CL5 and Mikedev, voice calling will
+        be implemented into rotur allowing for
+        seamless and integrated calling between systems on rotur</p>
+    </div>
+    <div class="card" id="syncvars">
+      <i class="fa-solid fa-rotate"></i>
+      <h1>Synced Vars</h1>
+      <p>(Coming Soon) Sync variables peer to peer on rotur. Cloud variables but
+        faster, better and more advanced</p>
+    </div>
   </div>
-  <div class="card" id="networking">
-    <i class="fa-solid fa-wifi"></i>
-    <h1>Networking</h1>
-    <p>Rotur uses a modified version of cloudlink to send and recieve packets with much more user data that can be
-      useful to the reciever.</p>
-  </div>
-  <div class="card" id="oneacc">
-    <i class="fa-solid fa-ring"></i>
-    <h1>One Account To Rule Them All</h1>
-    <p>Rotur uses a single account system, so you can use the same account on any game or operating system that uses
-      Rotur, allowing for incredible interconnectivity</p>
-  </div>
-  <div class="card" id="rmail">
-    <i class="fa-solid fa-envelope"></i>
-    <h1>Rmail</h1>
-    <p>Included with rotur and any account is a fully functioning emails system that works cross platform. Allowing you
-      to get to working on the important stuff faster!</p>
-  </div>
-  <div class="card" id="credits">
-    <i class="fa-solid fa-credit-card"></i>
-    <h1>Rotur Credits</h1>
-    <p>Handle user currency simply and easily, allowing transfers and an overarching rotur economy. Each user that logs
-      in gets 1 credit per day.</p>
-  </div>
-  <div class="card" id="storage">
-    <i class="fa-solid fa-database"></i>
-    <h1>Cloud Keys</h1>
-    <p>Store and access key value pairs on the cloud in a user account. Allowing for cloud storage of files, game data,
-      saves, and more!</p>
-  </div>
-  <div class="card" id="items">
-    <i class="fa-solid fa-shop"></i>
-    <h1>Rotur Items</h1>
-    <p>An online marketplace for items and data using rotur credits!</p>
-  </div>
-  <div class="card" id="badges">
-    <i class="fa-solid fa-certificate"></i>
-    <h1>Rotur Badges</h1>
-    <p>Collect and show badges on your profile!</p>
-  </div>
-  <div class="card" id="calling">
-    <i class="fa-solid fa-phone"></i>
-    <h1>Voice Calling</h1>
-    <p>(Coming Soon) In collaboration with CL5 and Mikedev, voice calling will be implemented into rotur allowing for
-    seamless and integrated calling between systems on rotur</p>
-  </div>
-  <div class="card" id="syncvars">
-    <i class="fa-solid fa-rotate"></i>
-    <h1>Synced Vars</h1>
-    <p>(Coming Soon) Sync variables peer to peer on rotur. Cloud variables but faster, better and more advanced</p>
-  </div>
-</div>
 
-<button id="get_button" onclick="downloadExtension()">Get The Extension</button>
-    <script>
+  <button id="get_button" onclick="downloadExtension()">Get The
+    Extension</button>
+  <script>
       function downloadExtension() {
         const link = document.createElement('a');
         link.href = 'https://raw.githubusercontent.com/RoturTW/main/refs/heads/main/Implementations/SCRATCH/roturV5.js';
@@ -114,8 +130,9 @@
       }
     </script>
 
-<script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
-<script>
+  <script src="https://kit.fontawesome.com/16f6b70bf6.js"
+    crossorigin="anonymous"></script>
+  <script>
 
   let el = document.getElementById('tilt');
 const height = el.clientHeight;
@@ -183,5 +200,5 @@ function waitForAccount(callback) {
       }
 
 </script>
-<script src="./nav.js"></script>
+  <script src="./nav.js"></script>
 </html>
