@@ -279,7 +279,9 @@
         `;
         document.getElementById("allowAccess").addEventListener("click", () => {
           if (window.account.key) {
-            window.location.href = document.referrer.replace(/(\/|\?|&|;|!|#)/g, '$1token=' + window.account.key + '&');
+            const refUrl = new URL(document.referrer);
+            refUrl.searchParams.set('token', window.account.key);
+            window.location.href = refUrl.toString();
           } else {
             console.error("Token is undefined");
           }
