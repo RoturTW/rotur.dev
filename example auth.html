@@ -54,31 +54,25 @@
     </div>
 
     <script>
-        // Function to get URL parameters
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        }
-
-        // Function to handle authentication button click
-        function redirectToAuth() {
-            window.location.href = "https://rotur.dev/auth";
-        }
-
         // Check for token parameter when page loads
         window.onload = function() {
-            var token = getUrlParameter('token');
+            // Get URL parameters using URLSearchParams
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
             
             if (token) {
                 // If token exists, show the token display
                 document.getElementById('main-container').style.display = 'none';
                 document.getElementById('token-container').style.display = 'block';
                 document.getElementById('token-display').textContent = token;
+                
+                // Remove token from URL by replacing current history state
+                window.history.replaceState({}, document.title, window.location.pathname);
             } else {
-                // If no token, show the auth button
-                document.getElementById('auth-button').addEventListener('click', redirectToAuth);
+                // If no token, setup auth button
+                document.getElementById('auth-button').addEventListener('click', function() {
+                    window.location.href = "https://rotur.dev/auth";
+                });
             }
         };
     </script>
