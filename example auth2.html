@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            margin-top: 50px;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #token-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <h1>Authentication Required</h1>
+        <p>Please click the button below to authenticate.</p>
+        <button id="auth-button">Authenticate</button>
+    </div>
+    
+    <div class="container" id="token-container" style="display: none;">
+        <h1>Authentication Successful</h1>
+        <p>Your token:</p>
+        <div id="token-display"></div>
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Function to handle authentication button click
+        function redirectToAuth() {
+            window.location.href = "https://rotur.dev/auth";
+        }
+
+        // Check for token parameter when page loads
+        window.onload = function() {
+            var token = getUrlParameter('token');
+            
+            if (token) {
+                // If token exists, show the token display
+                document.getElementById('main-container').style.display = 'none';
+                document.getElementById('token-container').style.display = 'block';
+                document.getElementById('token-display').textContent = token;
+            } else {
+                // If no token, show the auth button
+                document.getElementById('auth-button').addEventListener('click', redirectToAuth);
+            }
+        };
+    </script>
+</body>
+</html>
