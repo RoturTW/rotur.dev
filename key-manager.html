@@ -98,7 +98,7 @@
         <!-- Login Section -->
         <div id="login-section" class="login-box">
             <h2>Authentication Required</h2>
-            <button onclick="window.location.href='https://rotur.dev/auth.html'" class="login-btn">Login</button>
+            <button onclick="window.location.href='https://rotur.dev/auth'" class="login-btn">Login</button>
             <div id="login-error" class="error"></div>
         </div>
         
@@ -170,16 +170,16 @@
 
         // Event listeners for page load
         document.addEventListener('DOMContentLoaded', () => {
-            // Check for auth token in URL parameters (returned from auth.html)
+            // Check for token in URL parameters (from auth redirect)
             const urlParams = new URLSearchParams(window.location.search);
-            const urlAuthToken = urlParams.get('auth');
+            const token = urlParams.get('token');
             
-            if (urlAuthToken) {
-                // Auth token found in URL, save it and fetch user data
-                authToken = urlAuthToken;
-                validateAuthAndFetchUser(authToken);
+            if (token) {
+                // Token found in URL, use it as auth token
+                authToken = token;
+                validateAuthAndFetchUser(token);
                 
-                // Clean URL by removing the auth parameter (for security)
+                // Clean URL by removing the token parameter (for security)
                 window.history.replaceState({}, document.title, window.location.pathname);
             } else {
                 // Check for stored auth token
