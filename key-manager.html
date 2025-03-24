@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Manager</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        button {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+        }
+        .key-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .user-list {
+            margin-top: 10px;
+        }
+        .user-item {
+            display: inline-block;
+            background-color: #e1e1e1;
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 4px;
+        }
+        .remove-user {
+            cursor: pointer;
+            color: #ff0000;
+            margin-left: 5px;
+        }
+        .hidden {
+            display: none;
+        }
+        .actions {
+            margin-top: 10px;
+        }
+        #loading {
+            text-align: center;
+            margin: 20px;
+        }
+        .login-box {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .login-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Key Manager</h1>
+        
+        <!-- Login Section -->
+        <div id="login-section" class="login-box">
+            <h2>Authentication Required</h2>
+            <button onclick="window.location.href='https://rotur.dev/auth.html'" class="login-btn">Login</button>
+            <div id="login-error" class="error"></div>
+        </div>
+        
+        <!-- User Info Section -->
+        <div id="user-info" class="hidden">
+            <h2>Welcome, <span id="user-name"></span>!</h2>
+            <button id="logout-btn">Logout</button>
+        </div>
+        
+        <!-- Key Management Section -->
+        <div id="key-management" class="hidden">
+            <h2>Your Keys</h2>
+            <div id="loading">Loading your keys...</div>
+            <div id="keys-list"></div>
+            
+            <h3>Create New Key</h3>
+            <div>
+                <input type="number" id="new-key-price" placeholder="Price (optional)" min="0">
+                <button id="create-key-btn">Create Key</button>
+                <div id="create-key-result" class="success"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Item Template -->
+    <template id="key-template">
+        <div class="key-item">
+            <h3>Key: <span class="key-value"></span></h3>
+            <p>Creator: <span class="key-creator"></span></p>
+            <p>Price: <span class="key-price"></span></p>
+            
+            <div class="key-users">
+                <h4>Authorized Users:</h4>
+                <div class="user-list"></div>
+                
+                <div class="actions">
+                    <input type="text" class="add-user-input" placeholder="Username to add">
+                    <button class="add-user-btn">Add User</button>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <button class="revoke-key-btn">Revoke Key</button>
+                <button class="delete-key-btn">Delete Key</button>
+                <input type="number" class="update-price-input" placeholder="New Price" min="0">
+                <button class="update-price-btn">Update Price</button>
+            </div>
+            
+            <div class="key-message success"></div>
+            <div class="key-error error"></div>
+        </div>
+    </template>
+
+    <script>
+        // Global variables
+        let authToken = '';
+        let currentUser = '';
+        const API_BASE_URL = 'https://social.rotur.dev';
+
+        // DOM elements
+        const loginSection = document.getElementById('login-section');
+        const userInfoSection = document.getElementById('user-info');
+        const keyManagementSection = document.getElementById('key-management');
+        const loginError = document.getElementById('login-error');
+        const userNameSpan = document.getElementById('user-name');
+        const keysList = document.getElementById('keys-list');
+        const loadingIndicator = document.getElementById('loading');
+        const createKeyResult = document.getElementById('create-key-result');
+
+        // Event listeners for page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for auth token in URL parameters (returned from auth.html)
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlAuthToken = urlParams.get('auth');
+            
+            if (urlAuthToken) {
+                // Auth token found in URL, save it and fetch user data
+                authToken = urlAuthToken;
+                validateAuthAndFetchUser(authToken);
+                
+                // Clean URL by removing the auth parameter (for security)
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                // Check for stored auth token
+                const storedAuth = localStorage.getItem('authToken');
+                const storedUser = localStorage.getItem('username');
+                
+                if (storedAuth && storedUser) {
+                    authToken = storedAuth;
+                    currentUser = storedUser;
+                    showLoggedInState();
+                }
+            }
+            
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            document.getElementById('create-key-btn').addEventListener('click', createNewKey);
+        });
+
+        async function validateAuthAndFetchUser(token) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_user?auth=${encodeURIComponent(token)}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentUser = data.username;
+                    saveAuthToStorage();
+                    showLoggedInState();
+                } else {
+                    loginError.textContent = 'Authentication failed. Please try logging in again.';
+                }
+            } catch (error) {
+                loginError.textContent = 'Network error occurred. Please try again.';
+                console.error('Auth validation error:', error);
+            }
+        }
+
+        function handleLogout() {
+            authToken = '';
+            currentUser = '';
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+            
+            loginSection.classList.remove('hidden');
+            userInfoSection.classList.add('hidden');
+            keyManagementSection.classList.add('hidden');
+        }
+
+        function saveAuthToStorage() {
+            localStorage.setItem('authToken', authToken);
+            localStorage.setItem('username', currentUser);
+        }
+
+        function showLoggedInState() {
+            loginError.textContent = '';
+            
+            // Update UI
+            loginSection.classList.add('hidden');
+            userInfoSection.classList.remove('hidden');
+            keyManagementSection.classList.remove('hidden');
+            userNameSpan.textContent = currentUser;
+            
+            // Fetch user's keys
+            fetchUserKeys();
+        }
+
+        // Key Management Functions
+        async function fetchUserKeys() {
+            loadingIndicator.classList.remove('hidden');
+            keysList.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/keys/mine?auth=${encodeURIComponent(authToken)}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    loadingIndicator.classList.add('hidden');
+                    
+                    if (data.length === 0) {
+                        keysList.innerHTML = '<p>You don\'t have any keys yet. Create one below!</p>';
+                        return;
+                    }
+                    
+                    // Display each key
+                    data.forEach(key => {
+                        renderKeyItem(key);
+                    });
+                } else {
+                    loadingIndicator.textContent = data.error || 'Failed to load keys';
+                }
+            } catch (error) {
+                loadingIndicator.textContent = 'Network error occurred. Please try again.';
+                console.error('Fetch keys error:', error);
+            }
+        }
+
+        function renderKeyItem(key) {
+            const template = document.getElementById('key-template');
+            const keyItem = document.importNode(template.content, true);
+            
+            // Populate key data
+            keyItem.querySelector('.key-value').textContent = key.key;
+            keyItem.querySelector('.key-creator').textContent = key.creator;
+            keyItem.querySelector('.key-price').textContent = key.price || '0';
+            
+            // Set input default
+            keyItem.querySelector('.update-price-input').value = key.price || '0';
+            
+            // Populate users
+            const userList = keyItem.querySelector('.user-list');
+            if (key.users && key.users.length > 0) {
+                key.users.forEach(user => {
+                    const userItem = document.createElement('span');
+                    userItem.classList.add('user-item');
+                    userItem.innerHTML = `${user} ${currentUser === key.creator ? `<span class="remove-user" data-user="${user}" data-key="${key.key}">×</span>` : ''}`;
+                    userList.appendChild(userItem);
+                });
+            } else {
+                userList.innerHTML = '<p>No users have access to this key.</p>';
+            }
+            
+            // Add event listeners
+            if (currentUser === key.creator) {
+                // Only key creator can add/remove users and delete keys
+                keyItem.querySelector('.add-user-btn').addEventListener('click', () => {
+                    addUserToKey(key.key, keyItem);
+                });
+                
+                keyItem.querySelector('.revoke-key-btn').addEventListener('click', () => {
+                    revokeKey(key.key, keyItem);
+                });
+                
+                keyItem.querySelector('.delete-key-btn').addEventListener('click', () => {
+                    deleteKey(key.key, keyItem);
+                });
+                
+                keyItem.querySelector('.update-price-btn').addEventListener('click', () => {
+                    updateKeyPrice(key.key, keyItem);
+                });
+                
+                // Attach remove user event listeners
+                const removeButtons = keyItem.querySelectorAll('.remove-user');
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const username = e.target.getAttribute('data-user');
+                        const keyId = e.target.getAttribute('data-key');
+                        removeUserFromKey(keyId, username, keyItem);
+                    });
+                });
+            } else {
+                // Hide admin controls for non-creators
+                keyItem.querySelector('.add-user-btn').parentNode.style.display = 'none';
+                keyItem.querySelector('.revoke-key-btn').style.display = 'none';
+                keyItem.querySelector('.delete-key-btn').style.display = 'none';
+                keyItem.querySelector('.update-price-btn').parentNode.style.display = 'none';
+            }
+            
+            keysList.appendChild(keyItem);
+        }
+
+        async function createNewKey() {
+            const priceInput = document.getElementById('new-key-price');
+            const price = priceInput.value ? parseInt(priceInput.value) : 0;
+            
+            try {
+                const url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}${price ? `&price=${price}` : ''}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    createKeyResult.textContent = `Key created successfully: ${data.key}`;
+                    priceInput.value = '';
+                    
+                    // Refresh the key list
+                    fetchUserKeys();
+                    
+                    // Clear success message after 5 seconds
+                    setTimeout(() => {
+                        createKeyResult.textContent = '';
+                    }, 5000);
+                } else {
+                    createKeyResult.textContent = data.error || 'Failed to create key';
+                    createKeyResult.classList.remove('success');
+                    createKeyResult.classList.add('error');
+                }
+            } catch (error) {
+                createKeyResult.textContent = 'Network error occurred. Please try again.';
+                createKeyResult.classList.remove('success');
+                createKeyResult.classList.add('error');
+                console.error('Create key error:', error);
+            }
+        }
+
+        async function addUserToKey(keyId, keyElement) {
+            const input = keyElement.querySelector('.add-user-input');
+            const username = input.value.trim();
+            
+            if (!username) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = 'Please enter a username';
+                return;
+            }
+            
+            try {
+                // Since there's no direct endpoint to add a user, we need to use the update endpoint
+                // First we get the current key users
+                const response = await fetch(`${API_BASE_URL}/keys/mine?auth=${encodeURIComponent(authToken)}`);
+                const allKeys = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch key data');
+                }
+                
+                const key = allKeys.find(k => k.key === keyId);
+                if (!key) {
+                    throw new Error('Key not found');
+                }
+                
+                // Add the new user if they don't exist already
+                const users = key.users || [];
+                if (!users.includes(username)) {
+                    users.push(username);
+                }
+                
+                // Update the key with the new users list
+                const updateData = { users };
+                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(JSON.stringify(updateData))}`;
+                const updateResponse = await fetch(updateUrl);
+                const updateResult = await updateResponse.json();
+                
+                if (updateResponse.ok) {
+                    const messageDiv = keyElement.querySelector('.key-message');
+                    messageDiv.textContent = `User ${username} added successfully`;
+                    input.value = '';
+                    
+                    // Refresh the key list to show changes
+                    fetchUserKeys();
+                    
+                    // Clear success message after 3 seconds
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                    }, 3000);
+                } else {
+                    const errorDiv = keyElement.querySelector('.key-error');
+                    errorDiv.textContent = updateResult.error || 'Failed to add user';
+                }
+            } catch (error) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = error.message || 'Error adding user';
+                console.error('Add user error:', error);
+            }
+        }
+
+        async function removeUserFromKey(keyId, username, keyElement) {
+            // Don't allow removing the creator or yourself as a user
+            if (username === currentUser) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = "You cannot remove yourself from the key's users";
+                return;
+            }
+            
+            try {
+                // Get current key data
+                const response = await fetch(`${API_BASE_URL}/keys/mine?auth=${encodeURIComponent(authToken)}`);
+                const allKeys = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch key data');
+                }
+                
+                const key = allKeys.find(k => k.key === keyId);
+                if (!key) {
+                    throw new Error('Key not found');
+                }
+                
+                // Remove the user
+                const users = key.users || [];
+                const updatedUsers = users.filter(u => u !== username);
+                
+                // Update the key with the new users list
+                const updateData = { users: updatedUsers };
+                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(JSON.stringify(updateData))}`;
+                const updateResponse = await fetch(updateUrl);
+                const updateResult = await updateResponse.json();
+                
+                if (updateResponse.ok) {
+                    const messageDiv = keyElement.querySelector('.key-message');
+                    messageDiv.textContent = `User ${username} removed successfully`;
+                    
+                    // Refresh the key list to show changes
+                    fetchUserKeys();
+                    
+                    // Clear success message after 3 seconds
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                    }, 3000);
+                } else {
+                    const errorDiv = keyElement.querySelector('.key-error');
+                    errorDiv.textContent = updateResult.error || 'Failed to remove user';
+                }
+            } catch (error) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = error.message || 'Error removing user';
+                console.error('Remove user error:', error);
+            }
+        }
+
+        async function revokeKey(keyId, keyElement) {
+            if (!confirm('Are you sure you want to revoke this key? This will remove all users.')) {
+                return;
+            }
+            
+            try {
+                const url = `${API_BASE_URL}/keys/revoke/${keyId}?auth=${encodeURIComponent(authToken)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const messageDiv = keyElement.querySelector('.key-message');
+                    messageDiv.textContent = 'Key revoked successfully';
+                    
+                    // Refresh the key list
+                    fetchUserKeys();
+                } else {
+                    const errorDiv = keyElement.querySelector('.key-error');
+                    errorDiv.textContent = data.error || 'Failed to revoke key';
+                }
+            } catch (error) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Revoke key error:', error);
+            }
+        }
+
+        async function deleteKey(keyId, keyElement) {
+            if (!confirm('Are you sure you want to delete this key? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const url = `${API_BASE_URL}/keys/delete/${keyId}?auth=${encodeURIComponent(authToken)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    keyElement.remove();
+                    
+                    // Check if there are any keys left
+                    if (keysList.children.length === 0) {
+                        keysList.innerHTML = '<p>You don\'t have any keys. Create one below!</p>';
+                    }
+                } else {
+                    const errorDiv = keyElement.querySelector('.key-error');
+                    errorDiv.textContent = data.error || 'Failed to delete key';
+                }
+            } catch (error) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Delete key error:', error);
+            }
+        }
+
+        async function updateKeyPrice(keyId, keyElement) {
+            const input = keyElement.querySelector('.update-price-input');
+            const price = input.value ? parseInt(input.value) : 0;
+            
+            try {
+                const updateData = { price };
+                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(JSON.stringify(updateData))}`;
+                const response = await fetch(updateUrl);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const messageDiv = keyElement.querySelector('.key-message');
+                    messageDiv.textContent = 'Price updated successfully';
+                    keyElement.querySelector('.key-price').textContent = price;
+                    
+                    // Clear success message after 3 seconds
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                    }, 3000);
+                } else {
+                    const errorDiv = keyElement.querySelector('.key-error');
+                    errorDiv.textContent = data.error || 'Failed to update price';
+                }
+            } catch (error) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Update price error:', error);
+            }
+        }
+    </script>
+</body>
+</html> 
