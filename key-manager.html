@@ -283,8 +283,25 @@
             keyItem.querySelector('.key-creator').textContent = key.creator;
             keyItem.querySelector('.key-price').textContent = key.price || '0';
             
-            // Set input default
-            keyItem.querySelector('.update-price-input').value = key.price || '0';
+            // Set input default and add data-key attribute to associate it with this specific key
+            const priceInput = keyItem.querySelector('.update-price-input');
+            priceInput.value = key.price || '0';
+            priceInput.setAttribute('data-key', key.key);
+            
+            // Add data-key attribute to the update button
+            const updateButton = keyItem.querySelector('.update-price-btn');
+            updateButton.setAttribute('data-key', key.key);
+            
+            // Add data-key attribute to the add user input and button
+            const addUserInput = keyItem.querySelector('.add-user-input');
+            addUserInput.setAttribute('data-key', key.key);
+            const addUserButton = keyItem.querySelector('.add-user-btn');
+            addUserButton.setAttribute('data-key', key.key);
+            
+            // Add a unique ID to the key item div for easier targeting
+            const keyItemDiv = keyItem.querySelector('.key-item');
+            keyItemDiv.id = `key-item-${key.key}`;
+            keyItemDiv.setAttribute('data-key', key.key);
             
             // Populate users
             const userList = keyItem.querySelector('.user-list');
@@ -302,20 +319,20 @@
             // Add event listeners
             if (currentUser === key.creator) {
                 // Only key creator can add/remove users and delete keys
-                keyItem.querySelector('.add-user-btn').addEventListener('click', () => {
-                    addUserToKey(key.key, keyItem);
+                addUserButton.addEventListener('click', () => {
+                    addUserToKey(key.key, keyItemDiv);
                 });
                 
                 keyItem.querySelector('.revoke-key-btn').addEventListener('click', () => {
-                    revokeKey(key.key, keyItem);
+                    revokeKey(key.key, keyItemDiv);
                 });
                 
                 keyItem.querySelector('.delete-key-btn').addEventListener('click', () => {
-                    deleteKey(key.key, keyItem);
+                    deleteKey(key.key, keyItemDiv);
                 });
                 
-                keyItem.querySelector('.update-price-btn').addEventListener('click', () => {
-                    updateKeyPrice(key.key, keyItem);
+                updateButton.addEventListener('click', () => {
+                    updateKeyPrice(key.key, keyItemDiv);
                 });
                 
                 // Attach remove user event listeners
@@ -324,15 +341,15 @@
                     button.addEventListener('click', (e) => {
                         const username = e.target.getAttribute('data-user');
                         const keyId = e.target.getAttribute('data-key');
-                        removeUserFromKey(keyId, username, keyItem);
+                        removeUserFromKey(keyId, username, keyItemDiv);
                     });
                 });
             } else {
                 // Hide admin controls for non-creators
-                keyItem.querySelector('.add-user-btn').parentNode.style.display = 'none';
+                addUserButton.parentNode.style.display = 'none';
                 keyItem.querySelector('.revoke-key-btn').style.display = 'none';
                 keyItem.querySelector('.delete-key-btn').style.display = 'none';
-                keyItem.querySelector('.update-price-btn').parentNode.style.display = 'none';
+                updateButton.parentNode.style.display = 'none';
             }
             
             keysList.appendChild(keyItem);
@@ -372,7 +389,17 @@
         }
 
         async function addUserToKey(keyId, keyElement) {
-            const input = keyElement.querySelector('.add-user-input');
+            // Find the specific input for this key using data-key attribute
+            const input = keyElement.querySelector(`.add-user-input[data-key="${keyId}"]`);
+            console.log('Add user input for key', keyId, ':', input);
+            
+            if (!input) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = 'Error: Could not find username input element';
+                console.error('Username input element not found for key', keyId);
+                return;
+            }
+            
             const username = input.value.trim();
             
             if (!username) {
@@ -392,9 +419,7 @@
                 }
                 
                 const key = allKeys.find(k => k.key === keyId);
-                if (!key) {
-                    throw new Error('Key not found');
-                }
+                if (!key) throw new Error('Key not found');
                 
                 // Add the new user if they don't exist already
                 const users = key.users || [];
@@ -403,8 +428,11 @@
                 }
                 
                 // Update the key with the new users list
-                const updateData = { users };
-                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(JSON.stringify(updateData))}`;
+                const updateData = JSON.stringify({ users });
+                // The API expects the data as a query parameter, not in the request body
+                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
+                console.log('Update URL:', updateUrl);
+                
                 const updateResponse = await fetch(updateUrl);
                 const updateResult = await updateResponse.json();
                 
@@ -423,6 +451,7 @@
                 } else {
                     const errorDiv = keyElement.querySelector('.key-error');
                     errorDiv.textContent = updateResult.error || 'Failed to add user';
+                    console.error('API error:', updateResult);
                 }
             } catch (error) {
                 const errorDiv = keyElement.querySelector('.key-error');
@@ -449,17 +478,15 @@
                 }
                 
                 const key = allKeys.find(k => k.key === keyId);
-                if (!key) {
-                    throw new Error('Key not found');
-                }
+                if (!key) throw new Error('Key not found');
                 
                 // Remove the user
                 const users = key.users || [];
                 const updatedUsers = users.filter(u => u !== username);
                 
                 // Update the key with the new users list
-                const updateData = { users: updatedUsers };
-                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(JSON.stringify(updateData))}`;
+                const updateData = JSON.stringify({ users: updatedUsers });
+                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
                 const updateResponse = await fetch(updateUrl);
                 const updateResult = await updateResponse.json();
                 
@@ -541,12 +568,24 @@
         }
 
         async function updateKeyPrice(keyId, keyElement) {
-            const input = keyElement.querySelector('.update-price-input');
+            // Find the specific price input for this key using the data-key attribute
+            const input = keyElement.querySelector(`.update-price-input[data-key="${keyId}"]`);
+            console.log('Price input element for key', keyId, ':', input);
+            
+            if (!input) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = 'Error: Could not find price input element';
+                console.error('Price input element not found for key', keyId);
+                return;
+            }
+            
             const price = input.value ? parseInt(input.value) : 0;
             
             try {
-                const updateData = { price };
-                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(JSON.stringify(updateData))}`;
+                const updateData = JSON.stringify({ price });
+                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
+                console.log('Update URL:', updateUrl);
+                
                 const response = await fetch(updateUrl);
                 const data = await response.json();
                 
@@ -555,6 +594,11 @@
                     messageDiv.textContent = 'Price updated successfully';
                     keyElement.querySelector('.key-price').textContent = price;
                     
+                    // Refresh the key list to ensure we have the latest data
+                    setTimeout(() => {
+                        fetchUserKeys();
+                    }, 1000);
+                    
                     // Clear success message after 3 seconds
                     setTimeout(() => {
                         messageDiv.textContent = '';
@@ -562,6 +606,7 @@
                 } else {
                     const errorDiv = keyElement.querySelector('.key-error');
                     errorDiv.textContent = data.error || 'Failed to update price';
+                    console.error('Update price error:', data);
                 }
             } catch (error) {
                 const errorDiv = keyElement.querySelector('.key-error');
