@@ -191,7 +191,7 @@
 
       allowAccess.addEventListener("click", () => {
         if (account.key) {
-          const refUrl = new URL(document.referrer);
+          const refUrl = new URL(return_to);
           refUrl.searchParams.set('token', account.key);
           window.location.href = refUrl.toString();
         } else {
