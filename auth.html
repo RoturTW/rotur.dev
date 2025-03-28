@@ -1,240 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Rotur: A Web Standard for Communication.</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="A websocket based networking and account system" property="og:description" />
-    <meta content="https://rotur.dev" property="og:url" />
-    <meta content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4" property="og:image" />
-    <meta content="#3f2f3c" name="theme-color" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
-    <link rel="stylesheet" href="./styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
-    <style>
-      /* Existing styles for the modal */
-      .modal {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rotur: A Web Standard for Communication.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="A websocket based networking and account system" property="og:description" />
+  <meta content="https://rotur.dev" property="og:url" />
+  <meta content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4" property="og:image" />
+  <meta content="#3f2f3c" name="theme-color" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <style>
+    /* Existing styles for the modal */
+    .modal {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #222;
+      border-radius: 10px;
+      border-style: solid;
+      border-color: #3f2f3c;
+      padding: 20px;
+      width: 400px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-content input {
+      display: block;
+      width: calc(100% - 20px);
+      border-radius: 10px;
+      background-color: #111;
+      color: #fff;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+
+    .modal-content button {
+      width: 100%;
+      padding: 10px;
+      background-color: #3f2f3c;
+      border-radius: 10px;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background-color: #2e1f2c;
+    }
+
+    /* --- Loading Spinner Overlay Styles --- */
+    #loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      /* Semi-transparent background */
+      display: none;
+      /* Hidden by default */
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      /* Ensure it overlays other content */
+    }
+
+    .spinner {
+      border: 8px solid #f3f3f3;
+      /* Light grey */
+      border-top: 8px solid #3f2f3c;
+      /* Rotur color */
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
       }
 
-      .modal-content {
-        background-color: #222;
-        border-radius: 10px;
-        border-style: solid;
-        border-color: #3f2f3c;
-        padding: 20px;
-        width: 400px;
-        text-align: center;
-        position: relative;
+      100% {
+        transform: rotate(360deg);
       }
+    }
+  </style>
+</head>
 
-      .modal-content input {
-        display: block;
-        width: calc(100% - 20px);
-        border-radius: 10px;
-        background-color: #111;
-        color: #fff;
-        margin: 10px 0;
-        padding: 10px;
-        border: none;
-        outline: none;
-      }
-
-      .modal-content button {
-        width: 100%;
-        padding: 10px;
-        background-color: #3f2f3c;
-        border-radius: 10px;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
-
-      .modal-content button:hover {
-        background-color: #2e1f2c;
-      }
-
-      /* --- Loading Spinner Overlay Styles --- */
-      #loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        display: none; /* Hidden by default */
-        align-items: center;
-        justify-content: center;
-        z-index: 1000; /* Ensure it overlays other content */
-      }
-
-      .spinner {
-        border: 8px solid #f3f3f3; /* Light grey */
-        border-top: 8px solid #3f2f3c; /* Rotur color */
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="navbar-placeholder"></div>
-    <div class="modal">
-      <div class="modal-content">
-        <img src="./Rotur Logo.png" width="40%" alt="Rotur Logo" draggable="false" style="border-radius: 50%;">
-        <h1>Login</h1>
-        <form>
-          <input type="text" name="username" placeholder="Username" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <button type="submit">Login</button>
-        </form>
-        <p style="font-size: medium;">
-          This will give the website full control over your rotur account without your permission.
-          Ensure you are comfortable with this before proceeding.
-        </p>
-      </div>
+<body>
+  <div id="navbar-placeholder"></div>
+  <div class="modal">
+    <div class="modal-content">
+      <img src="./Rotur Logo.png" width="40%" alt="Rotur Logo" draggable="false" style="border-radius: 50%;">
+      <h1>Login</h1>
+      <form>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+      <p style="font-size: medium;">
+        This will give the website full control over your rotur account<br>
+        without your permission due to rotur's open nature.<br>
+        Ensure you trust this website before logging in.
+      </p>
     </div>
+  </div>
 
-    <!-- Loading Spinner Overlay -->
-    <div id="loading-overlay">
-      <div class="spinner"></div>
-    </div>
+  <!-- Loading Spinner Overlay -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
 
-    <script src="./connectToRotur.js"></script>
+  <script>
+    let return_to = "";
+    let account = "";
 
-    <script>
-      // Cookie helpers
-      function setCookie(name, value, days) {
-        const d = new Date();
-        d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
-        const expires = "expires=" + d.toUTCString();
-        document.cookie = name + "=" + value + ";" + expires + ";path=/";
-      }
+    // Cookie helpers
+    function setCookie(name, value, days) {
+      const d = new Date();
+      d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+      const expires = "expires=" + d.toUTCString();
 
-      function getCookie(name) {
-        const cname = name + "=";
-        const decodedCookie = decodeURIComponent(document.cookie);
-        const ca = decodedCookie.split(";");
-        for (let i = 0; i < ca.length; i++) {
-          let c = ca[i];
-          while (c.charAt(0) == " ") {
-            c = c.substring(1);
-          }
-          if (c.indexOf(cname) == 0) {
-            return c.substring(cname.length, c.length);
-          }
+      const cookieOptions = [
+        expires,
+        "path=/",
+        "Secure",
+        "HttpOnly",
+        "SameSite=Strict"
+      ].join("; ");
+
+      document.cookie = `${name}=${encodeURIComponent(value)}; ${cookieOptions}`;
+    }
+
+    function getCookie(name) {
+      const cname = name + "=";
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const ca = decodedCookie.split(";");
+
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i].trim();
+        if (c.indexOf(cname) === 0) {
+          return c.substring(cname.length);
         }
-        return "";
       }
+      return "";
+    }
 
-      let accounts = "sys-rotur";
-      let server = "wss://rotur.mistium.com";
-      fetch("https://raw.githubusercontent.com/Mistium/Origin-OS/main/Resources/info.json")
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("Network response was not ok");
-          }
-        })
-        .then((data) => {
-          accounts = data.name;
-          server = data.server;
-        })
-        .catch((error) => {
-          accounts = "sys-rotur";
-          server = "wss://rotur.mistium.com";
-        });
+    // Secure cookie deletion
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; Secure; HttpOnly; SameSite=Strict`;
+    }
 
-      // Helper functions to show and hide the loading spinner
-      function showLoadingSpinner() {
-        document.getElementById("loading-overlay").style.display = "flex";
-      }
+    // Helper functions to show and hide the loading spinner
+    function showLoadingSpinner() {
+      document.getElementById("loading-overlay").style.display = "flex";
+    }
 
-      function hideLoadingSpinner() {
-        document.getElementById("loading-overlay").style.display = "none";
-      }
+    function hideLoadingSpinner() {
+      document.getElementById("loading-overlay").style.display = "none";
+    }
 
-      
 
-      function updateModalForLoggedInUser() {
-        const modalContent = document.querySelector(".modal-content");
-        modalContent.innerHTML = `
-          <img src="https://avatars.rotur.dev/${window.account.username}" width="40%" alt="Profile Picture" draggable="false" style="border-radius: 50%;">
-          <h1>Welcome, ${window.account.username}</h1>
-          <button id="allowAccess">Allow Account Access To: ${document.referrer}</button>
+
+    function updateModalForLoggedInUser() {
+      const modalContent = document.querySelector(".modal-content");
+      modalContent.innerHTML = `
+          <img src="https://avatars.rotur.dev/${account.username}" width="40%" alt="Profile Picture" draggable="false" style="border-radius: 50%;">
+          <h1>Welcome, ${account.username}</h1>
+          <button id="allowAccess">Allow Account Access To: ${return_to}</button>
           <button id="logoutButton">Logout</button>
         `;
 
-        allowAccess.addEventListener("click", () => {
-          if (window.account.key) {
-            const refUrl = new URL(document.referrer);
-            refUrl.searchParams.set('token', window.account.key);
-            window.location.href = refUrl.toString();
-          } else {
-            console.error("Token is undefined");
-          }
-        });
-        document.getElementById("logoutButton").addEventListener("click", () => {
-          document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          document.location.reload();
-        });
-      }
-
-      function waitForAccount(callback) {
-        const checkAccount = setInterval(() => {
-          if (window.account !== undefined) {
-            clearInterval(checkAccount);
-            callback();
-          }
-        }, 100);
-      }
-
-      document.querySelector(".modal form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const submitButton = document.querySelector(".modal form button[type='submit']");
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        submitButton.disabled = true;
-        const username = document.querySelector(".modal form input[name='username']").value;
-        const password = document.querySelector(".modal form input[name='password']").value;
-        const hash = CryptoJS.MD5(password).toString();
-        setCookie("username", username, 7);
-        setCookie("password", hash, 7);
-        connectToWebsocket(server, accounts, username, hash);
-        waitForAccount(() => {
-          submitButton.innerHTML = "Login";
-          submitButton.disabled = false;
-          updateModalForLoggedInUser();
-        });
-      });
-
-      window.addEventListener("load", () => {
-        const username = getCookie("username");
-        const password = getCookie("password");
-        if (username && password) {
-          connectToWebsocket(server, accounts, username, password);
-          waitForAccount(updateModalForLoggedInUser);
+      allowAccess.addEventListener("click", () => {
+        if (account.key) {
+          const refUrl = new URL(document.referrer);
+          refUrl.searchParams.set('token', account.key);
+          window.location.href = refUrl.toString();
+        } else {
+          console.error("Token is undefined");
         }
       });
-    </script>
-    <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
-    <script src="./nav.js"></script>
-  </body>
+      document.getElementById("logoutButton").addEventListener("click", () => {
+        document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.location.reload();
+      });
+    }
+
+    document.querySelector(".modal form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitButton = document.querySelector(".modal form button[type='submit']");
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      submitButton.disabled = true;
+      const username = document.querySelector(".modal form input[name='username']").value;
+      const password = document.querySelector(".modal form input[name='password']").value;
+      const hash = CryptoJS.MD5(password).toString();
+      setCookie("username", username, 7);
+      setCookie("password", hash, 7);
+      const account_data = await requestAccount(username, hash);
+      if (account_data) {
+        account = account_data;
+        updateModalForLoggedInUser();
+      } else {
+        document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        submitButton.innerHTML = "Login";
+        submitButton.disabled = false;
+      }
+    });
+
+    async function requestAccount(username, password) {
+      const response = await fetch(`https://social.rotur.dev/get_user?username=${username}&password=${password}`);
+      const json = await response.json();
+      if (json.error) {
+        console.error(json.error);
+        return null;
+      }
+      return json;
+    }
+
+    window.addEventListener("load", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      return_to = urlParams.get('return_to') ?? document.referrer
+
+      const username = getCookie("username");
+      const password = getCookie("password");
+      if (username && password) {
+
+        requestAccount(username, password).then((account_data) => {
+          if (account_data) {
+            account = account_data;
+            updateModalForLoggedInUser();
+          } else {
+            document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          }
+        });
+      }
+    });
+  </script>
+  <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
+  <script src="./nav.js"></script>
+</body>
+
 </html>
