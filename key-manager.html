@@ -138,6 +138,30 @@
             word-break: break-all;
             color: #6bff9f;
         }
+        .copy-button {
+            display: inline-block;
+            cursor: pointer;
+            background-color: #444;
+            color: white;
+            border-radius: 5px;
+            padding: 3px 8px;
+            font-size: 14px;
+            margin-left: 8px;
+            transition: 0.2s;
+        }
+        .copy-button:hover {
+            background-color: #555;
+        }
+        .copied-feedback {
+            color: #6bff9f;
+            font-size: 14px;
+            margin-left: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .copied-feedback.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -175,7 +199,10 @@
     <!-- Key Item Template -->
     <template id="key-template">
         <div class="key-item">
-            <h3>Key: <span class="key-value"></span></h3>
+            <h3>Key: <span class="key-value"></span> 
+                <span class="copy-button">Copy</span>
+                <span class="copied-feedback">Copied!</span>
+            </h3>
             <p>Creator: <span class="key-creator"></span></p>
             <p>Price: <span class="key-price"></span></p>
             
@@ -331,9 +358,34 @@
             const creatorName = key.creator.toLowerCase();
             
             // Populate key data
-            keyItem.querySelector('.key-value').textContent = key.key;
+            const keyValueSpan = keyItem.querySelector('.key-value');
+            keyValueSpan.textContent = key.key;
             keyItem.querySelector('.key-creator').textContent = key.creator;
             keyItem.querySelector('.key-price').textContent = key.price || '0';
+            
+            // Set up copy button functionality
+            const copyButton = keyItem.querySelector('.copy-button');
+            const copiedFeedback = keyItem.querySelector('.copied-feedback');
+            copyButton.addEventListener('click', () => {
+                navigator.clipboard.writeText(key.key).then(() => {
+                    // Show feedback that the text was copied
+                    copiedFeedback.classList.add('show');
+                    
+                    // Hide feedback after 2 seconds
+                    setTimeout(() => {
+                        copiedFeedback.classList.remove('show');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Could not copy text: ', err);
+                    const errorDiv = keyItem.querySelector('.key-error');
+                    errorDiv.textContent = 'Failed to copy to clipboard';
+                    
+                    // Clear error after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
+                });
+            });
             
             // Set input default and add data-key attribute to associate it with this specific key
             const priceInput = keyItem.querySelector('.update-price-input');
