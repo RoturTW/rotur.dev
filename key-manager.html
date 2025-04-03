@@ -98,12 +98,14 @@
             cursor: pointer;
             color: #ff6b6b;
             margin-left: 5px;
+            display: inline-block;
         }
         .hidden {
             display: none;
         }
         .actions {
             margin-top: 15px;
+            display: block;
         }
         #loading {
             text-align: center;
@@ -356,16 +358,29 @@
                 key.users.forEach(user => {
                     const userItem = document.createElement('span');
                     userItem.classList.add('user-item');
-                    userItem.innerHTML = `${user} ${currentUser === key.creator ? `<span class="remove-user" data-user="${user}" data-key="${key.key}">×</span>` : ''}`;
+                    
+                    // Ensure the remove button is visible
+                    if (currentUser === key.creator) {
+                        userItem.innerHTML = `${user} <span class="remove-user" data-user="${user}" data-key="${key.key}">×</span>`;
+                    } else {
+                        userItem.textContent = user;
+                    }
+                    
                     userList.appendChild(userItem);
                 });
             } else {
                 userList.innerHTML = '<p>No users have access to this key.</p>';
             }
             
-            // Add event listeners
+            // Always create the event listeners but only show elements for creator
             if (currentUser === key.creator) {
                 // Only key creator can add/remove users and delete keys
+                // Make sure action sections are visible
+                const addUserSection = keyItem.querySelector('.key-users .actions');
+                addUserSection.style.display = 'block';
+                
+                // Add event listener for the add user button
+                const addUserButton = keyItem.querySelector('.add-user-btn');
                 addUserButton.addEventListener('click', () => {
                     addUserToKey(key.key, keyItemDiv);
                 });
@@ -383,17 +398,20 @@
                 });
                 
                 // Attach remove user event listeners
-                const removeButtons = keyItem.querySelectorAll('.remove-user');
-                removeButtons.forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const username = e.target.getAttribute('data-user');
-                        const keyId = e.target.getAttribute('data-key');
-                        removeUserFromKey(keyId, username, keyItemDiv);
+                setTimeout(() => {
+                    const removeButtons = keyItemDiv.querySelectorAll('.remove-user');
+                    removeButtons.forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const username = e.target.getAttribute('data-user');
+                            const keyId = e.target.getAttribute('data-key');
+                            removeUserFromKey(keyId, username, keyItemDiv);
+                        });
                     });
-                });
+                }, 0);
             } else {
                 // Hide admin controls for non-creators
-                addUserButton.parentNode.style.display = 'none';
+                const addUserSection = keyItem.querySelector('.key-users .actions');
+                addUserSection.style.display = 'none';
                 keyItem.querySelector('.revoke-key-btn').style.display = 'none';
                 keyItem.querySelector('.delete-key-btn').style.display = 'none';
                 updateButton.parentNode.style.display = 'none';
@@ -438,7 +456,6 @@
         async function addUserToKey(keyId, keyElement) {
             // Find the specific input for this key using data-key attribute
             const input = keyElement.querySelector(`.add-user-input[data-key="${keyId}"]`);
-            console.log('Add user input for key', keyId, ':', input);
             
             if (!input) {
                 const errorDiv = keyElement.querySelector('.key-error');
@@ -478,7 +495,6 @@
                 const updateData = JSON.stringify({ users });
                 // The API expects the data as a query parameter, not in the request body
                 const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
-                console.log('Update URL:', updateUrl);
                 
                 const updateResponse = await fetch(updateUrl);
                 const updateResult = await updateResponse.json();
@@ -617,7 +633,6 @@
         async function updateKeyPrice(keyId, keyElement) {
             // Find the specific price input for this key using the data-key attribute
             const input = keyElement.querySelector(`.update-price-input[data-key="${keyId}"]`);
-            console.log('Price input element for key', keyId, ':', input);
             
             if (!input) {
                 const errorDiv = keyElement.querySelector('.key-error');
@@ -631,7 +646,6 @@
             try {
                 const updateData = JSON.stringify({ price });
                 const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
-                console.log('Update URL:', updateUrl);
                 
                 const response = await fetch(updateUrl);
                 const data = await response.json();
@@ -663,4 +677,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
