@@ -252,7 +252,7 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    currentUser = data.username;
+                    currentUser = data.username.toLowerCase();
                     saveAuthToStorage();
                     showLoggedInState();
                 } else {
@@ -327,6 +327,9 @@
             const template = document.getElementById('key-template');
             const keyItem = document.importNode(template.content, true);
             
+            // Convert creator username to lowercase for consistent comparison
+            const creatorName = key.creator.toLowerCase();
+            
             // Populate key data
             keyItem.querySelector('.key-value').textContent = key.key;
             keyItem.querySelector('.key-creator').textContent = key.creator;
@@ -356,14 +359,16 @@
             const userList = keyItem.querySelector('.user-list');
             if (key.users && key.users.length > 0) {
                 key.users.forEach(user => {
+                    // Convert each username to lowercase for display
+                    const normalizedUser = user.toLowerCase();
                     const userItem = document.createElement('span');
                     userItem.classList.add('user-item');
                     
-                    // Ensure the remove button is visible
-                    if (currentUser === key.creator) {
-                        userItem.innerHTML = `${user} <span class="remove-user" data-user="${user}" data-key="${key.key}">×</span>`;
+                    // Ensure the remove button is visible for creator only
+                    if (currentUser === creatorName) {
+                        userItem.innerHTML = `${normalizedUser} <span class="remove-user" data-user="${normalizedUser}" data-key="${key.key}">×</span>`;
                     } else {
-                        userItem.textContent = user;
+                        userItem.textContent = normalizedUser;
                     }
                     
                     userList.appendChild(userItem);
@@ -372,50 +377,46 @@
                 userList.innerHTML = '<p>No users have access to this key.</p>';
             }
             
-            // Always create the event listeners but only show elements for creator
-            if (currentUser === key.creator) {
-                // Only key creator can add/remove users and delete keys
-                // Make sure action sections are visible
-                const addUserSection = keyItem.querySelector('.key-users .actions');
-                addUserSection.style.display = 'block';
-                
-                // Add event listener for the add user button
-                const addUserButton = keyItem.querySelector('.add-user-btn');
-                addUserButton.addEventListener('click', () => {
-                    addUserToKey(key.key, keyItemDiv);
-                });
-                
-                keyItem.querySelector('.revoke-key-btn').addEventListener('click', () => {
-                    revokeKey(key.key, keyItemDiv);
-                });
-                
-                keyItem.querySelector('.delete-key-btn').addEventListener('click', () => {
-                    deleteKey(key.key, keyItemDiv);
-                });
-                
-                updateButton.addEventListener('click', () => {
-                    updateKeyPrice(key.key, keyItemDiv);
-                });
-                
-                // Attach remove user event listeners
-                setTimeout(() => {
-                    const removeButtons = keyItemDiv.querySelectorAll('.remove-user');
-                    removeButtons.forEach(button => {
-                        button.addEventListener('click', (e) => {
-                            const username = e.target.getAttribute('data-user');
-                            const keyId = e.target.getAttribute('data-key');
-                            removeUserFromKey(keyId, username, keyItemDiv);
-                        });
-                    });
-                }, 0);
-            } else {
-                // Hide admin controls for non-creators
-                const addUserSection = keyItem.querySelector('.key-users .actions');
-                addUserSection.style.display = 'none';
+            // Always show the user management UI
+            const addUserSection = keyItem.querySelector('.key-users .actions');
+            addUserSection.style.display = 'block';
+            
+            // Set up event listeners for all buttons
+            const addUserButtonElem = keyItem.querySelector('.add-user-btn');
+            addUserButtonElem.addEventListener('click', () => {
+                addUserToKey(key.key, keyItemDiv);
+            });
+            
+            keyItem.querySelector('.revoke-key-btn').addEventListener('click', () => {
+                revokeKey(key.key, keyItemDiv);
+            });
+            
+            keyItem.querySelector('.delete-key-btn').addEventListener('click', () => {
+                deleteKey(key.key, keyItemDiv);
+            });
+            
+            updateButton.addEventListener('click', () => {
+                updateKeyPrice(key.key, keyItemDiv);
+            });
+            
+            // Hide administrative functions for non-creators
+            if (currentUser !== creatorName) {
                 keyItem.querySelector('.revoke-key-btn').style.display = 'none';
                 keyItem.querySelector('.delete-key-btn').style.display = 'none';
                 updateButton.parentNode.style.display = 'none';
             }
+            
+            // Attach remove user event listeners
+            setTimeout(() => {
+                const removeButtons = keyItemDiv.querySelectorAll('.remove-user');
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const username = e.target.getAttribute('data-user');
+                        const keyId = e.target.getAttribute('data-key');
+                        removeUserFromKey(keyId, username, keyItemDiv);
+                    });
+                });
+            }, 0);
             
             keysList.appendChild(keyItem);
         }
@@ -464,7 +465,8 @@
                 return;
             }
             
-            const username = input.value.trim();
+            // Convert username to lowercase before processing
+            const username = input.value.trim().toLowerCase();
             
             if (!username) {
                 const errorDiv = keyElement.querySelector('.key-error');
@@ -485,10 +487,13 @@
                 const key = allKeys.find(k => k.key === keyId);
                 if (!key) throw new Error('Key not found');
                 
-                // Add the new user if they don't exist already
+                // Add the new user if they don't exist already (case insensitive check)
                 const users = key.users || [];
-                if (!users.includes(username)) {
+                const normalizedUsers = users.map(u => u.toLowerCase());
+                if (!normalizedUsers.includes(username)) {
                     users.push(username);
+                } else {
+                    throw new Error('User already has access to this key');
                 }
                 
                 // Update the key with the new users list
@@ -524,8 +529,12 @@
         }
 
         async function removeUserFromKey(keyId, username, keyElement) {
+            // Convert username to lowercase for comparison
+            const normalizedUsername = username.toLowerCase();
+            const normalizedCurrentUser = currentUser.toLowerCase();
+            
             // Don't allow removing the creator or yourself as a user
-            if (username === currentUser) {
+            if (normalizedUsername === normalizedCurrentUser) {
                 const errorDiv = keyElement.querySelector('.key-error');
                 errorDiv.textContent = "You cannot remove yourself from the key's users";
                 return;
@@ -543,9 +552,9 @@
                 const key = allKeys.find(k => k.key === keyId);
                 if (!key) throw new Error('Key not found');
                 
-                // Remove the user
+                // Remove the user (case insensitive)
                 const users = key.users || [];
-                const updatedUsers = users.filter(u => u !== username);
+                const updatedUsers = users.filter(u => u.toLowerCase() !== normalizedUsername);
                 
                 // Update the key with the new users list
                 const updateData = JSON.stringify({ users: updatedUsers });
@@ -555,7 +564,7 @@
                 
                 if (updateResponse.ok) {
                     const messageDiv = keyElement.querySelector('.key-message');
-                    messageDiv.textContent = `User ${username} removed successfully`;
+                    messageDiv.textContent = `User ${normalizedUsername} removed successfully`;
                     
                     // Refresh the key list to show changes
                     fetchUserKeys();
