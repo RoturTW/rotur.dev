@@ -364,6 +364,10 @@
                 key.users.forEach(user => {
                     // Convert each username to lowercase for display
                     const normalizedUser = user.toLowerCase();
+                    if (normalizedUser === currentUser.toLowerCase()) {
+                        userList.innerHTML += `<span class="user-item">${normalizedUser} (You)</span>`;
+                        return;
+                    }
                     const userItem = document.createElement('span');
                     userItem.classList.add('user-item');
                     
