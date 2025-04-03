@@ -355,6 +355,9 @@
             keyItemDiv.id = `key-item-${key.key}`;
             keyItemDiv.setAttribute('data-key', key.key);
             
+            // Check if current user is the creator (for admin functions visibility)
+            const isCreator = currentUser.toLowerCase() === creatorName.toLowerCase();
+            
             // Populate users
             const userList = keyItem.querySelector('.user-list');
             if (key.users && key.users.length > 0) {
@@ -364,8 +367,8 @@
                     const userItem = document.createElement('span');
                     userItem.classList.add('user-item');
                     
-                    // Ensure the remove button is visible for creator only
-                    if (currentUser === creatorName) {
+                    // Show remove button for all users when current user is creator
+                    if (isCreator) {
                         userItem.innerHTML = `${normalizedUser} <span class="remove-user" data-user="${normalizedUser}" data-key="${key.key}">×</span>`;
                     } else {
                         userItem.textContent = normalizedUser;
@@ -399,8 +402,8 @@
                 updateKeyPrice(key.key, keyItemDiv);
             });
             
-            // Hide administrative functions for non-creators
-            if (currentUser !== creatorName) {
+            // Show/hide administrative functions based on creator status
+            if (!isCreator) {
                 keyItem.querySelector('.revoke-key-btn').style.display = 'none';
                 keyItem.querySelector('.delete-key-btn').style.display = 'none';
                 updateButton.parentNode.style.display = 'none';
@@ -533,26 +536,28 @@
             const normalizedUsername = username.toLowerCase();
             const normalizedCurrentUser = currentUser.toLowerCase();
             
-            // Don't allow removing the creator or yourself as a user
-            if (normalizedUsername === normalizedCurrentUser) {
+            // Get the creator of this key
+            const allKeys = await fetch(`${API_BASE_URL}/keys/mine?auth=${encodeURIComponent(authToken)}`).then(r => r.json());
+            const key = allKeys.find(k => k.key === keyId);
+            
+            if (!key) {
                 const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = "You cannot remove yourself from the key's users";
+                errorDiv.textContent = "Could not find key data";
+                return;
+            }
+            
+            // Check if current user is creator
+            const isCreator = normalizedCurrentUser === key.creator.toLowerCase();
+            
+            // Only creator can remove users
+            if (!isCreator) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = "Only the creator can remove users";
                 return;
             }
             
             try {
                 // Get current key data
-                const response = await fetch(`${API_BASE_URL}/keys/mine?auth=${encodeURIComponent(authToken)}`);
-                const allKeys = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch key data');
-                }
-                
-                const key = allKeys.find(k => k.key === keyId);
-                if (!key) throw new Error('Key not found');
-                
-                // Remove the user (case insensitive)
                 const users = key.users || [];
                 const updatedUsers = users.filter(u => u.toLowerCase() !== normalizedUsername);
                 
