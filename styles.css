@@ -221,27 +221,25 @@ html {
 
 .about .devs {
   text-align: center;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  justify-content: center;
+  display: flex;
+  justify-content: space-around;
   align-items: center;
-  width: 100%;
-  padding: 20px;
+  padding: 10px;
+  margin-top: 20px;
+  margin-right: 20px;
+  align-self: auto;
   margin: auto;
 }
 
 /* Media query for dev section on mobile */
 @media (max-width: 768px) {
   .about .devs {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    padding: 10px;
+    flex-direction: column;
+    margin: 0 auto;
   }
 
   .about .devs a {
-    margin: 0;
-    padding: 10px;
+    margin: 10px auto;
   }
 }
 
@@ -258,11 +256,59 @@ html {
   justify-content: center;
 }
 
+.about .devs a:hover {
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+  scale: 1.03;
+  cursor: pointer;
+}
+
 .about .devs p {
   color: white;
   text-align: center;
   padding: 4px 15px;
   text-decoration: none;
+}
+
+/* Contributors grid layout */
+.contributors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  margin: auto;
+}
+
+.contributors-grid a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.contributors-grid a:hover {
+  transform: scale(1.1);
+}
+
+.contributors-grid img {
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Media query for contributors grid on mobile */
+@media (max-width: 768px) {
+  .contributors-grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 15px;
+    padding: 10px;
+  }
+  
+  .contributors-grid img {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 .cards {
