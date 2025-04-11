@@ -187,59 +187,80 @@ html {
 
 .about {
   width: 100%;
-  max-width: 1500px;
+  max-width: 1200px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 10px;
-  margin: 200px auto;
+  padding: 20px;
+  margin: 100px auto;
+  overflow-x: hidden;
 }
 
 /* Media query for about section on mobile */
 @media (max-width: 768px) {
   .about {
-    flex-direction: column;
-    text-align: center;
-    margin: 100px auto;
+    margin: 80px auto;
+    padding: 10px;
   }
 }
 
 .about h1 {
   font-size: clamp(30px, 5vw, 50px);
-  padding-left: 10px;
-  padding-right: 20px;
-  margin-left: 20px;
+  width: 100%;
+  text-align: center;
+  margin: 0 0 20px 0;
+  padding: 0;
+}
+
+.about p {
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  margin: 0 0 30px 0;
 }
 
 .about img {
   border-radius: 50%;
   user-select: none;
-  width: 140px;
-  height: 140px;
+  width: 120px;
+  height: 120px;
   box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+}
+
+.about .devs-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.about .devs-container > p {
+  margin-bottom: 20px;
 }
 
 .about .devs {
   text-align: center;
   display: flex;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  padding: 10px;
-  margin-top: 20px;
-  margin-right: 20px;
-  align-self: auto;
-  margin: auto;
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  padding: 0;
+  margin: 0 auto;
 }
 
 /* Media query for dev section on mobile */
 @media (max-width: 768px) {
   .about .devs {
-    flex-direction: column;
-    margin: 0 auto;
+    gap: 15px;
   }
-
-  .about .devs a {
-    margin: 10px auto;
+  
+  .about img {
+    width: 100px;
+    height: 100px;
   }
 }
 
@@ -247,19 +268,14 @@ html {
   color: white;
   border-radius: 10px;
   text-align: center;
-  padding: 15px;
+  padding: 10px;
   text-decoration: none;
   transition: 0.2s;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.about .devs a:hover {
-  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
-  scale: 1.03;
-  cursor: pointer;
+  max-width: 160px;
 }
 
 .about .devs p {
