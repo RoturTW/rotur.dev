@@ -48,13 +48,15 @@
    		let systemData = data[systems[i]]
    		let card = '<div class="card" onclick="window.location.href=\'' + systemData.URL + "'\">\n"
       if (!["", undefined, null].includes(systemData.logoURL)) {
-        card += "<img style=\"width: 2em; height: auto; margin-top: 20.1px; margin-left: 10px\" src=\"" + systemData.logoURL + "\" alt=\"" + systems[i] + " Logo\">\n"
-        card += "<h1 style=\"float: left; width: auto;\">" + systems[i] + "</h1>\n"
+        card += "<div style=\"display: flex; align-items: center; flex-wrap: wrap;\">\n"
+        card += "<img style=\"width: 2em; height: auto; margin: 20px 10px 0 10px;\" src=\"" + systemData.logoURL + "\" alt=\"" + systems[i] + " Logo\">\n"
+        card += "<h1 style=\"flex: 1;\">" + systems[i] + "</h1>\n"
+        card += "</div>\n"
    		} else {
         card += "<h1>" + systems[i] + "</h1>\n"
       }
       if (!["", undefined, null].includes(systemData.showOffURL)) {
-        card += "<img src=\"" + systemData.showOffURL + "\" alt=\"" + systems[i] + "\">\n"
+        card += "<img style=\"max-width: 100%; height: auto;\" src=\"" + systemData.showOffURL + "\" alt=\"" + systems[i] + "\">\n"
       }
       card += "<p>"
         if (!["", undefined, null].includes(systemData.description)) {
