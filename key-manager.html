@@ -677,6 +677,34 @@
                 console.error('Create key error:', error);
             }
         }
+
+        async function deleteKey(keyId, keyElement) {
+            if (!confirm('Are you sure you want to delete this key? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const url = `${API_BASE_URL}/keys/delete/${keyId}?auth=${encodeURIComponent(authToken)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    keyElement.remove();
+                    
+                    // Check if there are any keys left
+                    if (keysList.children.length === 0) {
+                        keysList.innerHTML = '<p>You don\'t have any keys. Create one below!</p>';
+                    }
+                } else {
+                    const errorDiv = keyElement.querySelector('.key-error');
+                    errorDiv.textContent = data.error || 'Failed to delete key';
+                }
+            } catch (error) {
+                const errorDiv = keyElement.querySelector('.key-error');
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Delete key error:', error);
+            }
+        }
     </script>
 </body>
 </html>
