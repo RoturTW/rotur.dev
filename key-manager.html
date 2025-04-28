@@ -300,27 +300,6 @@
                 <button class="delete-key-btn">Delete Key</button>
                 <input type="number" class="update-price-input" placeholder="New Price" min="0">
                 <button class="update-price-btn">Update Price</button>
-                <button class="convert-subscription-btn" style="display: none;">Convert to Subscription</button>
-            </div>
-            
-            <div class="convert-subscription-fields subscription-fields" style="display: none;">
-                <div>
-                    <label for="convert-frequency">Bill every:</label>
-                    <input type="number" class="convert-frequency" value="1" min="1" style="width: 60px;">
-                </div>
-                <div style="margin-top: 10px;">
-                    <label for="convert-period">Period:</label>
-                    <select class="convert-period">
-                        <option value="day">Day(s)</option>
-                        <option value="week">Week(s)</option>
-                        <option value="month" selected>Month(s)</option>
-                        <option value="year">Year(s)</option>
-                    </select>
-                </div>
-                <div style="margin-top: 10px;">
-                    <button class="save-subscription-btn">Save Subscription</button>
-                    <button class="cancel-subscription-btn">Cancel</button>
-                </div>
             </div>
             
             <div class="key-message success"></div>
@@ -473,7 +452,6 @@
             const isSubscription = key.subscription === true;
             const subscriptionBadge = keyItem.querySelector('.subscription-badge');
             const subscriptionInfo = keyItem.querySelector('.subscription-info');
-            const convertToSubBtn = keyItem.querySelector('.convert-subscription-btn');
             const keyType = keyItem.querySelector('.key-type');
             
             if (isSubscription) {
@@ -518,31 +496,7 @@
                         `Last billed: ${lastDate.toLocaleDateString()}<br>Next billing: ${nextDate.toLocaleDateString()}`;
                 }
             } else {
-                // Show convert to subscription button for non-subscription keys if user is creator
-                if (currentUser.toLowerCase() === creatorName.toLowerCase()) {
-                    convertToSubBtn.style.display = 'inline-block';
-                    
-                    // Set up convert to subscription functionality
-                    convertToSubBtn.addEventListener('click', function() {
-                        const convertFields = keyItem.querySelector('.convert-subscription-fields');
-                        convertFields.style.display = 'block';
-                        convertToSubBtn.style.display = 'none';
-                    });
-                    
-                    // Set up save and cancel buttons for conversion
-                    keyItem.querySelector('.save-subscription-btn').addEventListener('click', function() {
-                        const frequency = keyItem.querySelector('.convert-frequency').value;
-                        const period = keyItem.querySelector('.convert-period').value;
-                        convertToSubscription(key.key, keyItem, frequency, period);
-                    });
-                    
-                    keyItem.querySelector('.cancel-subscription-btn').addEventListener('click', function() {
-                        keyItem.querySelector('.convert-subscription-fields').style.display = 'none';
-                        convertToSubBtn.style.display = 'inline-block';
-                    });
-                }
-                
-                // Add one-time payment indicator
+                // Just set the one-time payment indicator
                 keyType.textContent = '(one-time payment)';
             }
             
@@ -665,15 +619,27 @@
 
         async function createNewKey() {
             const priceInput = document.getElementById('new-key-price');
-            const price = priceInput.value ? parseInt(priceInput.value) : 0;
             const keyType = document.getElementById('new-key-type').value;
             
             try {
+                // Ensure price is an integer
+                const price = priceInput.value ? Math.floor(parseInt(priceInput.value)) : 0;
+                if (price < 0) {
+                    throw new Error("Price cannot be negative");
+                }
+                
                 let url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}${price ? `&price=${price}` : ''}`;
                 
                 // Add subscription parameters if this is a subscription key
                 if (keyType === 'subscription') {
-                    const frequency = document.getElementById('billing-frequency').value || 1;
+                    // Ensure frequency is a positive integer
+                    const frequencyInput = document.getElementById('billing-frequency');
+                    const frequency = frequencyInput.value ? Math.floor(parseInt(frequencyInput.value)) : 1;
+                    
+                    if (frequency <= 0) {
+                        throw new Error("Billing frequency must be a positive integer");
+                    }
+                    
                     const period = document.getElementById('billing-period').value || 'month';
                     
                     url += `&subscription=true&frequency=${frequency}&period=${period}`;
@@ -705,53 +671,11 @@
                     createKeyResult.classList.add('error');
                 }
             } catch (error) {
-                createKeyResult.textContent = 'Network error occurred. Please try again.';
+                createKeyResult.textContent = error.message || 'Network error occurred. Please try again.';
                 createKeyResult.classList.remove('success');
                 createKeyResult.classList.add('error');
                 console.error('Create key error:', error);
             }
-        }
-        
-        async function convertToSubscription(keyId, keyElement, frequency, period) {
-            try {
-                const updateData = JSON.stringify({
-                    subscription: true,
-                    frequency: parseInt(frequency) || 1,
-                    period: period || 'month'
-                });
-                
-                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
-                
-                const response = await fetch(updateUrl);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    const messageDiv = keyElement.querySelector('.key-message');
-                    messageDiv.textContent = 'Key converted to subscription successfully';
-                    
-                    // Hide the conversion fields
-                    keyElement.querySelector('.convert-subscription-fields').style.display = 'none';
-                    
-                    // Refresh the keys to show the updated information
-                    fetchUserKeys();
-                    
-                    // Clear success message after a few seconds
-                    setTimeout(() => {
-                        messageDiv.textContent = '';
-                    }, 3000);
-                } else {
-                    const errorDiv = keyElement.querySelector('.key-error');
-                    errorDiv.textContent = data.error || 'Failed to convert to subscription';
-                }
-            } catch (error) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = 'Network error occurred. Please try again.';
-                console.error('Convert to subscription error:', error);
-            }
-        }
-
-        async function updateKeyPrice(keyId, keyElement) {
-            // ...existing code...
         }
     </script>
 </body>
