@@ -14,12 +14,63 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <link rel="stylesheet" href="./styles.css">
+    <style>
+      #get_button {
+        border-radius: 50px;
+        background: #3f2f3c;
+        padding: 12px 24px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 15px rgba(63, 47, 60, 0.3);
+      }
+      
+      #get_button::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        z-index: -1;
+        background: linear-gradient(45deg, #ff00cc, #3333ff, #00ccff, #33ff33);
+        background-size: 400% 400%;
+        border-radius: 50px;
+        animation: gradient-animation 3s ease infinite;
+      }
+      
+      #get_button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 7px 20px rgba(63, 47, 60, 0.5);
+      }
+      
+      #get_button:active {
+        transform: translateY(2px);
+      }
+      
+      #get_button p {
+        color: white;
+        font-weight: 600;
+        margin: 0;
+        z-index: 2;
+        position: relative;
+      }
+      
+      @keyframes gradient-animation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+    </style>
   </head>
   <div id="navbar-placeholder"></div>
   <div class="hero">
     <div class="headings">
       <h1>Rotur</h1>
-      <p>A networking standard<br>over websockets</p><br>
+      <p>An accounts system<br>over websockets</p><br>
+      <button id="get_button" onclick="downloadExtension()"><p>Get The Extension</p></button>
     </div>
     <img src="./Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false">
   </div>
@@ -127,25 +178,24 @@
     <div class="card" id="calling">
       <i class="fa-solid fa-phone"></i>
       <h1>Voice Calling</h1>
-      <p>(Coming Soon) In collaboration with CL5 and Mikedev, voice calling will
-        be implemented into rotur allowing for
-        seamless and integrated calling between systems on rotur</p>
+      <p>In collaboration with CL5 and Mikedev, voice calling is supported 
+        by rotur! This gives users the ability to call, and
+        chat over various platforms seamlessly.</p>
     </div>
     <div class="card" id="syncvars">
       <i class="fa-solid fa-rotate"></i>
       <h1>Synced Vars</h1>
-      <p>(Coming Soon) Sync variables peer to peer on rotur. Cloud variables but
-        faster, better and more advanced</p>
+      <p>Sync variables peer to peer on rotur. 
+        Cloud variables but better and more advanced</p>
     </div>
   </div>
 
-  <button id="get_button" onclick="downloadExtension()"><p>Get The Extension</p></button>
   <script src="./nav.js"></script>
   <script>
       function downloadExtension() {
         const link = document.createElement('a');
-        link.href = 'https://raw.githubusercontent.com/RoturTW/main/refs/heads/main/Implementations/SCRATCH/roturV5.js';
-        link.download = 'roturV5.js';
+        link.href = 'https://extensions.mistium.com/featured/Rotur.js';
+        link.download = 'roturv6.js';
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
