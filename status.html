@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Status Page</title>
+  <style>
+    :root {
+      --bg: #f7fafd;
+      --container-bg: #fff;
+      --text: #222;
+      --table-header: #f0f4f8;
+      --table-border: #e3e8ee;
+      --summary-bg: #f5f8fa;
+      --ok: #27c93f;
+      --error: #ff5f56;
+      --row-ok: #f6fff7;
+      --row-error: #fff4f4;
+      --row-hover: #f3f7fa;
+      --shadow: 0 4px 24px rgba(0,0,0,0.07);
+      --shadow-small: 0 1.5px 8px rgba(0,0,0,0.06);
+    }
+    body.dark {
+      --bg: linear-gradient(135deg, #23272e 0%, #181c20 100%);
+      --container-bg: #23272e;
+      --text: #f3f6fa;
+      --table-header: #23272e;
+      --table-border: #2d323a;
+      --summary-bg: #23272e;
+      --ok: #27c93f;
+      --error: #ff5f56;
+      --row-ok: #1e2b1e;
+      --row-error: #2e1e1e;
+      --row-hover: #23272e;
+      --shadow: 0 4px 24px rgba(0,0,0,0.25);
+      --shadow-small: 0 1.5px 8px rgba(0,0,0,0.13);
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f7fafd 0%, #e3e8ee 60%, #b3e5fc 100%);
+      background-size: 400% 400%;
+      animation: gradientMove 18s ease-in-out infinite;
+      color: var(--text);
+      transition: background 0.2s, color 0.2s;
+      min-height: 100vh;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    body.dark {
+      background: var(--bg);
+      animation: none;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2.5em auto;
+      padding: 2.5em 2em 2em 2em;
+      background: var(--container-bg);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      border: none; /* Remove border entirely */
+      position: relative;
+      transition: box-shadow 0.2s, border 0.2s;
+      animation: fadeIn 0.8s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(24px);}
+      to { opacity: 1; transform: none;}
+    }
+    .container:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+    h1 {
+      font-size: 2.3em;
+      margin-bottom: 0.2em;
+      letter-spacing: -1.5px;
+      font-weight: 700;
+      color: #1a1a1a;
+      background: linear-gradient(90deg, #27c93f 0%, #f7b731 60%, #ff5f56 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      transition: text-shadow 0.2s;
+    }
+    h1:hover {
+      text-shadow: 0 2px 12px rgba(39,201,63,0.12), 0 1px 4px rgba(255,95,86,0.08);
+    }
+    body.dark h1 {
+      color: #f3f6fa;
+      background: linear-gradient(90deg, #27c93f 0%, #f7b731 60%, #ff5f56 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .theme-toggle {
+      float: right;
+      margin-top: 0.5em;
+      margin-left: 1em;
+      background: var(--summary-bg);
+      border: 1.5px solid var(--table-border);
+      border-radius: 8px;
+      padding: 0.4em 1.2em;
+      font-size: 1.1em;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 1.5px 8px rgba(0,0,0,0.04);
+    }
+    .theme-toggle:hover {
+      background: var(--table-header);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transform: scale(1.08) rotate(-6deg);
+    }
+    .rotur-logo {
+      width:64px;
+      height:64px;
+      border-radius:16px;
+      box-shadow: 0 4px 24px rgba(39,201,63,0.10), 0 2px 8px rgba(255,95,86,0.08);
+      border: none; /* Remove border entirely */
+      margin-bottom:0.5em;
+      display:block;
+      transition: box-shadow 0.25s, transform 0.18s, border 0.18s;
+      background: #fff;
+    }
+    .rotur-logo:hover {
+      box-shadow: 0 8px 32px rgba(39,201,63,0.18), 0 4px 16px rgba(255,95,86,0.13);
+      border: none; /* Remove border entirely */
+      transform: scale(1.07) rotate(-3deg);
+    }
+    .status-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      margin-bottom: 1em;
+      align-items: center;
+    }
+    .status-indicator {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 0.5em;
+      vertical-align: middle;
+      transition: box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      animation: indicatorPulse 2.2s infinite alternate;
+    }
+    .status-ok {
+      background: var(--ok);
+      box-shadow: 0 0 12px 2px #27c93f44, 0 0 0 0 #fff0;
+    }
+    .status-error {
+      background: var(--error);
+      box-shadow: 0 0 12px 2px #ff5f5644, 0 0 0 0 #fff0;
+    }
+    @keyframes indicatorPulse {
+      0% { box-shadow: 0 0 0 0 #fff0; }
+      80% { box-shadow: 0 0 16px 4px #27c93f33; }
+      100% { box-shadow: 0 0 12px 2px #27c93f44; }
+    }
+    .status-error {
+      animation: indicatorPulseError 2.2s infinite alternate;
+    }
+    @keyframes indicatorPulseError {
+      0% { box-shadow: 0 0 0 0 #fff0; }
+      80% { box-shadow: 0 0 16px 4px #ff5f5633; }
+      100% { box-shadow: 0 0 12px 2px #ff5f5644; }
+    }
+    .summary-item {
+      font-size: 1.1em;
+      background: var(--summary-bg);
+      border-radius: 10px;
+      padding: 1em 1.5em;
+      box-shadow: var(--shadow-small);
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      min-width: 120px;
+      margin-bottom: 0.5em;
+      border: none; /* Remove border entirely */
+      transition: box-shadow 0.2s, background 0.2s, transform 0.15s, filter 0.18s;
+      cursor: pointer;
+      color: var(--text);
+      filter: drop-shadow(0 2px 8px #27c93f11);
+      opacity: 0.98;
+    }
+    .summary-item:hover {
+      box-shadow: 0 4px 16px rgba(39,201,63,0.10), 0 2px 8px rgba(255,95,86,0.08);
+      background: var(--summary-bg); /* Keep background consistent on hover */
+      filter: drop-shadow(0 4px 16px #27c93f22);
+      opacity: 1;
+      transform: translateY(-4px) scale(1.045) rotate(-1deg);
+      color: var(--text);
+    }
+    .summary-version {
+      width: 100%;
+      margin-top: 0.5em;
+      font-size: 1em;
+      color: #888;
+      text-align: right;
+      background: none;
+      box-shadow: none;
+      padding: 0;
+      display: block;
+    }
+    body.dark .summary-version {
+      color: #aaa;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 1em; }
+      .status-summary { flex-direction: column; gap: 0.5em; }
+      th, td { padding: 0.5em 0.5em; font-size: 0.95em; }
+      .summary-version { text-align: left; }
+    }
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      background: var(--container-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(39,201,63,0.09), 0 1px 4px rgba(255,95,86,0.06);
+      border: none; /* Remove border entirely */
+      margin-top: 1.5em;
+      transition: box-shadow 0.2s;
+      animation: fadeIn 0.7s cubic-bezier(.4,0,.2,1);
+    }
+    table:hover {
+      box-shadow: 0 4px 24px rgba(39,201,63,0.10), 0 2px 8px rgba(255,95,86,0.08);
+    }
+    th, td {
+      padding: 0.9em 1.1em;
+      text-align: left;
+      transition: background 0.2s, color 0.2s;
+    }
+    th:hover, td:hover {
+      background: #e3e8ee;
+    }
+    body.dark th:hover, body.dark td:hover {
+      background: #23272e;
+    }
+    tr {
+      transition: background 0.2s;
+      cursor: pointer;
+      animation: rowFadeIn 0.7s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes rowFadeIn {
+      from { opacity: 0; transform: translateY(12px);}
+      to { opacity: 1; transform: none;}
+    }
+    tr.error {
+      background: var(--row-error);
+    }
+    tr.ok {
+      background: var(--row-ok);
+    }
+    tr:hover {
+      background: var(--row-hover);
+      box-shadow: 0 2px 12px rgba(255,95,86,0.08);
+      transform: scale(1.01);
+      z-index: 1;
+      position: relative;
+    }
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 0.5em;
+      vertical-align: middle;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .dot-ok { background: var(--ok); }
+    .dot-error { background: var(--error); }
+    .dot-ok:hover, .dot-error:hover {
+      box-shadow: 0 2px 8px rgba(39,201,63,0.15), 0 1px 4px rgba(255,95,86,0.10);
+      transform: scale(1.2);
+    }
+    .load-bar-section {
+      margin: 1.5em 0 1em 0;
+      padding: 1em;
+      background: var(--summary-bg);
+      border-radius: 10px;
+      box-shadow: var(--shadow-small);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      border: none; /* Remove border entirely */
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    .load-bar-section:hover {
+      box-shadow: 0 4px 16px rgba(39,201,63,0.10), 0 2px 8px rgba(255,95,86,0.08);
+      background: var(--summary-bg); /* Keep background consistent on hover */
+    }
+    .load-bar-label {
+      font-size: 1.08em;
+      margin-bottom: 0.3em;
+      color: var(--text);
+      transition: color 0.2s;
+    }
+    .load-bar-section:hover .load-bar-label {
+      color: var(--text); /* Prevent text from turning white */
+    }
+    .load-bar-bg {
+      width: 100%;
+      height: 22px;
+      background: #e3e8ee;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      transition: background 0.2s;
+    }
+    body.dark .load-bar-bg {
+      background: #2d323a;
+    }
+    .load-bar-section:hover .load-bar-bg {
+      background: #e3e8ee;
+    }
+    body.dark .load-bar-section:hover .load-bar-bg {
+      background: #2d323a;
+    }
+    .load-bar-fill {
+      height: 100%;
+      border-radius: 8px 0 0 8px;
+      transition: width 0.7s cubic-bezier(.4,0,.2,1), background 0.4s;
+    }
+    .restart-section {
+      margin: 1.5em 0 1em 0;
+      padding: 1em;
+      background: var(--summary-bg);
+      border-radius: 10px;
+      box-shadow: var(--shadow-small);
+      font-size: 1.05em;
+      color: var(--error);
+      border: none; /* Remove border entirely */
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    .restart-section:hover {
+      box-shadow: 0 4px 16px rgba(255,95,86,0.10);
+      background: linear-gradient(90deg, #fff4f4 70%, #ffeaea 100%);
+    }
+    .load-graph-section {
+      width: calc(100% - 0.1px); /* Fix rounding issues */
+      max-width: 100%;
+      margin: 1.5em 0 1em 0;
+      padding: 1em 0;
+      background: var(--summary-bg);
+      border-radius: 14px;
+      box-shadow: var(--shadow-small);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      border: none;
+      transition: box-shadow 0.2s, background 0.2s;
+      box-sizing: border-box;
+      overflow-x: auto;
+    }
+    .load-graph-canvas {
+      width: 100% !important;
+      min-width: 0;
+      height: 80px;
+      max-width: 100%;
+      display: block;
+      background: none;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(39,201,63,0.04);
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    @media (max-width: 900px) {
+      .load-graph-section { max-width: 100%; }
+    }
+    @media (max-width: 700px) {
+      .load-graph-section { max-width: 100%; padding: 0.5em 0.2em; }
+      .load-graph-canvas { height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">🌙</button>
+    <a href="https://rotur.dev">
+      <img src="https://avatars.rotur.dev/rotur" alt="Rotur Logo" class="rotur-logo">
+    </a>
+    <h1 style="margin-top:0.2em;">Rotur Status Page</h1>
+    <div class="load-graph-section" id="load-graph-section" style="display:none;">
+      <div class="load-graph-label">Load Average (last 24h)</div>
+      <canvas class="load-graph-canvas" id="load-graph-canvas"></canvas>
+    </div>
+    <div class="status-summary" id="status-summary">
+      <!-- Summary will be inserted here -->
+    </div>
+    <div class="summary-version" id="summary-version"></div>
+    <div class="summary-uptime" id="summary-uptime" style="text-align:right;color:#888;font-size:1em;margin-bottom:0.5em;"></div>
+    <div class="load-bar-section" id="load-bar-section" style="display:none"></div>
+    <div class="restart-section" id="restart-section" style="display:none"></div>
+    <table id="status-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Status</th>
+          <th>Load Avg</th>
+          <th>Restart</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data rows will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // Theme toggle logic
+    function setTheme(mode) {
+      document.body.classList.toggle('dark', mode === 'dark');
+      document.getElementById('theme-toggle').textContent = mode === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('theme', mode);
+    }
+    function toggleTheme() {
+      const isDark = document.body.classList.contains('dark');
+      setTheme(isDark ? 'light' : 'dark');
+    }
+    document.getElementById('theme-toggle').onclick = toggleTheme;
+    // On load, set theme from localStorage or system
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) setTheme(saved);
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+    })();
+
+    // Helper: get gradient for load percent
+    function getLoadGradient(percent) {
+      if (percent < 40) {
+        // Green
+        return 'linear-gradient(90deg, #27c93f 0%, #a8e063 100%)';
+      } else if (percent < 75) {
+        // Yellow
+        return 'linear-gradient(90deg, #f7b731 0%, #ffe259 100%)';
+      } else {
+        // Red
+        return 'linear-gradient(90deg, #ff5f56 0%, #ff9966 100%)';
+      }
+    }
+
+    fetch('https://api.status.rotur.dev/recent_status')
+      .then(r => r.json())
+      .then(data => {
+        // --- Load Graph (top) ---
+        const graphSection = document.getElementById('load-graph-section');
+        const graphCanvas = document.getElementById('load-graph-canvas');
+        // Get last 24h entries with load_average
+        const now = Date.now();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        const graphEntries = data.filter(e => {
+          const ts = new Date(e.timestamp).getTime();
+          return now - ts <= oneDayMs && e.status && Array.isArray(e.status.load_average);
+        });
+        if (graphEntries.length > 1) {
+          graphSection.style.display = '';
+          // Prepare data: use average of load_average array for each entry
+          const points = graphEntries.map(e => ({
+            ts: new Date(e.timestamp).getTime(),
+            avg: e.status.load_average.reduce((a, b) => a + b, 0) / e.status.load_average.length
+          }));
+          // Sort by timestamp ascending
+          points.sort((a, b) => a.ts - b.ts);
+
+          // Draw graph
+          const ctx = graphCanvas.getContext('2d');
+          // Responsive width
+          function resizeGraphCanvas() {
+            const parent = graphCanvas.parentElement;
+            // Use parent's width minus padding for perfect fit
+            let style = window.getComputedStyle(parent);
+            let paddingLeft = parseFloat(style.paddingLeft || 0);
+            let paddingRight = parseFloat(style.paddingRight || 0);
+            let width = parent.clientWidth - paddingLeft - paddingRight;
+            graphCanvas.width = width;
+            graphCanvas.height = window.innerWidth < 700 ? 48 : 80;
+            drawGraph();
+          }
+          function drawGraph() {
+            ctx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
+            const w = graphCanvas.width;
+            const h = graphCanvas.height;
+            // Find min/max for scaling
+            const minLoad = 0;
+            const maxLoad = Math.max(100, ...points.map(p => p.avg));
+            const minTs = points[0].ts;
+            const maxTs = points[points.length - 1].ts;
+            // Draw background grid lines
+            ctx.save();
+            ctx.strokeStyle = "#e3e8ee";
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 5; ++i) {
+              const y = h * (i / 5);
+              ctx.beginPath();
+              ctx.moveTo(0, y);
+              ctx.lineTo(w, y);
+              ctx.stroke();
+            }
+            ctx.restore();
+            // Draw line
+            ctx.save();
+            ctx.beginPath();
+            for (let i = 0; i < points.length; ++i) {
+              const x = ((points[i].ts - minTs) / (maxTs - minTs || 1)) * (w - 1);
+              const y = h - ((points[i].avg - minLoad) / (maxLoad - minLoad || 1)) * (h - 8) - 4;
+              if (i === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = "#27c93f";
+            ctx.lineWidth = 2.5;
+            ctx.shadowColor = "#27c93f44";
+            ctx.shadowBlur = 6;
+            ctx.stroke();
+            ctx.restore();
+            // Draw points
+            ctx.save();
+            for (let i = 0; i < points.length; ++i) {
+              const x = ((points[i].ts - minTs) / (maxTs - minTs || 1)) * (w - 1);
+              const y = h - ((points[i].avg - minLoad) / (maxLoad - minLoad || 1)) * (h - 8) - 4;
+              ctx.beginPath();
+              ctx.arc(x, y, 2.5, 0, 2 * Math.PI);
+              ctx.fillStyle = "#27c93f";
+              ctx.globalAlpha = 0.7;
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+          resizeGraphCanvas();
+          window.addEventListener('resize', resizeGraphCanvas);
+        } else {
+          graphSection.style.display = 'none';
+        }
+
+        // --- Uptime Percentage ---
+        // Count entries with status "ok" out of all entries that have either status or error
+        const statusEntries = data.filter(
+          e => (e.status && typeof e.status.status === 'string') || e.error
+        );
+        const okCount = statusEntries.filter(
+          e => e.status && e.status.status === 'ok'
+        ).length;
+        const uptimePercent = statusEntries.length
+          ? (okCount / statusEntries.length) * 100
+          : 0;
+        document.getElementById('summary-uptime').textContent =
+          `Uptime: ${uptimePercent.toFixed(2)}%`;
+
+        // --- Load Average Bar ---
+        const loadValues = data
+          .filter(e => e.status && Array.isArray(e.status.load_average))
+          .flatMap(e => e.status.load_average);
+        const avgLoad = loadValues.length
+          ? loadValues.reduce((a, b) => a + b, 0) / loadValues.length
+          : 0;
+        const maxLoad = 100; // Adjusted for 0-100 scale
+        const percent = Math.min(100, Math.round((avgLoad / maxLoad) * 100));
+        const loadBarSection = document.getElementById('load-bar-section');
+        loadBarSection.style.display = 'block';
+        const loadGradient = getLoadGradient(percent);
+        // Set initial width to 0, then animate to percent
+        loadBarSection.innerHTML = `
+          <div class="load-bar-label">
+            <b>Average Load:</b> ${avgLoad.toFixed(2)}
+          </div>
+          <div class="load-bar-bg">
+            <div class="load-bar-fill" style="width:0;background:${loadGradient};"></div>
+          </div>
+        `;
+        // Animate the bar to the correct width after DOM update
+        setTimeout(() => {
+          const fill = loadBarSection.querySelector('.load-bar-fill');
+          if (fill) fill.style.width = percent + '%';
+        }, 30);
+
+        // --- Restart Events ---
+        let restarts = [];
+        let prevUptimeRestart = null;
+        data.forEach((entry, idx) => {
+          if (entry.status && typeof entry.status.uptime === 'number') {
+            if (prevUptimeRestart !== null && entry.status.uptime < prevUptimeRestart - 1) {
+              restarts.push({
+                timestamp: entry.timestamp,
+                prevUptime: prevUptimeRestart,
+                newUptime: entry.status.uptime
+              });
+            }
+            prevUptimeRestart = entry.status.uptime;
+          }
+        });
+
+        // --- Summary (just status and version) ---
+        const latest = data.find(e => e.status) || {};
+        const summary = document.getElementById('status-summary');
+        const versionDiv = document.getElementById('summary-version');
+        if (latest.status) {
+          summary.innerHTML = `
+            <div class="summary-item">
+              <span class="status-indicator status-${latest.status.status === 'ok' ? 'ok' : 'error'}"></span>
+              <b>${latest.status.status === 'ok' ? 'Operational' : 'Error'}</b>
+            </div>
+          `;
+          versionDiv.textContent = `Version: ${latest.status.version}`;
+        } else {
+          summary.innerHTML = `<div class="summary-item"><span class="status-indicator status-error"></span> No recent status available</div>`;
+          versionDiv.textContent = '';
+        }
+
+        // --- Table (with per-row restart and load bar) ---
+        const tbody = document.querySelector('#status-table tbody');
+        // To correctly detect restarts in reversed order, collect uptimes first
+        const entries = data.slice().reverse();
+        let prevUptime = null;
+        entries.forEach(entry => {
+          const tr = document.createElement('tr');
+          if (entry.error) tr.className = 'error';
+          else if (entry.status && entry.status.status === 'ok') tr.className = 'ok';
+
+          const ts = new Date(entry.timestamp).toLocaleString();
+          // Status column now includes error if present
+          let status = '';
+          if (entry.error) {
+            status = `<span class="status-dot dot-error"></span><span style="color:var(--error);font-weight:bold;">${entry.error}</span>`;
+          } else if (entry.status) {
+            status = `<span class="status-dot dot-${entry.status.status === 'ok' ? 'ok' : 'error'}"></span>${entry.status.status}`;
+          }
+          // Per-row load bar
+          let loadBar = '';
+          if (entry.status && Array.isArray(entry.status.load_average)) {
+            const avg = entry.status.load_average.reduce((a, b) => a + b, 0) / entry.status.load_average.length;
+            const maxLoad = 100;
+            const percent = Math.min(100, Math.round((avg / maxLoad) * 100));
+            const rowGradient = getLoadGradient(percent);
+            loadBar = `
+              <div style="display:flex;align-items:center;gap:0.5em;">
+                <div style="flex:1;max-width:90px;height:14px;background:#e3e8ee;border-radius:6px;overflow:hidden;position:relative;">
+                  <div style="height:100%;background:${rowGradient};width:${percent}%;border-radius:6px 0 0 6px;transition:width 0.4s,background 0.4s;"></div>
+                </div>
+                <span style="font-size:0.95em;">${avg.toFixed(2)}</span>
+              </div>
+            `;
+          }
+          // Per-row restart detection (fix: compare with next entry's uptime in original order)
+          let restartCell = '';
+          if (
+            entry.status &&
+            typeof entry.status.uptime === 'number' &&
+            prevUptime !== null &&
+            entry.status.uptime > prevUptime + 1
+          ) {
+            restartCell = `<span style="color:var(--error);font-weight:bold;">Restart</span>`;
+          } else {
+            restartCell = '';
+          }
+          if (entry.status && typeof entry.status.uptime === 'number') {
+            prevUptime = entry.status.uptime;
+          }
+
+          tr.innerHTML = `
+            <td>${ts}</td>
+            <td>${status}</td>
+            <td>${loadBar}</td>
+            <td>${restartCell}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        document.getElementById('status-summary').innerHTML =
+          `<div class="summary-item"><span class="status-indicator status-error"></span>Failed to load status data.</div>`;
+        document.getElementById('summary-version').textContent = '';
+        const tbody = document.querySelector('#status-table tbody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="4">Failed to load status data.</td>`;
+        tbody.appendChild(tr);
+        document.getElementById('load-bar-section').style.display = 'none';
+        document.getElementById('restart-section').style.display = 'none';
+        document.getElementById('load-graph-section').style.display = 'none';
+      });
+  </script>
+</body>
+</html>

@@ -162,6 +162,54 @@
         .copied-feedback.show {
             opacity: 1;
         }
+        /* Subscription styles */
+        .subscription-badge {
+            display: inline-block;
+            background-color: #6b40b9;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+        .subscription-info {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .billing-details {
+            font-size: 14px;
+            color: #aaa;
+        }
+        select {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+        }
+        .sub-option {
+            margin-top: 15px;
+        }
+        .subscription-fields {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #444;
+        }
+        .convert-subscription-btn {
+            background-color: #6b40b9;
+        }
+        .convert-subscription-btn:hover {
+            background-color: #5a329e;
+        }
+        .key-type {
+            font-size: 14px;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -189,9 +237,34 @@
             
             <h3>Create New Key</h3>
             <div>
-                <input type="number" id="new-key-price" placeholder="Price (optional)" min="0">
-                <button id="create-key-btn">Create Key</button>
-                <div id="create-key-result" class="success"></div>
+                <div>
+                    <select id="new-key-type">
+                        <option value="regular">Regular Key</option>
+                        <option value="subscription">Subscription Key</option>
+                    </select>
+                    <input type="number" id="new-key-price" placeholder="Price (optional)" min="0">
+                </div>
+                
+                <div id="subscription-fields" class="subscription-fields" style="display: none;">
+                    <div>
+                        <label for="billing-frequency">Bill every:</label>
+                        <input type="number" id="billing-frequency" value="1" min="1" style="width: 60px;">
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="billing-period">Period:</label>
+                        <select id="billing-period">
+                            <option value="day">Day(s)</option>
+                            <option value="week">Week(s)</option>
+                            <option value="month" selected>Month(s)</option>
+                            <option value="year">Year(s)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <button id="create-key-btn">Create Key</button>
+                    <div id="create-key-result" class="success"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -202,9 +275,15 @@
             <h3>Key: <span class="key-value"></span> 
                 <span class="copy-button">Copy</span>
                 <span class="copied-feedback">Copied!</span>
+                <span class="subscription-badge" style="display: none;">Subscription</span>
             </h3>
             <p>Creator: <span class="key-creator"></span></p>
-            <p>Price: <span class="key-price"></span></p>
+            <p>Price: <span class="key-price"></span> <span class="key-type"></span></p>
+            
+            <div class="subscription-info" style="display: none;">
+                <p>Billing: Every <span class="billing-frequency"></span> <span class="billing-period"></span></p>
+                <p class="billing-details">Next billing date will show once the key is used for the first time.</p>
+            </div>
             
             <div class="key-users">
                 <h4>Authorized Users:</h4>
@@ -271,6 +350,12 @@
             
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
             document.getElementById('create-key-btn').addEventListener('click', createNewKey);
+            
+            // Add event listener for key type dropdown
+            document.getElementById('new-key-type').addEventListener('change', function() {
+                const subscriptionFields = document.getElementById('subscription-fields');
+                subscriptionFields.style.display = this.value === 'subscription' ? 'block' : 'none';
+            });
         });
 
         async function validateAuthAndFetchUser(token) {
@@ -362,6 +447,58 @@
             keyValueSpan.textContent = key.key;
             keyItem.querySelector('.key-creator').textContent = key.creator;
             keyItem.querySelector('.key-price').textContent = key.price || '0';
+            
+            // Handle subscription-specific UI elements
+            const isSubscription = key.subscription === true;
+            const subscriptionBadge = keyItem.querySelector('.subscription-badge');
+            const subscriptionInfo = keyItem.querySelector('.subscription-info');
+            const keyType = keyItem.querySelector('.key-type');
+            
+            if (isSubscription) {
+                // Show subscription elements
+                subscriptionBadge.style.display = 'inline-block';
+                subscriptionInfo.style.display = 'block';
+                
+                // Set subscription details
+                keyItem.querySelector('.billing-frequency').textContent = key.frequency || '1';
+                
+                // Format period name (adding 's' for plural if needed)
+                const period = key.period || 'month';
+                const frequency = key.frequency || 1;
+                const periodDisplay = `${period}${frequency > 1 ? 's' : ''}`;
+                keyItem.querySelector('.billing-period').textContent = periodDisplay;
+                
+                // Add billing type to price
+                keyType.textContent = `per ${frequency} ${periodDisplay}`;
+                
+                // If we have billing date information, show it
+                if (key.lastBilled) {
+                    const lastDate = new Date(key.lastBilled);
+                    let nextDate = new Date(lastDate);
+                    
+                    // Calculate next billing date
+                    switch(period) {
+                        case 'day':
+                            nextDate.setDate(nextDate.getDate() + frequency);
+                            break;
+                        case 'week':
+                            nextDate.setDate(nextDate.getDate() + (frequency * 7));
+                            break;
+                        case 'month':
+                            nextDate.setMonth(nextDate.getMonth() + frequency);
+                            break;
+                        case 'year':
+                            nextDate.setFullYear(nextDate.getFullYear() + frequency);
+                            break;
+                    }
+                    
+                    keyItem.querySelector('.billing-details').innerHTML = 
+                        `Last billed: ${lastDate.toLocaleDateString()}<br>Next billing: ${nextDate.toLocaleDateString()}`;
+                }
+            } else {
+                // Just set the one-time payment indicator
+                keyType.textContent = '(one-time payment)';
+            }
             
             // Set up copy button functionality
             const copyButton = keyItem.querySelector('.copy-button');
@@ -482,16 +619,44 @@
 
         async function createNewKey() {
             const priceInput = document.getElementById('new-key-price');
-            const price = priceInput.value ? parseInt(priceInput.value) : 0;
+            const keyType = document.getElementById('new-key-type').value;
             
             try {
-                const url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}${price ? `&price=${price}` : ''}`;
+                // Ensure price is an integer
+                const price = priceInput.value ? Math.floor(parseInt(priceInput.value)) : 0;
+                if (price < 0) {
+                    throw new Error("Price cannot be negative");
+                }
+                
+                let url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}${price ? `&price=${price}` : ''}`;
+                
+                // Add subscription parameters if this is a subscription key
+                if (keyType === 'subscription') {
+                    // Ensure frequency is a positive integer
+                    const frequencyInput = document.getElementById('billing-frequency');
+                    const frequency = frequencyInput.value ? Math.floor(parseInt(frequencyInput.value)) : 1;
+                    
+                    if (frequency <= 0) {
+                        throw new Error("Billing frequency must be a positive integer");
+                    }
+                    
+                    const period = document.getElementById('billing-period').value || 'month';
+                    
+                    url += `&subscription=true&frequency=${frequency}&period=${period}`;
+                }
+                
                 const response = await fetch(url);
                 const data = await response.json();
                 
                 if (response.ok) {
                     createKeyResult.textContent = `Key created successfully: ${data.key}`;
+                    createKeyResult.classList.remove('error');
+                    createKeyResult.classList.add('success');
                     priceInput.value = '';
+                    
+                    // Reset key type to regular
+                    document.getElementById('new-key-type').value = 'regular';
+                    document.getElementById('subscription-fields').style.display = 'none';
                     
                     // Refresh the key list
                     fetchUserKeys();
@@ -506,169 +671,10 @@
                     createKeyResult.classList.add('error');
                 }
             } catch (error) {
-                createKeyResult.textContent = 'Network error occurred. Please try again.';
+                createKeyResult.textContent = error.message || 'Network error occurred. Please try again.';
                 createKeyResult.classList.remove('success');
                 createKeyResult.classList.add('error');
                 console.error('Create key error:', error);
-            }
-        }
-
-        async function addUserToKey(keyId, keyElement) {
-            // Find the specific input for this key using data-key attribute
-            const input = keyElement.querySelector(`.add-user-input[data-key="${keyId}"]`);
-            
-            if (!input) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = 'Error: Could not find username input element';
-                console.error('Username input element not found for key', keyId);
-                return;
-            }
-            
-            // Convert username to lowercase before processing
-            const username = input.value.trim().toLowerCase();
-            
-            if (!username) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = 'Please enter a username';
-                return;
-            }
-            
-            try {
-                // Since there's no direct endpoint to add a user, we need to use the update endpoint
-                // First we get the current key users
-                const response = await fetch(`${API_BASE_URL}/keys/mine?auth=${encodeURIComponent(authToken)}`);
-                const allKeys = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch key data');
-                }
-                
-                const key = allKeys.find(k => k.key === keyId);
-                if (!key) throw new Error('Key not found');
-                
-                // Add the new user if they don't exist already (case insensitive check)
-                const users = key.users || [];
-                const normalizedUsers = users.map(u => u.toLowerCase());
-                if (!normalizedUsers.includes(username)) {
-                    users.push(username);
-                } else {
-                    throw new Error('User already has access to this key');
-                }
-                
-                // Update the key with the new users list
-                const updateData = JSON.stringify({ users });
-                // The API expects the data as a query parameter, not in the request body
-                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
-                
-                const updateResponse = await fetch(updateUrl);
-                const updateResult = await updateResponse.json();
-                
-                if (updateResponse.ok) {
-                    const messageDiv = keyElement.querySelector('.key-message');
-                    messageDiv.textContent = `User ${username} added successfully`;
-                    input.value = '';
-                    
-                    // Refresh the key list to show changes
-                    fetchUserKeys();
-                    
-                    // Clear success message after 3 seconds
-                    setTimeout(() => {
-                        messageDiv.textContent = '';
-                    }, 3000);
-                } else {
-                    const errorDiv = keyElement.querySelector('.key-error');
-                    errorDiv.textContent = updateResult.error || 'Failed to add user';
-                    console.error('API error:', updateResult);
-                }
-            } catch (error) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = error.message || 'Error adding user';
-                console.error('Add user error:', error);
-            }
-        }
-
-        async function removeUserFromKey(keyId, username, keyElement) {
-            // Convert username to lowercase for comparison
-            const normalizedUsername = username.toLowerCase();
-            const normalizedCurrentUser = currentUser.toLowerCase();
-            
-            // Get the creator of this key
-            const allKeys = await fetch(`${API_BASE_URL}/keys/mine?auth=${encodeURIComponent(authToken)}`).then(r => r.json());
-            const key = allKeys.find(k => k.key === keyId);
-            
-            if (!key) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = "Could not find key data";
-                return;
-            }
-            
-            // Check if current user is creator
-            const isCreator = normalizedCurrentUser === key.creator.toLowerCase();
-            
-            // Only creator can remove users
-            if (!isCreator) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = "Only the creator can remove users";
-                return;
-            }
-            
-            try {
-                // Get current key data
-                const users = key.users || [];
-                const updatedUsers = users.filter(u => u.toLowerCase() !== normalizedUsername);
-                
-                // Update the key with the new users list
-                const updateData = JSON.stringify({ users: updatedUsers });
-                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
-                const updateResponse = await fetch(updateUrl);
-                const updateResult = await updateResponse.json();
-                
-                if (updateResponse.ok) {
-                    const messageDiv = keyElement.querySelector('.key-message');
-                    messageDiv.textContent = `User ${normalizedUsername} removed successfully`;
-                    
-                    // Refresh the key list to show changes
-                    fetchUserKeys();
-                    
-                    // Clear success message after 3 seconds
-                    setTimeout(() => {
-                        messageDiv.textContent = '';
-                    }, 3000);
-                } else {
-                    const errorDiv = keyElement.querySelector('.key-error');
-                    errorDiv.textContent = updateResult.error || 'Failed to remove user';
-                }
-            } catch (error) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = error.message || 'Error removing user';
-                console.error('Remove user error:', error);
-            }
-        }
-
-        async function revokeKey(keyId, keyElement) {
-            if (!confirm('Are you sure you want to revoke this key? This will remove all users.')) {
-                return;
-            }
-            
-            try {
-                const url = `${API_BASE_URL}/keys/revoke/${keyId}?auth=${encodeURIComponent(authToken)}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    const messageDiv = keyElement.querySelector('.key-message');
-                    messageDiv.textContent = 'Key revoked successfully';
-                    
-                    // Refresh the key list
-                    fetchUserKeys();
-                } else {
-                    const errorDiv = keyElement.querySelector('.key-error');
-                    errorDiv.textContent = data.error || 'Failed to revoke key';
-                }
-            } catch (error) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = 'Network error occurred. Please try again.';
-                console.error('Revoke key error:', error);
             }
         }
 
@@ -697,52 +703,6 @@
                 const errorDiv = keyElement.querySelector('.key-error');
                 errorDiv.textContent = 'Network error occurred. Please try again.';
                 console.error('Delete key error:', error);
-            }
-        }
-
-        async function updateKeyPrice(keyId, keyElement) {
-            // Find the specific price input for this key using the data-key attribute
-            const input = keyElement.querySelector(`.update-price-input[data-key="${keyId}"]`);
-            
-            if (!input) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = 'Error: Could not find price input element';
-                console.error('Price input element not found for key', keyId);
-                return;
-            }
-            
-            const price = input.value ? parseInt(input.value) : 0;
-            
-            try {
-                const updateData = JSON.stringify({ price });
-                const updateUrl = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(updateData)}`;
-                
-                const response = await fetch(updateUrl);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    const messageDiv = keyElement.querySelector('.key-message');
-                    messageDiv.textContent = 'Price updated successfully';
-                    keyElement.querySelector('.key-price').textContent = price;
-                    
-                    // Refresh the key list to ensure we have the latest data
-                    setTimeout(() => {
-                        fetchUserKeys();
-                    }, 1000);
-                    
-                    // Clear success message after 3 seconds
-                    setTimeout(() => {
-                        messageDiv.textContent = '';
-                    }, 3000);
-                } else {
-                    const errorDiv = keyElement.querySelector('.key-error');
-                    errorDiv.textContent = data.error || 'Failed to update price';
-                    console.error('Update price error:', data);
-                }
-            } catch (error) {
-                const errorDiv = keyElement.querySelector('.key-error');
-                errorDiv.textContent = 'Network error occurred. Please try again.';
-                console.error('Update price error:', error);
             }
         }
     </script>
