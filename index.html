@@ -1,108 +1,735 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Rotur: A Web Standard for Communication.</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="A websocket based networking and account system" property="og:description" />
-    <meta content="https://rotur.dev" property="og:url" />
-    <meta content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4" property="og:image" />
-    <meta content="#3f2f3c" name="theme-color" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <link rel="stylesheet" href="./styles.css">
-    <style>
-      #get_button {
-        border-radius: 50px;
-        background: #3f2f3c;
-        padding: 12px 24px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        border: none;
-        box-shadow: 0 4px 15px rgba(63, 47, 60, 0.3);
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rotur: A Web Standard for Communication.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="A websocket based networking and account system" property="og:description" />
+  <meta content="https://rotur.dev" property="og:url" />
+  <meta content="https://avatars.githubusercontent.com/u/174211781?s=256&v=4" property="og:image" />
+  <meta content="#121212" name="theme-color" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    :root {
+      --primary-color: #121212;
+      --secondary-color: #1e1e1e;
+      --accent-color: #B399D4; /* Changed to lilac */
+      --accent-light: #C8A2C8; /* Lighter lilac for gradients */
+      --accent-dark: #9370DB; /* Darker lilac for gradients */
+      --text-color: #ffffff;
+      --text-secondary: #b3b3b3;
+    }
+
+    body {
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    #background-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.4;
+    }
+
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10%;
+      position: relative;
+    }
+
+    .headings h1 {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #fff, #b3b3b3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .headings p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      color: var(--text-secondary);
+    }
+
+    #get_button {
+      border-radius: 50px;
+      background: var(--accent-color);
+      padding: 15px 30px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 4px 15px rgba(179, 153, 212, 0.3); /* Updated to match lilac */
+    }
+
+    #get_button::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      z-index: -1;
+      background: linear-gradient(45deg, var(--accent-dark), var(--accent-light), var(--accent-color), var(--accent-dark));
+      background-size: 400% 400%;
+      border-radius: 50px;
+      animation: gradient-animation 3s ease infinite;
+    }
+
+    #get_button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 7px 20px rgba(179, 153, 212, 0.5); /* Updated to match lilac */
+    }
+
+    #get_button:active {
+      transform: translateY(2px);
+    }
+
+    #get_button p {
+      color: white;
+      font-weight: 600;
+      margin: 0;
+      z-index: 2;
+      position: relative;
+    }
+
+    .about {
+      background-color: var(--secondary-color);
+      padding: 100px 10%;
+      border-radius: 30px 30px 0 0;
+      margin-top: 0;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(179, 153, 212, 0), rgba(179, 153, 212, 0.1));
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
+      z-index: 0;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .about-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .about-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .about-content h1::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      width: 60px;
+      height: 4px;
+      background: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+
+    .about-content:hover h1::after {
+      width: 100%;
+    }
+
+    .about-content p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 30px;
+      color: var(--text-secondary);
+    }
+
+    .about-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 30px;
+      margin: 30px auto;
+      justify-content: center;
+    }
+
+    .highlight {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px 25px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .highlight:hover {
+      transform: translateY(-5px);
+      background: rgba(179, 153, 212, 0.1);
+    }
+
+    .highlight i {
+      font-size: 1.5rem;
+      color: var(--accent-color);
+    }
+
+    .highlight p {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .devs-container {
+      padding: 30px 0;
+    }
+
+    .devs-container>p {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+      text-align: center;
+      background: linear-gradient(45deg, var(--text-color), var(--accent-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .devs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .dev-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      justify-content: space-between; /* Better vertical distribution */
+    }
+
+    .dev-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--accent-color);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .dev-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .dev-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .dev-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.5s ease, border-color 0.3s ease;
+      margin-bottom: 15px;
+    }
+
+    .dev-card:hover img {
+      transform: scale(1.1) rotate(5deg);
+      border-color: var(--accent-color);
+    }
+
+    .dev-card .name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text-color);
+    }
+
+    .dev-card .role {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0; /* Reduced from 20px to eliminate the gap */
+    }
+
+    .dev-card .role::after,
+    .dev-card .name::after {
+      display: none;
+    }
+
+    .dev-card .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px; /* Consistent spacing */
+    }
+
+    .dev-card .social-links a {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease, transform 0.3s ease;
+      color: var(--text-color);
+      text-decoration: none;
+      position: relative;
+    }
+
+    /* Fix social link icons */
+    .dev-card .social-links a i {
+      font-size: 1rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Remove the problematic pseudo-element */
+    .dev-card .social-links a:before {
+      display: none;
+    }
+
+    .dev-card .social-links a:hover {
+      background: var(--accent-color);
+      transform: translateY(-5px);
+    }
+
+    /* Add styling for the profile link in dev cards */
+    .dev-card .profile-link {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-color);
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .dev-card .profile-link:hover {
+      background: var(--accent-color);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(179, 153, 212, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .about-grid {
+        grid-template-columns: 1fr;
       }
-      
-      #get_button::before {
-        content: "";
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        z-index: -1;
-        background: linear-gradient(45deg, #ff00cc, #3333ff, #00ccff, #33ff33);
-        background-size: 400% 400%;
-        border-radius: 50px;
-        animation: gradient-animation 3s ease infinite;
+
+      .devs {
+        grid-template-columns: 1fr;
       }
-      
-      #get_button:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 7px 20px rgba(63, 47, 60, 0.5);
+    }
+
+    @keyframes gradient-animation {
+      0% {
+        background-position: 0% 50%;
       }
-      
-      #get_button:active {
-        transform: translateY(2px);
+
+      50% {
+        background-position: 100% 50%;
       }
-      
-      #get_button p {
-        color: white;
-        font-weight: 600;
-        margin: 0;
-        z-index: 2;
-        position: relative;
+
+      100% {
+        background-position: 0% 50%;
       }
-      
-      @keyframes gradient-animation {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    }
+
+    /* Features Section Redesign */
+    .features-section {
+      background-color: var(--primary-color);
+      padding: 80px 5%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .features-section h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 50px;
+      background: linear-gradient(45deg, #fff, var(--accent-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Style for feature categories */
+    .feature-category {
+      font-size: 1.6rem;
+      color: var(--text-color);
+      margin: 40px 0 20px;
+      position: relative;
+      display: block;
+      padding-bottom: 5px;
+      max-width: 1400px;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+    
+    .feature-category::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 80px;
+      height: 3px;
+      background: var(--accent-color);
+      transition: width 0.3s ease;
+      transform: translateX(-50%);
+    }
+    
+    .feature-category:hover::after {
+      width: 120px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: transform 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
+    }
+
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-color);
+      opacity: 0.7;
+      transition: width 0.3s ease, background 0.5s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(179, 153, 212, 0.2);
+    }
+
+    .feature-card:hover::before {
+      width: 8px;
+    }
+
+    .feature-card i {
+      font-size: 2.5rem;
+      color: var(--text-color);
+      margin-bottom: 15px;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover i {
+      transform: rotate(10deg);
+      color: var(--accent-color);
+    }
+
+    .feature-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--text-color);
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    /* Update feature card accent colors for consistency */
+    .feature-card:nth-child(3n+1)::before {
+      background: linear-gradient(to bottom, var(--accent-dark), var(--accent-light));
+    }
+
+    .feature-card:nth-child(3n+2)::before {
+      background: linear-gradient(to bottom, var(--accent-color), var(--accent-light));
+    }
+
+    .feature-card:nth-child(3n+3)::before {
+      background: linear-gradient(to bottom, var(--accent-dark), var(--accent-color));
+    }
+
+    @media (max-width: 768px) {
+      .features-grid {
+        grid-template-columns: 1fr;
       }
-    </style>
-  </head>
+    }
+
+    /* Animation classes for scroll effects */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Add a subtle pulse effect to the logo */
+    @keyframes subtle-pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.03);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    #tilt {
+      will-change: transform;
+      animation: subtle-pulse 4s infinite ease-in-out;
+    }
+
+    /* Enhance contributors section */
+    .contributors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .contributors-grid a {
+      transition: transform 0.3s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-secondary);
+    }
+
+    .contributors-grid a:hover {
+      transform: translateY(-10px) scale(1.05);
+    }
+
+    .contributors-grid img {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .contributors-grid a:hover img {
+      box-shadow: 0 8px 25px rgba(179, 153, 212, 0.3);
+      transform: rotate(5deg);
+    }
+
+    /* Add scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator:hover {
+      opacity: 1;
+    }
+
+    .scroll-indicator i {
+      font-size: 2rem;
+      color: var(--text-color);
+    }
+
+    .scroll-indicator p {
+      margin-top: 5px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) translateX(-50%);
+      }
+
+      40% {
+        transform: translateY(-15px) translateX(-50%);
+      }
+
+      60% {
+        transform: translateY(-7px) translateX(-50%);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="background-canvas"></canvas>
   <div id="navbar-placeholder"></div>
   <div class="hero">
-    <div class="headings">
+    <div class="headings fade-in">
       <h1>Rotur</h1>
       <p>An accounts system<br>over websockets</p><br>
-      <button id="get_button" onclick="downloadExtension()"><p>Get The Extension</p></button>
+      <button id="get_button" onclick="downloadExtension()">
+        <p>Get The Extension</p>
+      </button>
     </div>
-    <img src="./Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false">
+    <img src="./Rotur Logo.png" id="tilt" alt="Rotur Logo" draggable="false" class="fade-in">
+    <div class="scroll-indicator" onclick="scrollToSection('.about')">
+      <i class="fa-solid fa-chevron-down"></i>
+      <p>Scroll to learn more</p>
+    </div>
   </div>
   <div class="about">
-    <h1>About</h1>
-    <p>Rotur is a cloudlink based, networking packet standard and accounts
-      system packaged into an easy to use extension. Made to make turbowarp
-      operating systems more interconnected and easier to develop.
-    </p>
-    <div class="devs-container">
-      <p>Developed by:</p>
+    <div class="about-content fade-in">
+      <h1>About Rotur</h1>
+      <p>
+        Rotur is a powerful WebSocket-based networking protocol and account system,
+        specifically designed to enhance the connectivity of Web-Based operating systems.
+        Our platform provides a seamless, unified experience across various applications
+        with a focus on interconnectivity, social features and ease of use.
+      </p>
+      <div class="about-highlights">
+        <div class="highlight">
+          <i class="fa-solid fa-user-group"></i>
+          <p>Social Connectivity</p>
+        </div>
+        <div class="highlight">
+          <i class="fa-solid fa-key"></i>
+          <p>Unified Accounts</p>
+        </div>
+        <div class="highlight">
+          <i class="fa-solid fa-coins"></i>
+          <p>Integrated Economy</p>
+        </div>
+        <div class="highlight">
+          <i class="fa-solid fa-database"></i>
+          <p>Cloud Storage</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="devs-container fade-in">
+      <p>Who are we?</p>
       <div class="devs">
-        <a href="https://github.com/mistium">
-          <img src="https://avatars.rotur.dev/mist" width="120px" draggable="false">
-          <p>Mistium</p>
-        </a>
-        <a href="https://github.com/ThePandaDever">
-          <img src="https://avatars.rotur.dev/flufi" width="120px" draggable="false">
-          <p>Flufi</p>
-        </a>
-        <a href="https://github.com/b1j2754">
-          <img src="https://avatars.rotur.dev/b1j2754" width="120px" draggable="false">
-          <p>Layz</p>
-        </a>
+        <!-- Change dev cards from links to divs with separate links -->
+        <div class="dev-card">
+          <img src="https://avatars.rotur.dev/mist" alt="Mistium">
+          <div class="name">Mistium</div>
+          <div class="role">Lead Developer</div>
+          <div class="social-links">
+            <a href="https://github.com/mistium" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="https://dsc.gg/originOS" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+            <a href="https://mistium.com" aria-label="Website"><i class="fa-solid fa-globe"></i></a>
+            <a href="https://www.youtube.com/@Mistium" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+          <a href="https://mistium.com" class="profile-link">View Profile</a>
+        </div>
+
+        <div class="dev-card">
+          <img src="https://avatars.rotur.dev/flufi" alt="Flufi">
+          <div class="name">Flufi</div>
+          <div class="role">Core Developer</div>
+          <div class="social-links">
+            <a href="https://github.com/ThePandaDever" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          </div>
+          <a href="https://github.com/ThePandaDever" class="profile-link">View Profile</a>
+        </div>
+        
+        <div class="dev-card">
+          <img src="https://avatars.rotur.dev/b1j2754" alt="Layz">
+          <div class="name">Layz</div>
+          <div class="role">Consultant</div>
+          <div class="social-links">
+            <a href="https://github.com/b1j2754" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          </div>
+          <a href="https://github.com/b1j2754" class="profile-link">View Profile</a>
+        </div>
       </div>
     </div>
   </div>
-  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-    <h1>Contributors</h1>
+  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 80px 5%;">
+    <h1 class="fade-in">Contributors</h1>
     <div class="contributors-grid">
       <a href="https://github.com/MikeDev101">
-        <img src="https://avatars.githubusercontent.com/u/12957745?v=4" width="100px" draggable="false" style="border-radius: 50%;">
+        <img src="https://avatars.githubusercontent.com/u/12957745?v=4" width="100px" draggable="false"
+          style="border-radius: 50%;">
       </a>
       <a href="https://github.com/MiloDev123">
         <img src="https://avatars.rotur.dev/milodev123" width="100px" draggable="false" style="border-radius: 50%;">
@@ -121,159 +748,392 @@
       </a>
     </div>
   </div>
-  <div class="cards">
+  <div class="features-section">
     <h1>Features</h1>
-    <div class="card" id="friends">
-      <i class="fa-solid fa-user-group"></i>
-      <h1>Friends</h1>
-      <p>Rotur has a friends system out of the box, just authenticate into an
-        account and you can add or remove friends,
-        and send requests</p>
+    
+    <!-- Core Platform -->
+    <h3 class="feature-category">Core Platform</h3>
+    <div class="features-grid">
+      <div class="feature-card" id="oneacc">
+        <i class="fa-solid fa-key"></i>
+        <h2>Unified Account System</h2>
+        <p>One account works everywhere. Sign in once and access any game or operating system 
+           that integrates with Rotur, creating a seamless cross-platform experience.</p>
+      </div>
+      
+      <div class="feature-card" id="networking">
+        <i class="fa-solid fa-network-wired"></i>
+        <h2>Advanced Networking</h2>
+        <p>Built on an enhanced version of cloudlink, Rotur's networking layer transmits rich user data
+           and context with each packet, enabling more sophisticated application interactions.</p>
+      </div>
+      
+      <div class="feature-card" id="avatars">
+        <i class="fa-solid fa-user-circle"></i>
+        <h2>Universal Avatars</h2>
+        <p>Access user profile images through our simple avatars.rotur.dev service. Just append any 
+           username to instantly retrieve their 256×256 JPEG profile picture for seamless UI integration.</p>
+      </div>
     </div>
-    <div class="card" id="networking">
-      <i class="fa-solid fa-wifi"></i>
-      <h1>Networking</h1>
-      <p>Rotur uses a modified version of cloudlink to send and recieve packets
-        with much more user data that can be
-        useful to the reciever.</p>
+    
+    <!-- Communication Features -->
+    <h3 class="feature-category">Communication</h3>
+    <div class="features-grid">
+      <div class="feature-card" id="friends">
+        <i class="fa-solid fa-user-group"></i>
+        <h2>Social Connections</h2>
+        <p>Connect with friends across the Rotur ecosystem. Send and manage friend requests,
+           see who's online, and interact with your network across all integrated platforms.</p>
+      </div>
+      
+      <div class="feature-card" id="rmail">
+        <i class="fa-solid fa-envelope"></i>
+        <h2>Rmail Messaging</h2>
+        <p>Send and receive messages to any Rotur user through our built-in mail system.
+           Communications persist across sessions and platforms for true connectivity.</p>
+      </div>
+      
+      <div class="feature-card" id="calling">
+        <i class="fa-solid fa-phone"></i>
+        <h2>Voice Communication</h2>
+        <p>Make real-time voice calls between Rotur users on any platform. Developed in 
+           collaboration with CL5 and MikeDev, this feature enables seamless voice interaction.</p>
+      </div>
+      
+      <div class="feature-card" id="claw">
+        <i class="fa-solid fa-comment-dots"></i>
+        <h2>Claw Social Platform</h2>
+        <p>A Twitter-like social media platform built on Rotur. Claw features a simple, algorithm-free
+           single feed that's perfect for adding social functionality to your Rotur client operating systems.</p>
+      </div>
     </div>
-    <div class="card" id="oneacc">
-      <i class="fa-solid fa-ring"></i>
-      <h1>One Account To Rule Them All</h1>
-      <p>Rotur uses a single account system, so you can use the same account on
-        any game or operating system that uses
-        Rotur, allowing for incredible interconnectivity</p>
+    
+    <!-- Data & Sync Features -->
+    <h3 class="feature-category">Storage & Synchronization</h3>
+    <div class="features-grid">
+      <div class="feature-card" id="storage">
+        <i class="fa-solid fa-database"></i>
+        <h2>Cloud Storage</h2>
+        <p>Store key-value pairs securely in the cloud. Perfect for game saves, user preferences,
+           documents, and any data you want accessible across multiple devices and platforms.</p>
+      </div>
+      
+      <div class="feature-card" id="syncvars">
+        <i class="fa-solid fa-rotate"></i>
+        <h2>Real-time Data Sync</h2>
+        <p>Synchronize variables between peers with minimal latency. Build collaborative 
+           applications and multiplayer experiences with our advanced variable sync system.</p>
+      </div>
     </div>
-    <div class="card" id="rmail">
-      <i class="fa-solid fa-envelope"></i>
-      <h1>Rmail</h1>
-      <p>Included with rotur and any account is a fully functioning emails
-        system that works cross platform. Allowing you
-        to get to working on the important stuff faster!</p>
-    </div>
-    <div class="card" id="credits">
-      <i class="fa-solid fa-credit-card"></i>
-      <h1>Rotur Credits</h1>
-      <p>Handle user currency simply and easily, allowing transfers and an
-        overarching rotur economy. Each user that logs
-        in gets 1 credit per day.</p>
-    </div>
-    <div class="card" id="storage">
-      <i class="fa-solid fa-database"></i>
-      <h1>Cloud Keys</h1>
-      <p>Store and access key value pairs on the cloud in a user account.
-        Allowing for cloud storage of files, game data,
-        saves, and more!</p>
-    </div>
-    <div class="card" id="items">
-      <i class="fa-solid fa-shop"></i>
-      <h1>Rotur Items</h1>
-      <p>An online marketplace for items and data using rotur credits!</p>
-    </div>
-    <div class="card" id="badges">
-      <i class="fa-solid fa-certificate"></i>
-      <h1>Rotur Badges</h1>
-      <p>Collect and show badges on your profile!</p>
-    </div>
-    <div class="card" id="calling">
-      <i class="fa-solid fa-phone"></i>
-      <h1>Voice Calling</h1>
-      <p>In collaboration with CL5 and Mikedev, voice calling is supported 
-        by rotur! This gives users the ability to call, and
-        chat over various platforms seamlessly.</p>
-    </div>
-    <div class="card" id="syncvars">
-      <i class="fa-solid fa-rotate"></i>
-      <h1>Synced Vars</h1>
-      <p>Sync variables peer to peer on rotur. 
-        Cloud variables but better and more advanced</p>
+    
+    <!-- Economy Features -->
+    <h3 class="feature-category">Economy & Rewards</h3>
+    <div class="features-grid">
+      <div class="feature-card" id="credits">
+        <i class="fa-solid fa-coins"></i>
+        <h2>Rotur Economy</h2>
+        <p>Our integrated currency system awards 1 credit daily to active users. Transfer 
+           credits between accounts and participate in the Rotur marketplace with this universal currency.</p>
+      </div>
+      
+      <div class="feature-card" id="items">
+        <i class="fa-solid fa-shop"></i>
+        <h2>Digital Marketplace</h2>
+        <p>Buy, sell, and trade digital items using Rotur Credits. The marketplace enables
+           content creators to distribute assets and users to enhance their experience.</p>
+      </div>
+      
+      <div class="feature-card" id="badges">
+        <i class="fa-solid fa-certificate"></i>
+        <h2>Achievement System</h2>
+        <p>Collect and display badges on your profile to showcase your accomplishments
+           across the Rotur ecosystem.</p>
+      </div>
     </div>
   </div>
 
   <script src="./nav.js"></script>
   <script>
-      function downloadExtension() {
-        const link = document.createElement('a');
-        link.href = 'https://extensions.mistium.com/featured/Rotur.js';
-        link.download = 'roturv6.js';
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    </script>
+    function downloadExtension() {
+      const link = document.createElement('a');
+      link.href = 'https://extensions.mistium.com/featured/Rotur.js';
+      link.download = 'roturv6.js';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
 
+    // Interactive Background with Dots
+    const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    let dots = [];
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initDots();
+    });
+
+    // Track mouse position
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // Dot class
+    class Dot {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.baseX = x;
+        this.baseY = y;
+        this.size = Math.random() * 2 + 1;
+        this.density = Math.random() * 30 + 1;
+      }
+
+      draw() {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      update() {
+        // Calculate distance from mouse
+        const dx = mouseX - this.x;
+        const dy = mouseY - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const forceDirectionX = dx / distance;
+        const forceDirectionY = dy / distance;
+        const maxDistance = 100;
+        const force = (maxDistance - distance) / maxDistance;
+        const directionX = forceDirectionX * force * this.density;
+        const directionY = forceDirectionY * force * this.density;
+
+        if (distance < maxDistance) {
+          this.x -= directionX;
+          this.y -= directionY;
+        } else {
+          if (this.x !== this.baseX) {
+            const dx = this.x - this.baseX;
+            this.x -= dx / 10;
+          }
+          if (this.y !== this.baseY) {
+            const dy = this.y - this.baseY;
+            this.y -= dy / 10;
+          }
+        }
+      }
+    }
+
+    // Initialize dots grid
+    function initDots() {
+      dots = [];
+      const spacing = 30;
+      const xCount = Math.floor(width / spacing);
+      const yCount = Math.floor(height / spacing);
+
+      for (let y = 0; y < yCount; y++) {
+        for (let x = 0; x < xCount; x++) {
+          dots.push(new Dot(x * spacing + spacing / 2, y * spacing + spacing / 2));
+        }
+      }
+    }
+
+    // Animation loop
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (const dot of dots) {
+        dot.update();
+        dot.draw();
+      }
+
+      // Connect nearby dots with lines
+      for (let i = 0; i < dots.length; i++) {
+        for (let j = i; j < dots.length; j++) {
+          const dx = dots[i].x - dots[j].x;
+          const dy = dots[i].y - dots[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 50) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 * (1 - distance / 50)})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(dots[i].x, dots[i].y);
+            ctx.lineTo(dots[j].x, dots[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Initialize and start animation
+    initDots();
+    animate();
+
+    // Original logo tilt effect
+    let el = document.getElementById('tilt');
+    const height2 = el.clientHeight;
+    const width2 = el.clientWidth;
+
+    // Add will-change to optimize rendering
+    el.style.willChange = 'transform';
+
+    el.addEventListener('mousemove', handleMove);
+
+    function handleMove(e) {
+      const rect = el.getBoundingClientRect();
+      const xVal = e.clientX - rect.left; // Mouse position relative to element
+      const yVal = e.clientY - rect.top; // Mouse position relative to element
+
+      const yRotation = 20 * ((xVal - width2 / 2) / width2);
+      const xRotation = -20 * ((yVal - height2 / 2) / height2);
+
+      const string = `perspective(500px) scale(1.1) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+
+      // Use requestAnimationFrame for smoother animations
+      requestAnimationFrame(() => {
+        el.style.transform = string;
+      });
+    }
+
+    el.addEventListener('mouseout', function () {
+      requestAnimationFrame(() => {
+        el.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
+      });
+    });
+
+    el.addEventListener('mousedown', function () {
+      requestAnimationFrame(() => {
+        el.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)';
+      });
+    });
+
+    el.addEventListener('mouseup', function () {
+      requestAnimationFrame(() => {
+        el.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)';
+      });
+    });
+
+    let accounts = "sys-rotur";
+    let server = "wss://rotur.mistium.com";
+    function getCookie(name) {
+      const value = "; " + document.cookie;
+      const parts = value.split("; " + name + "=");
+      if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+
+    let username = getCookie("username");
+    let password = getCookie("password");
+
+    if (username && password) {
+      (function waitForElements() {
+        const txt = document.getElementById("roturTXT");
+        const img = document.getElementById("roturIMG");
+        if (txt && img) {
+          txt.innerText = username;
+          img.src = `https://avatars.rotur.dev/${username}`;
+        } else {
+          setTimeout(waitForElements, 100);
+        }
+      })();
+    }
+
+    // Scroll animations
+    function isElementInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return (
+        rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.85 &&
+        rect.bottom >= 0
+      );
+    }
+
+    function handleScrollAnimations() {
+      // Animate elements with fade-in class
+      const fadeElements = document.querySelectorAll('.fade-in');
+      fadeElements.forEach(element => {
+        if (isElementInViewport(element)) {
+          element.classList.add('visible');
+        }
+      });
+
+      // Animate feature cards with staggered delay
+      const featureCards = document.querySelectorAll('.feature-card');
+      featureCards.forEach((card, index) => {
+        if (isElementInViewport(card)) {
+          setTimeout(() => {
+            card.classList.add('visible');
+          }, index * 100); // 100ms delay between each card
+        }
+      });
+    }
+
+    // Smooth scrolling function
+    function scrollToSection(selector) {
+      const section = document.querySelector(selector);
+      if (section) {
+        window.scrollTo({
+          top: section.offsetTop,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    // Add dynamic behavior to background dots
+    function enhanceBackgroundDots() {
+      // Make some dots pulse randomly
+      setInterval(() => {
+        if (dots.length > 0) {
+          const randomDot = dots[Math.floor(Math.random() * dots.length)];
+          const originalSize = randomDot.size;
+          randomDot.size = originalSize * 1.5;
+
+          setTimeout(() => {
+            randomDot.size = originalSize;
+          }, 500);
+        }
+      }, 300);
+    }
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set initial state for animations
+      setTimeout(() => {
+        document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
+      }, 300);
+
+      enhanceBackgroundDots();
+
+      // Initialize feature cards
+      const featureCards = document.querySelectorAll('.feature-card');
+      featureCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transform = 'translateY(-10px) scale(1.03)';
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+        });
+      });
+    });
+
+    // Register scroll event for animations
+    window.addEventListener('scroll', handleScrollAnimations);
+    handleScrollAnimations(); // Run once on page load
+  </script>
   <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
   <script src="./connectToRotur.js"></script>
-  <script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</body>
 
-  let el = document.getElementById('tilt');
-const height = el.clientHeight;
-const width = el.clientWidth;
-
-// Add will-change to optimize rendering
-el.style.willChange = 'transform';
-
-el.addEventListener('mousemove', handleMove);
-
-function handleMove(e) {
-  const rect = el.getBoundingClientRect();
-  const xVal = e.clientX - rect.left; // Mouse position relative to element
-  const yVal = e.clientY - rect.top; // Mouse position relative to element
-
-  const yRotation = 20 * ((xVal - width / 2) / width);
-  const xRotation = -20 * ((yVal - height / 2) / height);
-
-  const string = `perspective(500px) scale(1.1) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
-
-  // Use requestAnimationFrame for smoother animations
-  requestAnimationFrame(() => {
-    el.style.transform = string;
-  });
-}
-
-el.addEventListener('mouseout', function () {
-  requestAnimationFrame(() => {
-    el.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
-  });
-});
-
-el.addEventListener('mousedown', function () {
-  requestAnimationFrame(() => {
-    el.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)';
-  });
-});
-
-el.addEventListener('mouseup', function () {
-  requestAnimationFrame(() => {
-    el.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)';
-  });
-});
-
-
-let accounts = "sys-rotur";
-let server = "wss://rotur.mistium.com";
-function getCookie(name) {
-  const value = "; " + document.cookie;
-  const parts = value.split("; " + name + "=");
-  if (parts.length === 2) return parts.pop().split(";").shift();
-}
-
-let username = getCookie("username");
-let password = getCookie("password");
-
-if (username && password) {
-  (function waitForElements() {
-    const txt = document.getElementById("roturTXT");
-    const img = document.getElementById("roturIMG");
-    if (txt && img) {
-      txt.innerText = username;
-      img.src = `https://avatars.rotur.dev/${username}`;
-    } else {
-      setTimeout(waitForElements, 100);
-    }
-  })();
-}
-
-</script>
 </html>
