@@ -459,20 +459,47 @@
                 subscriptionBadge.style.display = 'inline-block';
                 subscriptionInfo.style.display = 'block';
                 
+                // Get subscription details from either direct fields or the subscription object
+                const subscriptionData = key.subscription || key;
+                const frequency = subscriptionData.frequency || 1;
+                const period = subscriptionData.period || 'month';
+                
                 // Set subscription details
-                keyItem.querySelector('.billing-frequency').textContent = key.frequency || '1';
+                keyItem.querySelector('.billing-frequency').textContent = frequency;
                 
                 // Format period name (adding 's' for plural if needed)
-                const period = key.period || 'month';
-                const frequency = key.frequency || 1;
                 const periodDisplay = `${period}${frequency > 1 ? 's' : ''}`;
                 keyItem.querySelector('.billing-period').textContent = periodDisplay;
                 
                 // Add billing type to price
                 keyType.textContent = `per ${frequency} ${periodDisplay}`;
                 
-                // If we have billing date information, show it
-                if (key.lastBilled) {
+                // Check for billing date information
+                if (subscriptionData.next_billing) {
+                    // Handle next_billing as timestamp
+                    const nextDate = new Date(subscriptionData.next_billing * 1000);
+                    let lastDate = new Date(nextDate);
+                    
+                    // Calculate last billing date by subtracting one period
+                    switch(period) {
+                        case 'day':
+                            lastDate.setDate(lastDate.getDate() - frequency);
+                            break;
+                        case 'week':
+                            lastDate.setDate(lastDate.getDate() - (frequency * 7));
+                            break;
+                        case 'month':
+                            lastDate.setMonth(lastDate.getMonth() - frequency);
+                            break;
+                        case 'year':
+                            lastDate.setFullYear(lastDate.getFullYear() - frequency);
+                            break;
+                    }
+                    
+                    keyItem.querySelector('.billing-details').innerHTML = 
+                        `Last billed: ${lastDate.toLocaleDateString()}<br>Next billing: ${nextDate.toLocaleDateString()}`;
+                } else if (key.lastBilled) {
+                    // Handle legacy lastBilled format
                     const lastDate = new Date(key.lastBilled);
                     let nextDate = new Date(lastDate);
                     
@@ -494,6 +521,22 @@
                     
                     keyItem.querySelector('.billing-details').innerHTML = 
                         `Last billed: ${lastDate.toLocaleDateString()}<br>Next billing: ${nextDate.toLocaleDateString()}`;
+                }
+                
+                // Add total income if available
+                if (key.total_income !== undefined) {
+                    const incomeElement = document.createElement('p');
+                    incomeElement.innerHTML = `Total income: <span style="color: #6bff9f">$${key.total_income}</span>`;
+                    subscriptionInfo.appendChild(incomeElement);
+                }
+                
+                // Add active/inactive status for subscription if available
+                if (subscriptionData.active !== undefined) {
+                    const status = subscriptionData.active ? 'Active' : 'Inactive';
+                    const statusColor = subscriptionData.active ? '#6bff9f' : '#ff6b6b';
+                    const statusElement = document.createElement('p');
+                    statusElement.innerHTML = `Status: <span style="color: ${statusColor}">${status}</span>`;
+                    subscriptionInfo.prepend(statusElement);
                 }
             } else {
                 // Just set the one-time payment indicator
