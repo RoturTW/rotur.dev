@@ -815,6 +815,68 @@
             }
         }
 
+        async function createNewKey() {
+            const priceInput = document.getElementById('new-key-price');
+            const keyType = document.getElementById('new-key-type').value;
+            const createKeyResult = document.getElementById('create-key-result');
+            
+            try {
+                // Ensure price is an integer
+                const price = priceInput.value ? Math.floor(parseInt(priceInput.value)) : 0;
+                if (price < 0) {
+                    throw new Error("Price cannot be negative");
+                }
+                
+                let url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}${price ? `&price=${price}` : ''}`;
+                
+                // Add subscription parameters if this is a subscription key
+                if (keyType === 'subscription') {
+                    // Ensure frequency is a positive integer
+                    const frequencyInput = document.getElementById('billing-frequency');
+                    const frequency = frequencyInput.value ? Math.floor(parseInt(frequencyInput.value)) : 1;
+                    
+                    if (frequency <= 0) {
+                        throw new Error("Billing frequency must be a positive integer");
+                    }
+                    
+                    const period = document.getElementById('billing-period').value || 'month';
+                    
+                    url += `&subscription=true&frequency=${frequency}&period=${period}`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    createKeyResult.textContent = `Key created successfully: ${data.key}`;
+                    createKeyResult.classList.remove('error');
+                    createKeyResult.classList.add('success');
+                    priceInput.value = '';
+                    
+                    // Reset key type to regular
+                    document.getElementById('new-key-type').value = 'regular';
+                    document.getElementById('subscription-fields').style.display = 'none';
+                    
+                    // Refresh the key list
+                    fetchUserKeys();
+                    
+                    // Clear success message after 5 seconds
+                    setTimeout(() => {
+                        createKeyResult.textContent = '';
+                    }, 5000);
+                } else {
+                    createKeyResult.textContent = data.error || 'Failed to create key';
+                    createKeyResult.classList.remove('success');
+                    createKeyResult.classList.add('error');
+                }
+            } catch (error) {
+                createKeyResult.textContent = error.message || 'Network error occurred. Please try again.';
+                createKeyResult.classList.remove('success');
+                createKeyResult.classList.add('error');
+                console.error('Create key error:', error);
+            }
+        }
+
         async function updateKeyPrice(keyId, keyElement) {
             const priceInput = keyElement.querySelector('.update-price-input');
             const price = parseInt(priceInput.value);
