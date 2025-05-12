@@ -449,7 +449,7 @@
             keyItem.querySelector('.key-price').textContent = key.price || '0';
             
             // Handle subscription-specific UI elements
-            const isSubscription = key.subscription === true;
+            const isSubscription = key.type === 'subscription';
             const subscriptionBadge = keyItem.querySelector('.subscription-badge');
             const subscriptionInfo = keyItem.querySelector('.subscription-info');
             const keyType = keyItem.querySelector('.key-type');
