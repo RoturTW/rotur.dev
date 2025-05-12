@@ -526,7 +526,7 @@
                 // Add total income if available
                 if (key.total_income !== undefined) {
                     const incomeElement = document.createElement('p');
-                    incomeElement.innerHTML = `Total income: <span style="color: #6bff9f">$${key.total_income}</span>`;
+                    incomeElement.innerHTML = `Total income: <span style="color: #6bff9f">${key.total_income} credits</span>`;
                     subscriptionInfo.appendChild(incomeElement);
                 }
                 
