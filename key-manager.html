@@ -765,7 +765,7 @@
             errorDiv.textContent = '';
             
             try {
-                const url = `${API_BASE_URL}/keys/remove_user/${keyId}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(username)}`;
+                const url = `${API_BASE_URL}/keys/admin_remove/${keyId}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(username)}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 
