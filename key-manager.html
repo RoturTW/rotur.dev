@@ -660,64 +660,263 @@
             keysList.appendChild(keyItem);
         }
 
-        async function createNewKey() {
-            const priceInput = document.getElementById('new-key-price');
-            const keyType = document.getElementById('new-key-type').value;
+        async function addUserToKey(keyId, keyElement) {
+            const input = keyElement.querySelector('.add-user-input');
+            const username = input.value.trim().toLowerCase();
+            const messageDiv = keyElement.querySelector('.key-message');
+            const errorDiv = keyElement.querySelector('.key-error');
+            
+            // Clear previous messages
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            if (!username) {
+                errorDiv.textContent = 'Please enter a username';
+                return;
+            }
             
             try {
-                // Ensure price is an integer
-                const price = priceInput.value ? Math.floor(parseInt(priceInput.value)) : 0;
-                if (price < 0) {
-                    throw new Error("Price cannot be negative");
-                }
-                
-                let url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}${price ? `&price=${price}` : ''}`;
-                
-                // Add subscription parameters if this is a subscription key
-                if (keyType === 'subscription') {
-                    // Ensure frequency is a positive integer
-                    const frequencyInput = document.getElementById('billing-frequency');
-                    const frequency = frequencyInput.value ? Math.floor(parseInt(frequencyInput.value)) : 1;
-                    
-                    if (frequency <= 0) {
-                        throw new Error("Billing frequency must be a positive integer");
-                    }
-                    
-                    const period = document.getElementById('billing-period').value || 'month';
-                    
-                    url += `&subscription=true&frequency=${frequency}&period=${period}`;
-                }
-                
+                // Use the admin_add endpoint for creators to add users to their keys
+                const url = `${API_BASE_URL}/keys/admin_add/${keyId}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(username)}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 
                 if (response.ok) {
-                    createKeyResult.textContent = `Key created successfully: ${data.key}`;
-                    createKeyResult.classList.remove('error');
-                    createKeyResult.classList.add('success');
-                    priceInput.value = '';
+                    // Success - add the user to the UI
+                    const userList = keyElement.querySelector('.user-list');
                     
-                    // Reset key type to regular
-                    document.getElementById('new-key-type').value = 'regular';
-                    document.getElementById('subscription-fields').style.display = 'none';
+                    // Check if "No users" message is there and remove it
+                    if (userList.querySelector('p')) {
+                        userList.innerHTML = '';
+                    }
                     
-                    // Refresh the key list
-                    fetchUserKeys();
+                    // Check if user already exists in the list
+                    const existingUsers = Array.from(userList.querySelectorAll('.user-item'))
+                        .map(item => item.textContent.toLowerCase().replace(' (you)', '').replace(' ×', '').trim());
                     
-                    // Clear success message after 5 seconds
-                    setTimeout(() => {
-                        createKeyResult.textContent = '';
-                    }, 5000);
+                    if (!existingUsers.includes(username)) {
+                        const userItem = document.createElement('span');
+                        userItem.classList.add('user-item');
+                        
+                        // Add remove button if current user is creator
+                        if (username === currentUser.toLowerCase()) {
+                            userItem.textContent = `${username} (You)`;
+                        } else {
+                            userItem.innerHTML = `${username} <span class="remove-user" data-user="${username}" data-key="${keyId}">×</span>`;
+                            
+                            // Attach event listener to the new remove button
+                            setTimeout(() => {
+                                const removeBtn = userItem.querySelector('.remove-user');
+                                if (removeBtn) {
+                                    removeBtn.addEventListener('click', (e) => {
+                                        const user = e.target.getAttribute('data-user');
+                                        const key = e.target.getAttribute('data-key');
+                                        removeUserFromKey(key, user, keyElement);
+                                    });
+                                }
+                            }, 0);
+                        }
+                        
+                        userList.appendChild(userItem);
+                        messageDiv.textContent = `User ${username} has been added to the key`;
+                        input.value = '';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            messageDiv.textContent = '';
+                        }, 3000);
+                    } else {
+                        errorDiv.textContent = 'User already has access to this key';
+                        
+                        // Clear error after 3 seconds
+                        setTimeout(() => {
+                            errorDiv.textContent = '';
+                        }, 3000);
+                    }
                 } else {
-                    createKeyResult.textContent = data.error || 'Failed to create key';
-                    createKeyResult.classList.remove('success');
-                    createKeyResult.classList.add('error');
+                    errorDiv.textContent = data.error || 'Failed to add user to key';
+                    
+                    // Clear error after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
                 }
             } catch (error) {
-                createKeyResult.textContent = error.message || 'Network error occurred. Please try again.';
-                createKeyResult.classList.remove('success');
-                createKeyResult.classList.add('error');
-                console.error('Create key error:', error);
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Add user error:', error);
+                
+                // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
+            }
+        }
+        
+        async function removeUserFromKey(keyId, username, keyElement) {
+            if (!confirm(`Are you sure you want to remove ${username} from this key?`)) {
+                return;
+            }
+            
+            const messageDiv = keyElement.querySelector('.key-message');
+            const errorDiv = keyElement.querySelector('.key-error');
+            
+            // Clear previous messages
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            try {
+                const url = `${API_BASE_URL}/keys/remove_user/${keyId}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(username)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Success - remove the user from the UI
+                    const userList = keyElement.querySelector('.user-list');
+                    const userItems = userList.querySelectorAll('.user-item');
+                    
+                    let removed = false;
+                    userItems.forEach(item => {
+                        const itemText = item.textContent.toLowerCase();
+                        if (itemText.includes(username.toLowerCase())) {
+                            item.remove();
+                            removed = true;
+                        }
+                    });
+                    
+                    if (removed) {
+                        messageDiv.textContent = `User ${username} has been removed from the key`;
+                        
+                        // If no users are left, show the "No users" message
+                        if (userList.querySelectorAll('.user-item').length === 0) {
+                            userList.innerHTML = '<p>No users have access to this key.</p>';
+                        }
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            messageDiv.textContent = '';
+                        }, 3000);
+                    }
+                } else {
+                    errorDiv.textContent = data.error || 'Failed to remove user from key';
+                    
+                    // Clear error after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Remove user error:', error);
+                
+                // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
+            }
+        }
+
+        async function updateKeyPrice(keyId, keyElement) {
+            const priceInput = keyElement.querySelector('.update-price-input');
+            const price = parseInt(priceInput.value);
+            const messageDiv = keyElement.querySelector('.key-message');
+            const errorDiv = keyElement.querySelector('.key-error');
+            
+            // Clear previous messages
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            if (isNaN(price) || price < 0) {
+                errorDiv.textContent = 'Please enter a valid price (must be a non-negative number)';
+                return;
+            }
+            
+            try {
+                // Use proper data structure for the update endpoint
+                // The backend expects a JSON string in the 'data' parameter
+                const updateData = { price: price };
+                
+                const url = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(JSON.stringify(updateData))}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.textContent = `Price updated to ${price}`;
+                    
+                    // Update the displayed price
+                    keyElement.querySelector('.key-price').textContent = price;
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                    }, 3000);
+                } else {
+                    errorDiv.textContent = data.error || 'Failed to update price';
+                    
+                    // Clear error after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Update price error:', error);
+                
+                // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
+            }
+        }
+        
+        async function revokeKey(keyId, keyElement) {
+            if (!confirm('Are you sure you want to revoke this key? This will remove access for all users except you (the creator).')) {
+                return;
+            }
+            
+            const messageDiv = keyElement.querySelector('.key-message');
+            const errorDiv = keyElement.querySelector('.key-error');
+            
+            // Clear previous messages
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            try {
+                // The server will handle ensuring only the creator remains in users list
+                const url = `${API_BASE_URL}/keys/revoke/${keyId}?auth=${encodeURIComponent(authToken)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // After successful revocation, we need to refresh the users list
+                    // to match what's on the server
+                    
+                    // Clear user list and add only the creator (you)
+                    // We know the backend will keep only the creator
+                    const userList = keyElement.querySelector('.user-list');
+                    userList.innerHTML = `<span class="user-item">${currentUser.toLowerCase()} (You)</span>`;
+                    
+                    messageDiv.textContent = 'Key has been revoked. All other users have been removed.';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                    }, 3000);
+                } else {
+                    errorDiv.textContent = data.error || 'Failed to revoke key';
+                    
+                    // Clear error after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Revoke key error:', error);
+                
+                // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
             }
         }
 
