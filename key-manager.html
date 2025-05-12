@@ -592,6 +592,11 @@
             
             // Populate users
             const userList = keyItem.querySelector('.user-list');
+
+            if (!Array.isArray(key.users) && typeof key.users === 'object') {
+                key.users = Object.keys(key.users);
+            }
+
             if (key.users && key.users.length > 0) {
                 key.users.forEach(user => {
                     // Convert each username to lowercase for display
@@ -820,22 +825,26 @@
             const keyType = document.getElementById('new-key-type').value;
             const createKeyResult = document.getElementById('create-key-result');
             
+            // Clear previous messages
+            createKeyResult.textContent = '';
+            createKeyResult.classList.remove('error', 'success');
+            
             try {
-                // Ensure price is an integer
+                // 1. Validate the price first
                 const price = priceInput.value ? Math.floor(parseInt(priceInput.value)) : 0;
-                if (price < 0) {
-                    throw new Error("Price cannot be negative");
+                if (isNaN(price) || price < 0) {
+                    throw new Error("Price must be a non-negative number");
                 }
                 
+                // 2. Prepare basic URL
                 let url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}${price ? `&price=${price}` : ''}`;
                 
-                // Add subscription parameters if this is a subscription key
+                // 3. Handle subscription-specific parameters if needed
                 if (keyType === 'subscription') {
-                    // Ensure frequency is a positive integer
                     const frequencyInput = document.getElementById('billing-frequency');
                     const frequency = frequencyInput.value ? Math.floor(parseInt(frequencyInput.value)) : 1;
                     
-                    if (frequency <= 0) {
+                    if (isNaN(frequency) || frequency <= 0) {
                         throw new Error("Billing frequency must be a positive integer");
                     }
                     
@@ -844,20 +853,22 @@
                     url += `&subscription=true&frequency=${frequency}&period=${period}`;
                 }
                 
+                // 4. Make the API request
+                createKeyResult.textContent = 'Creating key...';
                 const response = await fetch(url);
                 const data = await response.json();
                 
+                // 5. Handle the response
                 if (response.ok) {
                     createKeyResult.textContent = `Key created successfully: ${data.key}`;
-                    createKeyResult.classList.remove('error');
                     createKeyResult.classList.add('success');
-                    priceInput.value = '';
                     
-                    // Reset key type to regular
+                    // 6. Reset form fields
+                    priceInput.value = '';
                     document.getElementById('new-key-type').value = 'regular';
                     document.getElementById('subscription-fields').style.display = 'none';
                     
-                    // Refresh the key list
+                    // 7. Refresh the key list
                     fetchUserKeys();
                     
                     // Clear success message after 5 seconds
@@ -866,14 +877,22 @@
                     }, 5000);
                 } else {
                     createKeyResult.textContent = data.error || 'Failed to create key';
-                    createKeyResult.classList.remove('success');
                     createKeyResult.classList.add('error');
+                    
+                    // Clear error after 5 seconds
+                    setTimeout(() => {
+                        createKeyResult.textContent = '';
+                    }, 5000);
                 }
             } catch (error) {
                 createKeyResult.textContent = error.message || 'Network error occurred. Please try again.';
-                createKeyResult.classList.remove('success');
                 createKeyResult.classList.add('error');
                 console.error('Create key error:', error);
+                
+                // Clear error after 5 seconds
+                setTimeout(() => {
+                    createKeyResult.textContent = '';
+                }, 5000);
             }
         }
 
