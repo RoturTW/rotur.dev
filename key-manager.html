@@ -80,6 +80,137 @@
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.6);
             scale: 1.01;
         }
+        /* Collapsible key styles */
+        .key-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #444;
+        }
+        .key-summary:hover {
+            background-color: #333;
+            border-radius: 6px 6px 0 0;
+        }
+        .key-summary-left {
+            flex: 1;
+        }
+        .key-summary-right {
+            text-align: right;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .key-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            margin-top: 10px;
+        }
+        .key-details.expanded {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+        /* Improved key details organization */
+        .info-section {
+            background-color: #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .info-section h4 {
+            margin-top: 0;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .key-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 600px) {
+            .key-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        .info-label {
+            font-weight: 500;
+            color: #aaa;
+            width: 140px;
+            flex-shrink: 0;
+        }
+        .info-value {
+            color: white;
+            flex: 1;
+        }
+        .admin-section {
+            border-top: 1px solid #444;
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+        .admin-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .admin-group {
+            background-color: #333;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .admin-group h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        /* User management section */
+        .user-management {
+            margin-top: 15px;
+        }
+        .user-list-container {
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #252525;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .expand-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 18px;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+        .expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        .key-tag {
+            display: inline-block;
+            background-color: #444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .tag-subscription {
+            background-color: #6b40b9;
+        }
+        .user-count {
+            color: #aaa;
+            font-size: 14px;
+        }
+        /* User list and other existing styles */
         .user-list {
             margin-top: 10px;
         }
@@ -272,38 +403,113 @@
     <!-- Key Item Template -->
     <template id="key-template">
         <div class="key-item">
-            <h3>Key: <span class="key-value"></span> 
-                <span class="copy-button">Copy</span>
-                <span class="copied-feedback">Copied!</span>
-                <span class="subscription-badge" style="display: none;">Subscription</span>
-            </h3>
-            <p>Creator: <span class="key-creator"></span></p>
-            <p>Price: <span class="key-price"></span> <span class="key-type"></span></p>
-            
-            <div class="subscription-info" style="display: none;">
-                <p>Billing: Every <span class="billing-frequency"></span> <span class="billing-period"></span></p>
-                <p class="billing-details">Next billing date will show once the key is used for the first time.</p>
-            </div>
-            
-            <div class="key-users">
-                <h4>Authorized Users:</h4>
-                <div class="user-list"></div>
-                
-                <div class="actions">
-                    <input type="text" class="add-user-input" placeholder="Username to add">
-                    <button class="add-user-btn">Add User</button>
+            <div class="key-summary">
+                <div class="key-summary-left">
+                    <h3 class="key-name-title">Key: <span class="key-truncated-value"></span></h3>
+                    <div class="key-summary-info">
+                        <span class="key-price-summary"></span>
+                        <span class="key-type-summary"></span>
+                        <span class="user-count"></span>
+                    </div>
+                </div>
+                <div class="key-summary-right">
+                    <span class="tag-container"></span>
+                    <span class="expand-icon">▼</span>
                 </div>
             </div>
             
-            <div class="actions">
-                <button class="revoke-key-btn">Revoke Key</button>
-                <button class="delete-key-btn">Delete Key</button>
-                <input type="number" class="update-price-input" placeholder="New Price" min="0">
-                <button class="update-price-btn">Update Price</button>
+            <div class="key-details">
+                <!-- Basic Key Info Section -->
+                <div class="key-grid">
+                    <div class="info-section">
+                        <h4>Key Information</h4>
+                        <div class="info-row">
+                            <div class="info-label">Key Id:</div>
+                            <div class="info-value key-value-container">
+                                <span class="key-value"></span>
+                                <span class="copy-button">Copy</span>
+                                <span class="copied-feedback">Copied!</span>
+                            </div>
+                        </div>
+                        <div class="info-row name-display" style="display:none;">
+                            <div class="info-label">Name:</div>
+                            <div class="info-value key-name-display" style="font-weight: bold;"></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Creator:</div>
+                            <div class="info-value key-creator"></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Price:</div>
+                            <div class="info-value">
+                                <span class="key-price"></span>
+                                <span class="key-type"></span>
+                            </div>
+                        </div>
+                        <div class="info-row key-type-row">
+                            <div class="info-label">Type:</div>
+                            <div class="info-value">
+                                <span class="key-type-label">Regular</span>
+                                <span class="subscription-badge" style="display: none;">Subscription</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Subscription Info Section (Conditionally Displayed) -->
+                    <div class="info-section subscription-info" style="display: none;">
+                        <h4>Subscription Details</h4>
+                        <div class="info-row">
+                            <div class="info-label">Billing:</div>
+                            <div class="info-value">Every <span class="billing-frequency"></span> <span class="billing-period"></span></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Status:</div>
+                            <div class="info-value subscription-status"></div>
+                        </div>
+                        <div class="subscription-financials"></div>
+                    </div>
+                </div>
+                
+                <!-- User Management Section -->
+                <div class="info-section">
+                    <h4>Authorized Users</h4>
+                    <div class="user-list-container">
+                        <div class="user-list"></div>
+                    </div>
+                    
+                    <div class="user-management">
+                        <input type="text" class="add-user-input" placeholder="Username to add">
+                        <button class="add-user-btn">Add User</button>
+                    </div>
+                </div>
+                
+                <!-- Admin Controls Section (Visible only to creator) -->
+                <div class="admin-section">
+                    <div class="admin-panel">
+                        <div class="admin-group name-actions">
+                            <h4>Set Key Name</h4>
+                            <input type="text" class="update-name-input" placeholder="Set key name">
+                            <button class="update-name-btn">Update Name</button>
+                        </div>
+                        
+                        <div class="admin-group price-actions">
+                            <h4>Update Price</h4>
+                            <input type="number" class="update-price-input" placeholder="New Price" min="0">
+                            <button class="update-price-btn">Update Price</button>
+                        </div>
+                        
+                        <div class="admin-group key-actions">
+                            <h4>Key Management</h4>
+                            <button class="revoke-key-btn">Revoke Key</button>
+                            <button class="delete-key-btn">Delete Key</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Messages Section -->
+                <div class="key-message success"></div>
+                <div class="key-error error"></div>
             </div>
-            
-            <div class="key-message success"></div>
-            <div class="key-error error"></div>
         </div>
     </template>
 
@@ -444,15 +650,37 @@
             
             // Populate key data
             const keyValueSpan = keyItem.querySelector('.key-value');
+            const keyTruncatedValueSpan = keyItem.querySelector('.key-truncated-value');
             keyValueSpan.textContent = key.key;
+            
+            // Create truncated version for summary (first 8 characters + "...")
+            const truncatedKey = key.key.substring(0, 8) + "...";
+            keyTruncatedValueSpan.textContent = truncatedKey;
+            
             keyItem.querySelector('.key-creator').textContent = key.creator;
             keyItem.querySelector('.key-price').textContent = key.price || '0';
+            
+            // Set up the price in summary
+            const priceSummary = keyItem.querySelector('.key-price-summary');
+            priceSummary.textContent = `${key.price || '0'} credits`;
             
             // Handle subscription-specific UI elements
             const isSubscription = key.type === 'subscription';
             const subscriptionBadge = keyItem.querySelector('.subscription-badge');
             const subscriptionInfo = keyItem.querySelector('.subscription-info');
             const keyType = keyItem.querySelector('.key-type');
+            const keyTypeSummary = keyItem.querySelector('.key-type-summary');
+            const tagContainer = keyItem.querySelector('.tag-container');
+            const keyTypeLabel = keyItem.querySelector('.key-type-label');
+            
+            // Add tag to summary
+            if (isSubscription) {
+                tagContainer.innerHTML = '<span class="key-tag tag-subscription">Subscription</span>';
+                keyTypeLabel.textContent = 'Subscription';
+            } else {
+                tagContainer.innerHTML = '<span class="key-tag">Regular</span>';
+                keyTypeLabel.textContent = 'Regular';
+            }
             
             if (isSubscription) {
                 // Show subscription elements
@@ -473,102 +701,33 @@
                 
                 // Add billing type to price
                 keyType.textContent = `per ${frequency} ${periodDisplay}`;
+                keyTypeSummary.textContent = `per ${frequency} ${periodDisplay}`;
                 
-                // Check for billing date information
-                if (subscriptionData.next_billing) {
-                    // Handle next_billing as timestamp
-                    const nextDate = new Date(subscriptionData.next_billing * 1000);
-                    let lastDate = new Date(nextDate);
-                    
-                    // Calculate last billing date by subtracting one period
-                    switch(period) {
-                        case 'day':
-                            lastDate.setDate(lastDate.getDate() - frequency);
-                            break;
-                        case 'week':
-                            lastDate.setDate(lastDate.getDate() - (frequency * 7));
-                            break;
-                        case 'month':
-                            lastDate.setMonth(lastDate.getMonth() - frequency);
-                            break;
-                        case 'year':
-                            lastDate.setFullYear(lastDate.getFullYear() - frequency);
-                            break;
-                    }
-                    
-                    keyItem.querySelector('.billing-details').innerHTML = 
-                        `Last billed: ${lastDate.toLocaleDateString()}<br>Next billing: ${nextDate.toLocaleDateString()}`;
-                } else if (key.lastBilled) {
-                    // Handle legacy lastBilled format
-                    const lastDate = new Date(key.lastBilled);
-                    let nextDate = new Date(lastDate);
-                    
-                    // Calculate next billing date
-                    switch(period) {
-                        case 'day':
-                            nextDate.setDate(nextDate.getDate() + frequency);
-                            break;
-                        case 'week':
-                            nextDate.setDate(nextDate.getDate() + (frequency * 7));
-                            break;
-                        case 'month':
-                            nextDate.setMonth(nextDate.getMonth() + frequency);
-                            break;
-                        case 'year':
-                            nextDate.setFullYear(nextDate.getFullYear() + frequency);
-                            break;
-                    }
-                    
-                    keyItem.querySelector('.billing-details').innerHTML = 
-                        `Last billed: ${lastDate.toLocaleDateString()}<br>Next billing: ${nextDate.toLocaleDateString()}`;
-                }
-                
-                // Add total income if available
-                if (key.total_income !== undefined) {
-                    const incomeElement = document.createElement('p');
-                    incomeElement.innerHTML = `Total income: <span style="color: #6bff9f">${key.total_income} credits</span>`;
-                    subscriptionInfo.appendChild(incomeElement);
-                    
-                    // Add estimated monthly income based on active users
-                    if (key.users && typeof key.users === 'object') {
-                        // Calculate estimated monthly income using each user's individual price
-                        let estimatedMonthlyIncome = 0;
-                        
-                        // Loop through each user and add their individual price to the total
-                        Object.entries(key.users).forEach(([username, userData]) => {
-                            // Skip the creator (they shouldn't be charged)
-                            if (username.toLowerCase() === key.creator.toLowerCase()) {
-                                return;
-                            }
-                            
-                            // If the user has a specific price, use that; otherwise use the key's default price
-                            const userPrice = (userData && userData.price !== undefined) ? userData.price : key.price;
-                            estimatedMonthlyIncome += userPrice;
-                        });
-                        
-                        const estimatedIncomeElement = document.createElement('p');
-                        estimatedIncomeElement.innerHTML = `Estimated monthly income: <span style="color: #6bff9f">${estimatedMonthlyIncome} credits</span>`;
-                        subscriptionInfo.appendChild(estimatedIncomeElement);
-                    }
-                }
-                
-                // Add active/inactive status for subscription if available
+                // Set subscription status if available
+                const subscriptionStatus = keyItem.querySelector('.subscription-status');
                 if (subscriptionData.active !== undefined) {
-                    const status = subscriptionData.active ? 'Active' : 'Inactive';
-                    const statusColor = subscriptionData.active ? '#6bff9f' : '#ff6b6b';
-                    const statusElement = document.createElement('p');
-                    statusElement.innerHTML = `Status: <span style="color: ${statusColor}">${status}</span>`;
-                    subscriptionInfo.prepend(statusElement);
+                    const isActive = subscriptionData.active;
+                    const statusText = isActive ? 'Active' : 'Inactive';
+                    const statusColor = isActive ? '#6bff9f' : '#ff6b6b';
+                    subscriptionStatus.innerHTML = `<span style="color: ${statusColor}">${statusText}</span>`;
+                } else {
+                    subscriptionStatus.textContent = 'Unknown';
                 }
+                
+                // Add subscription financial information in a more organized way
+                const financialsContainer = keyItem.querySelector('.subscription-financials');
+                addSubscriptionFinancialInfo(key, financialsContainer);
             } else {
                 // Just set the one-time payment indicator
                 keyType.textContent = '(one-time payment)';
+                keyTypeSummary.textContent = '(one-time)';
             }
             
             // Set up copy button functionality
             const copyButton = keyItem.querySelector('.copy-button');
             const copiedFeedback = keyItem.querySelector('.copied-feedback');
-            copyButton.addEventListener('click', () => {
+            copyButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling to parent (summary toggle)
                 navigator.clipboard.writeText(key.key).then(() => {
                     // Show feedback that the text was copied
                     copiedFeedback.classList.add('show');
@@ -609,42 +768,44 @@
             keyItemDiv.id = `key-item-${key.key}`;
             keyItemDiv.setAttribute('data-key', key.key);
             
-            // Display key name if available - moved after keyItemDiv is initialized
+            // Display key name if available
             if (key.name) {
-                const nameElement = document.createElement('p');
-                nameElement.innerHTML = `Name: <span class="key-name-display" style="color: #f0f0f0; font-weight: bold;">${key.name}</span>`;
-                keyItemDiv.insertBefore(nameElement, keyItemDiv.querySelector('h3').nextSibling);
+                // Update summary title with name instead of "Key:"
+                const keyNameTitle = keyItem.querySelector('.key-name-title');
+                keyNameTitle.textContent = key.name;
+                
+                // Show and update the name in the details section
+                const nameDisplay = keyItem.querySelector('.name-display');
+                nameDisplay.style.display = 'flex';
+                keyItem.querySelector('.key-name-display').textContent = key.name;
+                
+                // Set the name input value
+                keyItem.querySelector('.update-name-input').value = key.name;
             }
             
-            // Add name update input and button
-            const actionsDiv = keyItem.querySelector('.actions:last-child');
-            const nameUpdateDiv = document.createElement('div');
-            nameUpdateDiv.classList.add('actions');
-            nameUpdateDiv.style.marginTop = '15px';
-            nameUpdateDiv.innerHTML = `
-                <input type="text" class="update-name-input" placeholder="Set key name" value="${key.name || ''}">
-                <button class="update-name-btn">Update Name</button>
-            `;
-            actionsDiv.parentNode.insertBefore(nameUpdateDiv, actionsDiv);
-            
-            // Add event listener for name update button
-            const nameUpdateButton = nameUpdateDiv.querySelector('.update-name-btn');
+            // Set up the name update button
+            const nameUpdateButton = keyItem.querySelector('.update-name-btn');
             nameUpdateButton.setAttribute('data-key', key.key);
-            nameUpdateButton.addEventListener('click', () => {
+            nameUpdateButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
                 updateKeyName(key.key, keyItemDiv);
             });
             
             // Check if current user is the creator (for admin functions visibility)
             const isCreator = currentUser.toLowerCase() === creatorName.toLowerCase();
             
-            // Populate users
+            // Populate users and update the user count in summary
             const userList = keyItem.querySelector('.user-list');
+            const userCountSpan = keyItem.querySelector('.user-count');
 
             if (!Array.isArray(key.users) && typeof key.users === 'object') {
                 key.users = Object.keys(key.users);
             }
 
             if (key.users && key.users.length > 0) {
+                // Update user count in summary
+                userCountSpan.textContent = `${key.users.length} user${key.users.length !== 1 ? 's' : ''}`;
+                
                 key.users.forEach(user => {
                     // Convert each username to lowercase for display
                     const normalizedUser = user.toLowerCase();
@@ -666,36 +827,43 @@
                 });
             } else {
                 userList.innerHTML = '<p>No users have access to this key.</p>';
+                userCountSpan.textContent = 'No users';
             }
             
-            // Always show the user management UI
-            const addUserSection = keyItem.querySelector('.key-users .actions');
-            addUserSection.style.display = 'block';
-            
-            // Set up event listeners for all buttons
+            // Set up event listeners for all buttons (with proper stopPropagation)
             const addUserButtonElem = keyItem.querySelector('.add-user-btn');
-            addUserButtonElem.addEventListener('click', () => {
+            addUserButtonElem.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
                 addUserToKey(key.key, keyItemDiv);
             });
             
-            keyItem.querySelector('.revoke-key-btn').addEventListener('click', () => {
+            keyItem.querySelector('.revoke-key-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
                 revokeKey(key.key, keyItemDiv);
             });
             
-            keyItem.querySelector('.delete-key-btn').addEventListener('click', () => {
+            keyItem.querySelector('.delete-key-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
                 deleteKey(key.key, keyItemDiv);
             });
             
-            updateButton.addEventListener('click', () => {
+            updateButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
                 updateKeyPrice(key.key, keyItemDiv);
+            });
+            
+            // Set up the collapsible functionality
+            const keySummary = keyItem.querySelector('.key-summary');
+            const keyDetails = keyItem.querySelector('.key-details');
+            
+            keySummary.addEventListener('click', () => {
+                keyDetails.classList.toggle('expanded');
+                keySummary.classList.toggle('expanded');
             });
             
             // Show/hide administrative functions based on creator status
             if (!isCreator) {
-                keyItem.querySelector('.revoke-key-btn').style.display = 'none';
-                keyItem.querySelector('.delete-key-btn').style.display = 'none';
-                updateButton.parentNode.style.display = 'none';
-                nameUpdateDiv.style.display = 'none'; // Hide name update for non-creators
+                keyItem.querySelector('.admin-section').style.display = 'none';
             }
             
             // Attach remove user event listeners
@@ -703,6 +871,7 @@
                 const removeButtons = keyItemDiv.querySelectorAll('.remove-user');
                 removeButtons.forEach(button => {
                     button.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent event bubbling
                         const username = e.target.getAttribute('data-user');
                         const keyId = e.target.getAttribute('data-key');
                         removeUserFromKey(keyId, username, keyItemDiv);
@@ -712,162 +881,36 @@
             
             keysList.appendChild(keyItem);
         }
-
-        async function addUserToKey(keyId, keyElement) {
-            const input = keyElement.querySelector('.add-user-input');
-            const username = input.value.trim().toLowerCase();
-            const messageDiv = keyElement.querySelector('.key-message');
-            const errorDiv = keyElement.querySelector('.key-error');
-            
-            // Clear previous messages
-            messageDiv.textContent = '';
-            errorDiv.textContent = '';
-            
-            if (!username) {
-                errorDiv.textContent = 'Please enter a username';
-                return;
-            }
-            
-            try {
-                // Use the admin_add endpoint for creators to add users to their keys
-                const url = `${API_BASE_URL}/keys/admin_add/${keyId}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(username)}`;
-                const response = await fetch(url);
-                const data = await response.json();
+        
+        // Helper function to add financial information to subscription info
+        function addSubscriptionFinancialInfo(key, container) {
+            // Add total income if available
+            if (key.total_income !== undefined) {
+                const incomeRow = document.createElement('div');
+                incomeRow.classList.add('info-row');
+                incomeRow.innerHTML = `
+                    <div class="info-label">Total Income:</div>
+                    <div class="info-value"><span style="color: #6bff9f">${key.total_income} credits</span></div>
+                `;
+                container.appendChild(incomeRow);
                 
-                if (response.ok) {
-                    // Success - add the user to the UI
-                    const userList = keyElement.querySelector('.user-list');
+                // Calculate estimated monthly income if user data is available
+                if (key.users && typeof key.users === 'object') {
+                    const estimatedMonthlyIncome = calculateEstimatedIncome(key);
                     
-                    // Check if "No users" message is there and remove it
-                    if (userList.querySelector('p')) {
-                        userList.innerHTML = '';
+                    if (estimatedMonthlyIncome > 0) {
+                        const estimatedRow = document.createElement('div');
+                        estimatedRow.classList.add('info-row');
+                        estimatedRow.innerHTML = `
+                            <div class="info-label">Est. Monthly:</div>
+                            <div class="info-value"><span style="color: #6bff9f">${estimatedMonthlyIncome} credits</span></div>
+                        `;
+                        container.appendChild(estimatedRow);
                     }
-                    
-                    // Check if user already exists in the list
-                    const existingUsers = Array.from(userList.querySelectorAll('.user-item'))
-                        .map(item => item.textContent.toLowerCase().replace(' (you)', '').replace(' ×', '').trim());
-                    
-                    if (!existingUsers.includes(username)) {
-                        const userItem = document.createElement('span');
-                        userItem.classList.add('user-item');
-                        
-                        // Add remove button if current user is creator
-                        if (username === currentUser.toLowerCase()) {
-                            userItem.textContent = `${username} (You)`;
-                        } else {
-                            userItem.innerHTML = `${username} <span class="remove-user" data-user="${username}" data-key="${keyId}">×</span>`;
-                            
-                            // Attach event listener to the new remove button
-                            setTimeout(() => {
-                                const removeBtn = userItem.querySelector('.remove-user');
-                                if (removeBtn) {
-                                    removeBtn.addEventListener('click', (e) => {
-                                        const user = e.target.getAttribute('data-user');
-                                        const key = e.target.getAttribute('data-key');
-                                        removeUserFromKey(key, user, keyElement);
-                                    });
-                                }
-                            }, 0);
-                        }
-                        
-                        userList.appendChild(userItem);
-                        messageDiv.textContent = `User ${username} has been added to the key`;
-                        input.value = '';
-                        
-                        // Hide success message after 3 seconds
-                        setTimeout(() => {
-                            messageDiv.textContent = '';
-                        }, 3000);
-                    } else {
-                        errorDiv.textContent = 'User already has access to this key';
-                        
-                        // Clear error after 3 seconds
-                        setTimeout(() => {
-                            errorDiv.textContent = '';
-                        }, 3000);
-                    }
-                } else {
-                    errorDiv.textContent = data.error || 'Failed to add user to key';
-                    
-                    // Clear error after 3 seconds
-                    setTimeout(() => {
-                        errorDiv.textContent = '';
-                    }, 3000);
                 }
-            } catch (error) {
-                errorDiv.textContent = 'Network error occurred. Please try again.';
-                console.error('Add user error:', error);
-                
-                // Clear error after 3 seconds
-                setTimeout(() => {
-                    errorDiv.textContent = '';
-                }, 3000);
             }
         }
         
-        async function removeUserFromKey(keyId, username, keyElement) {
-            if (!confirm(`Are you sure you want to remove ${username} from this key?`)) {
-                return;
-            }
-            
-            const messageDiv = keyElement.querySelector('.key-message');
-            const errorDiv = keyElement.querySelector('.key-error');
-            
-            // Clear previous messages
-            messageDiv.textContent = '';
-            errorDiv.textContent = '';
-            
-            try {
-                const url = `${API_BASE_URL}/keys/admin_remove/${keyId}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(username)}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    // Success - remove the user from the UI
-                    const userList = keyElement.querySelector('.user-list');
-                    const userItems = userList.querySelectorAll('.user-item');
-                    
-                    let removed = false;
-                    userItems.forEach(item => {
-                        const itemText = item.textContent.toLowerCase();
-                        if (itemText.includes(username.toLowerCase())) {
-                            item.remove();
-                            removed = true;
-                        }
-                    });
-                    
-                    if (removed) {
-                        messageDiv.textContent = `User ${username} has been removed from the key`;
-                        
-                        // If no users are left, show the "No users" message
-                        if (userList.querySelectorAll('.user-item').length === 0) {
-                            userList.innerHTML = '<p>No users have access to this key.</p>';
-                        }
-                        
-                        // Hide success message after 3 seconds
-                        setTimeout(() => {
-                            messageDiv.textContent = '';
-                        }, 3000);
-                    }
-                } else {
-                    errorDiv.textContent = data.error || 'Failed to remove user from key';
-                    
-                    // Clear error after 3 seconds
-                    setTimeout(() => {
-                        errorDiv.textContent = '';
-                    }, 3000);
-                }
-            } catch (error) {
-                errorDiv.textContent = 'Network error occurred. Please try again.';
-                console.error('Remove user error:', error);
-                
-                // Clear error after 3 seconds
-                setTimeout(() => {
-                    errorDiv.textContent = '';
-                }, 3000);
-            }
-        }
-
         async function createNewKey() {
             const priceInput = document.getElementById('new-key-price');
             const keyType = document.getElementById('new-key-type').value;
@@ -1095,15 +1138,19 @@
                 if (response.ok) {
                     messageDiv.textContent = 'Key name updated successfully';
                     
-                    // Update displayed name in the UI
-                    let nameDisplay = keyElement.querySelector('.key-name-display');
-                    if (nameDisplay) {
-                        nameDisplay.textContent = name;
-                    } else if (name) {
-                        // If there wasn't a name before but there is now, create the element
-                        const nameElement = document.createElement('p');
-                        nameElement.innerHTML = `Name: <span class="key-name-display" style="color: #f0f0f0; font-weight: bold;">${name}</span>`;
-                        keyElement.insertBefore(nameElement, keyElement.querySelector('h3').nextSibling);
+                    // Update displayed name in the UI - both in summary and details
+                    const keyNameTitle = keyElement.querySelector('.key-name-title');
+                    keyNameTitle.textContent = name || `Key: ${keyElement.querySelector('.key-truncated-value').textContent}`;
+                    
+                    // Update or show the name in the details section
+                    const nameDisplay = keyElement.querySelector('.name-display');
+                    const nameDisplayValue = keyElement.querySelector('.key-name-display');
+                    
+                    if (name) {
+                        nameDisplay.style.display = 'flex';
+                        nameDisplayValue.textContent = name;
+                    } else {
+                        nameDisplay.style.display = 'none';
                     }
                     
                     // Hide success message after 3 seconds
@@ -1127,6 +1174,48 @@
                     errorDiv.textContent = '';
                 }, 3000);
             }
+        }
+
+        // Helper function to calculate next billing date based on period and frequency
+        function calculateNextDate(baseDate, period, frequency) {
+            const nextDate = new Date(baseDate);
+            
+            switch(period) {
+                case 'day':
+                    nextDate.setDate(nextDate.getDate() + frequency);
+                    break;
+                case 'week':
+                    nextDate.setDate(nextDate.getDate() + (frequency * 7));
+                    break;
+                case 'month':
+                    nextDate.setMonth(nextDate.getMonth() + frequency);
+                    break;
+                case 'year':
+                    nextDate.setFullYear(nextDate.getFullYear() + frequency);
+                    break;
+            }
+            
+            return nextDate;
+        }
+        
+        // Helper function to calculate estimated income from all subscribers
+        function calculateEstimatedIncome(key) {
+            let estimatedIncome = 0;
+            const creatorName = key.creator.toLowerCase();
+            
+            // Loop through each user and add their individual price to the total
+            Object.entries(key.users).forEach(([username, userData]) => {
+                // Skip the creator (they shouldn't be charged)
+                if (username.toLowerCase() === creatorName) {
+                    return;
+                }
+                
+                // If the user has a specific price, use that; otherwise use the key's default price
+                const userPrice = (userData && userData.price !== undefined) ? userData.price : key.price;
+                estimatedIncome += userPrice;
+            });
+            
+            return estimatedIncome;
         }
     </script>
 </body>
