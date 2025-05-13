@@ -535,11 +535,14 @@
                         let estimatedMonthlyIncome = 0;
                         
                         // Loop through each user and add their individual price to the total
-                        Object.values(key.users).forEach(userData => {
+                        Object.entries(key.users).forEach(([username, userData]) => {
+                            // Skip the creator (they shouldn't be charged)
+                            if (username.toLowerCase() === key.creator.toLowerCase()) {
+                                return;
+                            }
+                            
                             // If the user has a specific price, use that; otherwise use the key's default price
                             const userPrice = (userData && userData.price !== undefined) ? userData.price : key.price;
-                            if (userData.username.toLowerCase() === key.creator.toLowerCase()) userPrice = 0;
-
                             estimatedMonthlyIncome += userPrice;
                         });
                         
