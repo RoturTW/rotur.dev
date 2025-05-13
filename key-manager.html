@@ -538,8 +538,8 @@
                         Object.values(key.users).forEach(userData => {
                             // If the user has a specific price, use that; otherwise use the key's default price
                             const userPrice = (userData && userData.price !== undefined) ? userData.price : key.price;
-                            if (user.username.toLowerCase() === key.creator.toLowerCase()) userPrice = 0;
-                            
+                            if (userData.username.toLowerCase() === key.creator.toLowerCase()) userPrice = 0;
+
                             estimatedMonthlyIncome += userPrice;
                         });
                         
