@@ -528,6 +528,23 @@
                     const incomeElement = document.createElement('p');
                     incomeElement.innerHTML = `Total income: <span style="color: #6bff9f">${key.total_income} credits</span>`;
                     subscriptionInfo.appendChild(incomeElement);
+                    
+                    // Add estimated monthly income based on active users
+                    if (key.users && typeof key.users === 'object') {
+                        // Calculate estimated monthly income using each user's individual price
+                        let estimatedMonthlyIncome = 0;
+                        
+                        // Loop through each user and add their individual price to the total
+                        Object.values(key.users).forEach(userData => {
+                            // If the user has a specific price, use that; otherwise use the key's default price
+                            const userPrice = (userData && userData.price !== undefined) ? userData.price : key.price;
+                            estimatedMonthlyIncome += userPrice;
+                        });
+                        
+                        const estimatedIncomeElement = document.createElement('p');
+                        estimatedIncomeElement.innerHTML = `Estimated monthly income: <span style="color: #6bff9f">${estimatedMonthlyIncome} credits</span>`;
+                        subscriptionInfo.appendChild(estimatedIncomeElement);
+                    }
                 }
                 
                 // Add active/inactive status for subscription if available
