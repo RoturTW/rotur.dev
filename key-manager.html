@@ -543,6 +543,13 @@
                 keyType.textContent = '(one-time payment)';
             }
             
+            // Display key name if available
+            if (key.name) {
+                const nameElement = document.createElement('p');
+                nameElement.innerHTML = `Name: <span class="key-name-display" style="color: #f0f0f0; font-weight: bold;">${key.name}</span>`;
+                keyItemDiv.insertBefore(nameElement, keyItemDiv.querySelector('h3').nextSibling);
+            }
+            
             // Set up copy button functionality
             const copyButton = keyItem.querySelector('.copy-button');
             const copiedFeedback = keyItem.querySelector('.copied-feedback');
@@ -581,6 +588,24 @@
             addUserInput.setAttribute('data-key', key.key);
             const addUserButton = keyItem.querySelector('.add-user-btn');
             addUserButton.setAttribute('data-key', key.key);
+            
+            // Add name update input and button
+            const actionsDiv = keyItem.querySelector('.actions:last-child');
+            const nameUpdateDiv = document.createElement('div');
+            nameUpdateDiv.classList.add('actions');
+            nameUpdateDiv.style.marginTop = '15px';
+            nameUpdateDiv.innerHTML = `
+                <input type="text" class="update-name-input" placeholder="Set key name" value="${key.name || ''}">
+                <button class="update-name-btn">Update Name</button>
+            `;
+            actionsDiv.parentNode.insertBefore(nameUpdateDiv, actionsDiv);
+            
+            // Add event listener for name update button
+            const nameUpdateButton = nameUpdateDiv.querySelector('.update-name-btn');
+            nameUpdateButton.setAttribute('data-key', key.key);
+            nameUpdateButton.addEventListener('click', () => {
+                updateKeyName(key.key, keyItemDiv);
+            });
             
             // Add a unique ID to the key item div for easier targeting
             const keyItemDiv = keyItem.querySelector('.key-item');
@@ -648,6 +673,7 @@
                 keyItem.querySelector('.revoke-key-btn').style.display = 'none';
                 keyItem.querySelector('.delete-key-btn').style.display = 'none';
                 updateButton.parentNode.style.display = 'none';
+                nameUpdateDiv.style.display = 'none'; // Hide name update for non-creators
             }
             
             // Attach remove user event listeners
@@ -1026,6 +1052,58 @@
                 const errorDiv = keyElement.querySelector('.key-error');
                 errorDiv.textContent = 'Network error occurred. Please try again.';
                 console.error('Delete key error:', error);
+            }
+        }
+
+        async function updateKeyName(keyId, keyElement) {
+            const nameInput = keyElement.querySelector('.update-name-input');
+            const name = nameInput.value.trim();
+            const messageDiv = keyElement.querySelector('.key-message');
+            const errorDiv = keyElement.querySelector('.key-error');
+            
+            // Clear previous messages
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            try {
+                const url = `${API_BASE_URL}/keys/name/${keyId}?auth=${encodeURIComponent(authToken)}&name=${encodeURIComponent(name)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.textContent = 'Key name updated successfully';
+                    
+                    // Update displayed name in the UI
+                    let nameDisplay = keyElement.querySelector('.key-name-display');
+                    if (nameDisplay) {
+                        nameDisplay.textContent = name;
+                    } else if (name) {
+                        // If there wasn't a name before but there is now, create the element
+                        const nameElement = document.createElement('p');
+                        nameElement.innerHTML = `Name: <span class="key-name-display" style="color: #f0f0f0; font-weight: bold;">${name}</span>`;
+                        keyElement.insertBefore(nameElement, keyElement.querySelector('h3').nextSibling);
+                    }
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                    }, 3000);
+                } else {
+                    errorDiv.textContent = data.error || 'Failed to update key name';
+                    
+                    // Clear error after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Update name error:', error);
+                
+                // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
             }
         }
     </script>
