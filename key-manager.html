@@ -543,13 +543,6 @@
                 keyType.textContent = '(one-time payment)';
             }
             
-            // Display key name if available
-            if (key.name) {
-                const nameElement = document.createElement('p');
-                nameElement.innerHTML = `Name: <span class="key-name-display" style="color: #f0f0f0; font-weight: bold;">${key.name}</span>`;
-                keyItemDiv.insertBefore(nameElement, keyItemDiv.querySelector('h3').nextSibling);
-            }
-            
             // Set up copy button functionality
             const copyButton = keyItem.querySelector('.copy-button');
             const copiedFeedback = keyItem.querySelector('.copied-feedback');
@@ -589,6 +582,18 @@
             const addUserButton = keyItem.querySelector('.add-user-btn');
             addUserButton.setAttribute('data-key', key.key);
             
+            // Add a unique ID to the key item div for easier targeting
+            const keyItemDiv = keyItem.querySelector('.key-item');
+            keyItemDiv.id = `key-item-${key.key}`;
+            keyItemDiv.setAttribute('data-key', key.key);
+            
+            // Display key name if available - moved after keyItemDiv is initialized
+            if (key.name) {
+                const nameElement = document.createElement('p');
+                nameElement.innerHTML = `Name: <span class="key-name-display" style="color: #f0f0f0; font-weight: bold;">${key.name}</span>`;
+                keyItemDiv.insertBefore(nameElement, keyItemDiv.querySelector('h3').nextSibling);
+            }
+            
             // Add name update input and button
             const actionsDiv = keyItem.querySelector('.actions:last-child');
             const nameUpdateDiv = document.createElement('div');
@@ -606,11 +611,6 @@
             nameUpdateButton.addEventListener('click', () => {
                 updateKeyName(key.key, keyItemDiv);
             });
-            
-            // Add a unique ID to the key item div for easier targeting
-            const keyItemDiv = keyItem.querySelector('.key-item');
-            keyItemDiv.id = `key-item-${key.key}`;
-            keyItemDiv.setAttribute('data-key', key.key);
             
             // Check if current user is the creator (for admin functions visibility)
             const isCreator = currentUser.toLowerCase() === creatorName.toLowerCase();
