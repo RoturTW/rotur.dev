@@ -618,7 +618,7 @@
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 5; /* Ensure it's above other content */
+      z-index: 5;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -663,11 +663,11 @@
         flex-direction: column;
         text-align: center;
         justify-content: center;
-        padding: 80px 5% 40px; /* Increased top padding to account for navbar */
+        padding: 80px 5% 40px;
         min-height: 100vh;
         height: auto;
         box-sizing: border-box;
-        margin-top: 0; /* No special offset on tablets/larger devices */
+        margin-top: 0;
       }
       
       .headings {
@@ -679,39 +679,38 @@
         order: 0;
         margin-bottom: 30px;
         max-width: 200px;
-        margin-top: 30px; /* Add space at the top for better positioning */
+        margin-top: 30px;
       }
     }
     
     @media (max-width: 768px) {
       body {
-        padding-top: 0; /* Remove padding */
+        padding-top: 0;
       }
       
       .hero {
-        padding: 20px 5% 20px; /* Reduced padding */
+        padding: 20px 5% 20px;
         min-height: 100vh;
         justify-content: flex-start;
-        margin-top: 80px; /* Increased offset by topbar height on mobile - was 50px */
+        margin-top: 170px;
       }
       
       #tilt {
-        margin-top: 30px; /* Adjust top margin */
+        margin-top: 30px;
       }
     }
     
     @media (max-width: 480px) {
       .hero {
-        padding: 15px 5% 20px; /* Further reduced padding */
-        margin-top: 70px; /* Increased from 50px for better spacing on smallest screens */
+        padding: 15px 5% 20px;
+        margin-top: 70px;
       }
       
       #tilt {
-        margin-top: 25px; /* Fine-tune for smallest screens */
+        margin-top: 25px;
       }
     }
     
-    /* Fix for image sizes on mobile */
     #tilt {
       max-width: 40%;
       height: auto;
@@ -723,47 +722,34 @@
       }
     }
     
-    /* Fix for scroll indicator on mobile to prevent overlapping */
     @media (max-height: 700px) {
       .scroll-indicator {
-        display: none; /* Hide scroll indicator on short screens */
+        display: none;
       }
       
       .hero {
-        padding-bottom: 20px; /* Reduce bottom padding when scroll indicator is hidden */
+        padding-bottom: 20px;
       }
     }
     
-    /* Additional adjustment for very small height screens */
     @media (max-height: 600px) and (max-width: 768px) {
       .hero {
-        padding-top: 65px; /* Less padding on very small screens */
+        padding-top: 65px;
       }
       
       #tilt {
-        max-width: 120px; /* Smaller logo on height-constrained screens */
+        max-width: 120px;
         margin-top: 10px;
         margin-bottom: 15px;
       }
     }
     
-    /* Responsive navbar adjustments */
-    #navbar-placeholder {
-      width: 100%;
-      position: fixed; /* Change back to fixed for proper mobile positioning */
-      top: 0;
-      left: 0;
-      z-index: 100;
-      height: 60px;
-    }
-    
     @media (max-width: 768px) {
       #navbar-placeholder {
-        height: 50px; /* Match the offset we applied to hero */
+        height: 50px;
       }
     }
     
-    /* Improve touch targets for mobile */
     @media (max-width: 768px) {
       .dev-card .social-links a {
         width: 40px;
@@ -779,25 +765,22 @@
         margin-top: 10px;
       }
       
-      /* Better spacing for mobile */
       .feature-card {
         margin-bottom: 5px;
       }
       
-      /* Fix overflow issues on small screens */
       .feature-card p {
         word-break: break-word;
       }
     }
     
-    /* Fix for very small screens */
     @media (max-height: 500px) {
       body {
-        padding-top: 40px; /* Even smaller navbar on very small screens */
+        padding-top: 40px;
       }
       
       .hero {
-        padding-top: 50px; /* Reduced padding on very small screens */
+        padding-top: 50px;
         min-height: auto;
       }
       
@@ -805,7 +788,6 @@
         height: 40px;
       }
       
-      /* Hide scroll indicator on very small screens */
       .scroll-indicator {
         display: none;
       }
@@ -862,7 +844,6 @@
     <div class="devs-container fade-in">
       <p>Who are we?</p>
       <div class="devs">
-        <!-- Change dev cards from links to divs with separate links -->
         <div class="dev-card">
           <img src="https://avatars.rotur.dev/mist" alt="Mistium">
           <div class="name">Mistium</div>
@@ -1247,7 +1228,7 @@
         if (isElementInViewport(card)) {
           setTimeout(() => {
             card.classList.add('visible');
-          }, index * 100); // 100ms delay between each card
+          }, index * 100);
         }
       });
     }
@@ -1303,7 +1284,7 @@
 
     // Register scroll event for animations
     window.addEventListener('scroll', handleScrollAnimations);
-    handleScrollAnimations(); // Run once on page load
+    handleScrollAnimations();
   </script>
   <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
   <script src="./connectToRotur.js"></script>
