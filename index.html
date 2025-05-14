@@ -46,7 +46,7 @@
       font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
-      padding-top: 60px; /* Added padding for navbar height */
+      padding-top: 0; /* Removed padding for navbar height */
       overflow-x: hidden;
       position: relative;
     }
@@ -62,12 +62,14 @@
     }
 
     .hero {
-      min-height: calc(100vh - 60px); /* Adjust for navbar height */
+      min-height: 100vh; /* Use full viewport height */
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10%;
+      padding: 60px 10% 0; /* Added top padding to account for navbar */
       position: relative;
+      margin-top: 0; /* Reset margin */
+      box-sizing: border-box; /* Include padding in height calculation */
     }
 
     .headings h1 {
@@ -661,10 +663,10 @@
         flex-direction: column;
         text-align: center;
         justify-content: center;
-        padding: 40px 5%; /* Reduced top padding since we have navbar padding */
-        min-height: calc(100vh - 60px); /* Adjust for navbar */
-        height: auto; /* Allow it to grow if content is too large */
-        box-sizing: border-box; /* Ensure padding is included in height calculation */
+        padding: 80px 5% 40px; /* Increased top padding to account for navbar */
+        min-height: 100vh;
+        height: auto;
+        box-sizing: border-box;
       }
       
       .headings {
@@ -693,13 +695,13 @@
     
     @media (max-width: 768px) {
       body {
-        padding-top: 50px; /* Slightly smaller navbar on mobile */
+        padding-top: 0; /* Remove padding */
       }
       
       .hero {
-        padding: 30px 5% 20px;
-        min-height: auto; /* Allow natural content height */
-        justify-content: flex-start; /* Start from top */
+        padding: 70px 5% 20px; /* Increased top padding for navbar on mobile */
+        min-height: 100vh;
+        justify-content: flex-start;
       }
       
       .headings h1 {
@@ -755,7 +757,7 @@
     
     @media (max-width: 480px) {
       .hero {
-        padding: 40px 5% 20px; /* Further reduced padding for smallest screens */
+        padding: 60px 5% 20px; /* Adjusted top padding */
       }
       
       .headings h1 {
@@ -854,11 +856,11 @@
     /* Responsive adjustments for navigation */
     #navbar-placeholder {
       width: 100%;
-      position: fixed;
+      position: absolute; /* Changed from fixed to absolute */
       top: 0;
       left: 0;
       z-index: 100;
-      height: 60px; /* Match the body padding-top */
+      height: 60px;
     }
     
     @media (max-width: 768px) {
@@ -901,9 +903,8 @@
       }
       
       .hero {
+        padding-top: 50px; /* Reduced padding on very small screens */
         min-height: auto;
-        padding-top: 20px;
-        padding-bottom: 10px;
       }
       
       #navbar-placeholder {
