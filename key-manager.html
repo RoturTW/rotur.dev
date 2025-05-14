@@ -1176,6 +1176,105 @@
             }
         }
 
+        async function addUserToKey(keyId, keyElement) {
+            const input = keyElement.querySelector('.add-user-input');
+            const username = input.value.trim().toLowerCase();
+            const messageDiv = keyElement.querySelector('.key-message');
+            const errorDiv = keyElement.querySelector('.key-error');
+            
+            // Clear previous messages
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            if (!username) {
+                errorDiv.textContent = 'Please enter a username';
+                return;
+            }
+            
+            try {
+                // Use the admin_add endpoint for creators to add users to their keys
+                const url = `${API_BASE_URL}/keys/admin_add/${keyId}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(username)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Success - add the user to the UI
+                    const userList = keyElement.querySelector('.user-list');
+                    
+                    // Check if "No users" message is there and remove it
+                    if (userList.querySelector('p')) {
+                        userList.innerHTML = '';
+                    }
+                    
+                    // Check if user already exists in the list
+                    const existingUsers = Array.from(userList.querySelectorAll('.user-item'))
+                        .map(item => item.textContent.toLowerCase().replace(' (you)', '').replace(' ×', '').trim());
+                    
+                    if (!existingUsers.includes(username)) {
+                        const userItem = document.createElement('span');
+                        userItem.classList.add('user-item');
+                        
+                        // Add remove button if current user is creator
+                        if (username === currentUser.toLowerCase()) {
+                            userItem.textContent = `${username} (You)`;
+                        } else {
+                            userItem.innerHTML = `${username} <span class="remove-user" data-user="${username}" data-key="${keyId}">×</span>`;
+                            
+                            // Attach event listener to the new remove button
+                            setTimeout(() => {
+                                const removeBtn = userItem.querySelector('.remove-user');
+                                if (removeBtn) {
+                                    removeBtn.addEventListener('click', (e) => {
+                                        e.stopPropagation(); // Prevent event bubbling
+                                        const user = e.target.getAttribute('data-user');
+                                        const key = e.target.getAttribute('data-key');
+                                        removeUserFromKey(key, user, keyElement);
+                                    });
+                                }
+                            }, 0);
+                        }
+                        
+                        userList.appendChild(userItem);
+                        
+                        // Update the user count in the summary
+                        const userCountSpan = keyElement.querySelector('.user-count');
+                        const currentUserCount = existingUsers.length + 1; // +1 for the new user
+                        userCountSpan.textContent = `${currentUserCount} user${currentUserCount !== 1 ? 's' : ''}`;
+                        
+                        messageDiv.textContent = `User ${username} has been added to the key`;
+                        input.value = '';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            messageDiv.textContent = '';
+                        }, 3000);
+                    } else {
+                        errorDiv.textContent = 'User already has access to this key';
+                        
+                        // Clear error after 3 seconds
+                        setTimeout(() => {
+                            errorDiv.textContent = '';
+                        }, 3000);
+                    }
+                } else {
+                    errorDiv.textContent = data.error || 'Failed to add user to key';
+                    
+                    // Clear error after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Add user error:', error);
+                
+                // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
+            }
+        }
+
         // Helper function to calculate next billing date based on period and frequency
         function calculateNextDate(baseDate, period, frequency) {
             const nextDate = new Date(baseDate);
