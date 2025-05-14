@@ -667,6 +667,7 @@
         min-height: 100vh;
         height: auto;
         box-sizing: border-box;
+        margin-top: 0; /* No special offset on tablets/larger devices */
       }
       
       .headings {
@@ -678,18 +679,7 @@
         order: 0;
         margin-bottom: 30px;
         max-width: 200px;
-      }
-      
-      .headings h1 {
-        font-size: 3.5rem;
-      }
-      
-      .features-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      }
-      
-      .about-highlights {
-        flex-wrap: wrap;
+        margin-top: 30px; /* Add space at the top for better positioning */
       }
     }
     
@@ -699,145 +689,25 @@
       }
       
       .hero {
-        padding: 70px 5% 20px; /* Increased top padding for navbar on mobile */
+        padding: 20px 5% 20px; /* Reduced padding */
         min-height: 100vh;
         justify-content: flex-start;
+        margin-top: 50px; /* Offset by topbar height on mobile */
       }
       
-      .headings h1 {
-        font-size: 3rem;
-      }
-      
-      .headings p {
-        font-size: 1.3rem;
-      }
-      
-      .about {
-        padding: 70px 5%;
-      }
-      
-      .about-content h1 {
-        font-size: 2.2rem;
-      }
-      
-      .about-content p {
-        font-size: 1rem;
-      }
-      
-      .dev-card {
-        padding: 20px;
-      }
-      
-      .dev-card img {
-        width: 100px;
-        height: 100px;
-      }
-      
-      .feature-card {
-        padding: 20px;
-      }
-      
-      .feature-card h2 {
-        font-size: 1.3rem;
-      }
-      
-      .feature-category {
-        font-size: 1.4rem;
-        margin: 30px 0 15px;
-      }
-      
-      .contributors-grid {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      }
-      
-      .contributors-grid img {
-        width: 80px;
+      #tilt {
+        margin-top: 30px; /* Adjust top margin */
       }
     }
     
     @media (max-width: 480px) {
       .hero {
-        padding: 60px 5% 20px; /* Adjusted top padding */
+        padding: 15px 5% 20px; /* Further reduced padding */
+        margin-top: 50px; /* Maintain offset on smallest screens */
       }
       
-      .headings h1 {
-        font-size: 2.5rem;
-      }
-      
-      .headings p {
-        font-size: 1.1rem;
-      }
-      
-      #get_button {
-        padding: 12px 25px;
-      }
-      
-      #get_button p {
-        font-size: 0.9rem;
-      }
-      
-      .about-content h1 {
-        font-size: 1.8rem;
-      }
-      
-      .about-highlights {
-        gap: 10px;
-      }
-      
-      .highlight {
-        padding: 10px 15px;
-      }
-      
-      .highlight i {
-        font-size: 1.2rem;
-      }
-      
-      .highlight p {
-        font-size: 0.9rem;
-      }
-      
-      .devs {
-        gap: 15px;
-      }
-      
-      .features-section h1 {
-        font-size: 2rem;
-        margin-bottom: 30px;
-      }
-      
-      .features-grid {
-        gap: 15px;
-      }
-      
-      .feature-card i {
-        font-size: 2rem;
-      }
-      
-      .features-section {
-        padding: 50px 5%;
-      }
-      
-      .scroll-indicator {
-        bottom: 15px;
-      }
-      
-      .scroll-indicator i {
-        font-size: 1.5rem;
-      }
-      
-      .scroll-indicator p {
-        font-size: 0.8rem;
-      }
-    }
-    
-    /* Fix for scroll indicator on mobile to prevent overlapping */
-    @media (max-height: 700px) {
-      .scroll-indicator {
-        display: none; /* Hide scroll indicator on short screens */
-      }
-      
-      .hero {
-        padding-bottom: 20px; /* Reduce bottom padding when scroll indicator is hidden */
+      #tilt {
+        margin-top: 25px; /* Fine-tune for smallest screens */
       }
     }
     
@@ -853,10 +723,34 @@
       }
     }
     
-    /* Responsive adjustments for navigation */
+    /* Fix for scroll indicator on mobile to prevent overlapping */
+    @media (max-height: 700px) {
+      .scroll-indicator {
+        display: none; /* Hide scroll indicator on short screens */
+      }
+      
+      .hero {
+        padding-bottom: 20px; /* Reduce bottom padding when scroll indicator is hidden */
+      }
+    }
+    
+    /* Additional adjustment for very small height screens */
+    @media (max-height: 600px) and (max-width: 768px) {
+      .hero {
+        padding-top: 65px; /* Less padding on very small screens */
+      }
+      
+      #tilt {
+        max-width: 120px; /* Smaller logo on height-constrained screens */
+        margin-top: 10px;
+        margin-bottom: 15px;
+      }
+    }
+    
+    /* Responsive navbar adjustments */
     #navbar-placeholder {
       width: 100%;
-      position: absolute; /* Changed from fixed to absolute */
+      position: fixed; /* Change back to fixed for proper mobile positioning */
       top: 0;
       left: 0;
       z-index: 100;
@@ -865,7 +759,7 @@
     
     @media (max-width: 768px) {
       #navbar-placeholder {
-        height: 50px; /* Match smaller body padding on mobile */
+        height: 50px; /* Match the offset we applied to hero */
       }
     }
     
