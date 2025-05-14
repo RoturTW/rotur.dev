@@ -1316,6 +1316,75 @@
             
             return estimatedIncome;
         }
+
+        async function removeUserFromKey(keyId, username, keyElement) {
+            if (!confirm(`Are you sure you want to remove ${username} from this key?`)) {
+                return;
+            }
+            
+            const messageDiv = keyElement.querySelector('.key-message');
+            const errorDiv = keyElement.querySelector('.key-error');
+            
+            // Clear previous messages
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            try {
+                const url = `${API_BASE_URL}/keys/admin_remove/${keyId}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(username)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Success - remove the user from the UI
+                    const userList = keyElement.querySelector('.user-list');
+                    const userItems = userList.querySelectorAll('.user-item');
+                    
+                    let removed = false;
+                    userItems.forEach(item => {
+                        const itemText = item.textContent.toLowerCase();
+                        if (itemText.includes(username.toLowerCase())) {
+                            item.remove();
+                            removed = true;
+                        }
+                    });
+                    
+                    if (removed) {
+                        // Update the user count in the summary
+                        const userCountSpan = keyElement.querySelector('.user-count');
+                        const remainingUsers = userList.querySelectorAll('.user-item').length;
+                        
+                        if (remainingUsers === 0) {
+                            userList.innerHTML = '<p>No users have access to this key.</p>';
+                            userCountSpan.textContent = 'No users';
+                        } else {
+                            userCountSpan.textContent = `${remainingUsers} user${remainingUsers !== 1 ? 's' : ''}`;
+                        }
+                        
+                        messageDiv.textContent = `User ${username} has been removed from the key`;
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            messageDiv.textContent = '';
+                        }, 3000);
+                    }
+                } else {
+                    errorDiv.textContent = data.error || 'Failed to remove user from key';
+                    
+                    // Clear error after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Remove user error:', error);
+                
+                // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
+            }
+        }
     </script>
 </body>
 </html>
