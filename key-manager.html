@@ -795,39 +795,63 @@
             const isCreator = currentUser.toLowerCase() === creatorName.toLowerCase();
             
             // Populate users and update the user count in summary
+            const userListContainer = keyItem.querySelector('.user-list-container');
+            const authorizedUsersSection = userListContainer.closest('.info-section'); 
+
             const userList = keyItem.querySelector('.user-list');
             const userCountSpan = keyItem.querySelector('.user-count');
 
-            if (!Array.isArray(key.users) && typeof key.users === 'object') {
-                key.users = Object.keys(key.users);
+            // Process key.users into a consistent array format (processedUsersArray)
+            let processedUsersArray = [];
+            if (key.users != null) { // Handles both null and undefined
+                if (Array.isArray(key.users)) {
+                    processedUsersArray = key.users;
+                } else if (typeof key.users === 'object') { 
+                    // We already checked for null, so key.users here is a non-null object
+                    processedUsersArray = Object.keys(key.users);
+                }
+                // If key.users is not an array or object (e.g. string, number), processedUsersArray remains empty.
             }
 
-            if (key.users && key.users.length > 0) {
-                // Update user count in summary
-                userCountSpan.textContent = `${key.users.length} user${key.users.length !== 1 ? 's' : ''}`;
-                
-                key.users.forEach(user => {
-                    // Convert each username to lowercase for display
-                    const normalizedUser = user.toLowerCase();
-                    if (normalizedUser === currentUser.toLowerCase()) {
-                        userList.innerHTML += `<span class="user-item">${normalizedUser} (You)</span>`;
-                        return;
-                    }
-                    const userItem = document.createElement('span');
-                    userItem.classList.add('user-item');
+            if (isCreator) {
+                if (authorizedUsersSection) {
+                    authorizedUsersSection.style.display = 'block'; // Ensure visible for creator
+                }
+                userList.innerHTML = ''; // Clear previous content for fresh population
+
+                if (processedUsersArray.length > 0) {
+                    // Update user count in summary
+                    userCountSpan.textContent = `${processedUsersArray.length} user${processedUsersArray.length !== 1 ? 's' : ''}`;
                     
-                    // Show remove button for all users when current user is creator
-                    if (isCreator) {
+                    processedUsersArray.forEach(user => {
+                        // Convert each username to lowercase for display
+                        const normalizedUser = user.toLowerCase();
+                        if (normalizedUser === currentUser.toLowerCase()) {
+                            userList.innerHTML += `<span class="user-item">${normalizedUser} (You)</span>`;
+                            return; // continue to next user in forEach
+                        }
+                        const userItem = document.createElement('span');
+                        userItem.classList.add('user-item');
+                        
+                        // Show remove button for all users when current user is creator
                         userItem.innerHTML = `${normalizedUser} <span class="remove-user" data-user="${normalizedUser}" data-key="${key.key}">×</span>`;
-                    } else {
-                        userItem.textContent = normalizedUser;
-                    }
-                    
-                    userList.appendChild(userItem);
-                });
-            } else {
-                userList.innerHTML = '<p>No users have access to this key.</p>';
-                userCountSpan.textContent = 'No users';
+                        
+                        userList.appendChild(userItem);
+                    });
+                } else {
+                    userList.innerHTML = '<p>No users have access to this key.</p>';
+                    userCountSpan.textContent = 'No users';
+                }
+            } else { // Not the creator
+                if (authorizedUsersSection) {
+                    authorizedUsersSection.style.display = 'none';
+                }
+                // User count can still be shown if available, or a generic message
+                if (processedUsersArray.length > 0) {
+                     userCountSpan.textContent = `${processedUsersArray.length} user${processedUsersArray.length !== 1 ? 's' : ''}`;
+                } else {
+                    userCountSpan.textContent = 'Users hidden';
+                }
             }
             
             // Set up event listeners for all buttons (with proper stopPropagation)
