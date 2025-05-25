@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Manager</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            user-select: none;
+            color: aliceblue;
+            background: rgb(63, 47, 60);
+            background: linear-gradient(45deg, rgba(63, 47, 60, 1) 0%, rgba(17, 17, 17, 1) 10%, rgba(17, 17, 17, 1) 90%, rgba(53, 59, 100, 1) 100%);
+            min-height: 100vh;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #222;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+            transition: 0.2s;
+            margin-bottom: 20px;
+        }
+        .container:hover {
+            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+        }
+        h1, h2, h3, h4 {
+            color: white;
+        }
+        button {
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 10px;
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 5px 5px 3px rgba(0, 0, 0, 0.3);
+        }
+        button:hover {
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.6);
+            background-color: #111;
+            scale: 1.03;
+        }
+        input, textarea, select {
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            width: 200px;
+        }
+        textarea {
+            width: 400px;
+            height: 80px;
+            resize: vertical;
+        }
+        .error {
+            color: #ff6b6b;
+            font-size: 14px;
+        }
+        .success {
+            color: #6bff9f;
+            font-size: 14px;
+        }
+        .item-card {
+            border: 1px solid #444;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            background-color: #2a2a2a;
+            box-shadow: 5px 5px 3px rgba(0, 0, 0, 0.3);
+            transition: 0.2s;
+        }
+        .item-card:hover {
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.6);
+            scale: 1.01;
+        }
+        .hidden {
+            display: none;
+        }
+        .actions {
+            margin-top: 15px;
+        }
+        #loading {
+            text-align: center;
+            margin: 20px;
+            color: #ccc;
+        }
+        .login-box {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .login-btn {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #333;
+            transition: 0.2s;
+        }
+        .login-btn:hover {
+            scale: 1.05;
+            background-color: #111;
+        }
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            padding: 12px 24px;
+            margin-right: 5px;
+            background-color: #444;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tab-button.active {
+            background-color: #333;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .item-name {
+            color: #6bff9f;
+            font-weight: bold;
+        }
+        .item-price {
+            color: #ffeb3b;
+            font-weight: bold;
+        }
+        .selling-badge {
+            background-color: #4caf50;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .inline-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .item-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .buy-btn {
+            background-color: #4caf50;
+        }
+        .buy-btn:hover {
+            background-color: #45a049;
+        }
+        .sell-btn {
+            background-color: #ff9800;
+        }
+        .sell-btn:hover {
+            background-color: #e68900;
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .transfer-btn {
+            background-color: #2196f3;
+        }
+        .transfer-btn:hover {
+            background-color: #1976d2;
+        }
+        .marketplace-item {
+            border-left: 4px solid #4caf50;
+        }
+        .currency-display {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .currency-amount {
+            color: #ffeb3b;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .item-meta {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+        .transfer-history {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .transfer-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #444;
+            font-size: 14px;
+        }
+        .transfer-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inventory Manager</h1>
+        
+        <!-- Login Section -->
+        <div id="login-section" class="login-box">
+            <h2>Authentication Required</h2>
+            <button onclick="window.location.href='https://rotur.dev/auth'" class="login-btn">Login</button>
+            <div id="login-error" class="error"></div>
+        </div>
+        
+        <!-- User Info Section -->
+        <div id="user-info" class="hidden">
+            <h2>Welcome, <span id="user-name"></span>!</h2>
+            <div class="currency-display">
+                <div>Your Balance: <span id="user-currency" class="currency-amount">0</span> credits</div>
+            </div>
+            <button id="logout-btn">Logout</button>
+        </div>
+        
+        <!-- Main Content -->
+        <div id="main-content" class="hidden">
+            <!-- Tab Navigation -->
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('my-items')">My Items</button>
+                <button class="tab-button" onclick="switchTab('marketplace')">Marketplace</button>
+                <button class="tab-button" onclick="switchTab('create-item')">Create Item</button>
+            </div>
+            
+            <!-- My Items Tab -->
+            <div id="my-items" class="tab-content active">
+                <h2>Your Items</h2>
+                <div id="loading-my-items">Loading your items...</div>
+                <div id="my-items-list"></div>
+            </div>
+            
+            <!-- Marketplace Tab -->
+            <div id="marketplace" class="tab-content">
+                <h2>Items for Sale</h2>
+                <div id="loading-marketplace">Loading marketplace...</div>
+                <div id="marketplace-list"></div>
+            </div>
+            
+            <!-- Create Item Tab -->
+            <div id="create-item" class="tab-content">
+                <h2>Create New Item</h2>
+                <div class="form-group">
+                    <label for="item-name">Item Name:</label>
+                    <input type="text" id="item-name" placeholder="Enter item name">
+                </div>
+                <div class="form-group">
+                    <label for="item-description">Description:</label>
+                    <textarea id="item-description" placeholder="Enter item description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="item-price">Price:</label>
+                    <input type="number" id="item-price" placeholder="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="item-selling">
+                        <input type="checkbox" id="item-selling"> Put up for sale immediately
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="item-data">Private Data (JSON):</label>
+                    <textarea id="item-data" placeholder="{}"></textarea>
+                </div>
+                <button id="create-item-btn">Create Item</button>
+                <div id="create-item-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let authToken = '';
+        let currentUser = '';
+        let userCurrency = 0;
+        const API_BASE_URL = 'https://social.rotur.dev';
+
+        // DOM elements
+        const loginSection = document.getElementById('login-section');
+        const userInfoSection = document.getElementById('user-info');
+        const mainContent = document.getElementById('main-content');
+        const loginError = document.getElementById('login-error');
+        const userNameSpan = document.getElementById('user-name');
+        const userCurrencySpan = document.getElementById('user-currency');
+
+        // Event listeners for page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for token in URL parameters (from auth redirect)
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            
+            if (token) {
+                authToken = token;
+                validateAuthAndFetchUser(token);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                // Check for stored auth token
+                const storedAuth = localStorage.getItem('authToken');
+                const storedUser = localStorage.getItem('username');
+                
+                if (storedAuth && storedUser) {
+                    authToken = storedAuth;
+                    currentUser = storedUser;
+                    showLoggedInState();
+                }
+            }
+            
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            document.getElementById('create-item-btn').addEventListener('click', createNewItem);
+        });
+
+        async function validateAuthAndFetchUser(token) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_user?auth=${encodeURIComponent(token)}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentUser = data.username.toLowerCase();
+                    userCurrency = data['sys.currency'] || 0;
+                    saveAuthToStorage();
+                    showLoggedInState();
+                } else {
+                    loginError.textContent = 'Authentication failed. Please try logging in again.';
+                }
+            } catch (error) {
+                loginError.textContent = 'Network error occurred. Please try again.';
+                console.error('Auth validation error:', error);
+            }
+        }
+
+        function handleLogout() {
+            authToken = '';
+            currentUser = '';
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+            
+            loginSection.classList.remove('hidden');
+            userInfoSection.classList.add('hidden');
+            mainContent.classList.add('hidden');
+        }
+
+        function saveAuthToStorage() {
+            localStorage.setItem('authToken', authToken);
+            localStorage.setItem('username', currentUser);
+        }
+
+        function showLoggedInState() {
+            loginError.textContent = '';
+            
+            loginSection.classList.add('hidden');
+            userInfoSection.classList.remove('hidden');
+            mainContent.classList.remove('hidden');
+            userNameSpan.textContent = currentUser;
+            userCurrencySpan.textContent = userCurrency;
+            
+            // Load initial data
+            loadMyItems();
+            loadMarketplace();
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load data for the selected tab
+            if (tabName === 'my-items') {
+                loadMyItems();
+            } else if (tabName === 'marketplace') {
+                loadMarketplace();
+            }
+        }
+
+        async function loadMyItems() {
+            const loadingElement = document.getElementById('loading-my-items');
+            const listElement = document.getElementById('my-items-list');
+            
+            loadingElement.classList.remove('hidden');
+            listElement.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/list/${encodeURIComponent(currentUser)}?auth=${encodeURIComponent(authToken)}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    loadingElement.classList.add('hidden');
+                    
+                    if (data.length === 0) {
+                        listElement.innerHTML = '<p>You don\'t have any items yet. Create one in the Create Item tab!</p>';
+                        return;
+                    }
+                    
+                    data.forEach(item => {
+                        renderMyItem(item);
+                    });
+                } else {
+                    loadingElement.textContent = data.error || 'Failed to load items';
+                }
+            } catch (error) {
+                loadingElement.textContent = 'Network error occurred. Please try again.';
+                console.error('Load items error:', error);
+            }
+        }
+
+        async function loadMarketplace() {
+            const loadingElement = document.getElementById('loading-marketplace');
+            const listElement = document.getElementById('marketplace-list');
+            
+            loadingElement.classList.remove('hidden');
+            listElement.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/selling`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    loadingElement.classList.add('hidden');
+                    
+                    if (data.length === 0) {
+                        listElement.innerHTML = '<p>No items are currently for sale.</p>';
+                        return;
+                    }
+                    
+                    data.forEach(item => {
+                        renderMarketplaceItem(item);
+                    });
+                } else {
+                    loadingElement.textContent = data.error || 'Failed to load marketplace';
+                }
+            } catch (error) {
+                loadingElement.textContent = 'Network error occurred. Please try again.';
+                console.error('Load marketplace error:', error);
+            }
+        }
+
+        function renderMyItem(item) {
+            const listElement = document.getElementById('my-items-list');
+            const itemCard = document.createElement('div');
+            itemCard.className = 'item-card';
+            itemCard.innerHTML = `
+                <div>
+                    <h3 class="item-name">${item.name}${item.selling ? '<span class="selling-badge">For Sale</span>' : ''}</h3>
+                    <p>${item.description || 'No description'}</p>
+                    <p class="item-price">Price: ${item.price} credits</p>
+                    <div class="item-meta">
+                        Created: ${new Date(item.created * 1000).toLocaleDateString()}<br>
+                        Author: ${item.author}<br>
+                        Total Income: ${item.total_income || 0} credits
+                    </div>
+                    ${item.transfer_history ? `
+                        <details>
+                            <summary>Transfer History</summary>
+                            <div class="transfer-history">
+                                ${item.transfer_history.map(transfer => `
+                                    <div class="transfer-item">
+                                        ${transfer.type === 'creation' ? 'Created' : 
+                                          transfer.type === 'transfer' ? `Transferred from ${transfer.from} to ${transfer.to}` :
+                                          transfer.type === 'purchase' ? `Purchased by ${transfer.to} for ${transfer.price} credits` : 'Unknown'}
+                                        - ${new Date(transfer.timestamp * 1000).toLocaleDateString()}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </details>
+                    ` : ''}
+                    <div class="item-actions">
+                        ${!item.selling ? `<button class="sell-btn" onclick="putItemForSale('${item.name}')">Put For Sale</button>` : `<button onclick="stopSelling('${item.name}')">Stop Selling</button>`}
+                        <div class="inline-form">
+                            <input type="number" id="price-${item.name}" value="${item.price}" min="0" style="width: 100px;">
+                            <button onclick="updatePrice('${item.name}')">Update Price</button>
+                        </div>
+                        <div class="inline-form">
+                            <input type="text" id="transfer-${item.name}" placeholder="Username" style="width: 150px;">
+                            <button class="transfer-btn" onclick="transferItem('${item.name}')">Transfer</button>
+                        </div>
+                        <button class="delete-btn" onclick="deleteItem('${item.name}')">Delete</button>
+                    </div>
+                    <div class="item-message-${item.name} success"></div>
+                    <div class="item-error-${item.name} error"></div>
+                </div>
+            `;
+            listElement.appendChild(itemCard);
+        }
+
+        function renderMarketplaceItem(item) {
+            const listElement = document.getElementById('marketplace-list');
+            const itemCard = document.createElement('div');
+            itemCard.className = 'item-card marketplace-item';
+            itemCard.innerHTML = `
+                <div>
+                    <h3 class="item-name">${item.name}</h3>
+                    <p>${item.description || 'No description'}</p>
+                    <p class="item-price">Price: ${item.price} credits</p>
+                    <div class="item-meta">
+                        Owner: ${item.owner}<br>
+                        Author: ${item.author}<br>
+                        Created: ${new Date(item.created * 1000).toLocaleDateString()}
+                    </div>
+                    <div class="item-actions">
+                        ${item.owner.toLowerCase() !== currentUser.toLowerCase() ? 
+                            `<button class="buy-btn" onclick="buyItem('${item.name}')">Buy for ${item.price} credits</button>` :
+                            '<p>This is your item</p>'
+                        }
+                    </div>
+                    <div class="marketplace-message-${item.name} success"></div>
+                    <div class="marketplace-error-${item.name} error"></div>
+                </div>
+            `;
+            listElement.appendChild(itemCard);
+        }
+
+        async function createNewItem() {
+            const name = document.getElementById('item-name').value.trim();
+            const description = document.getElementById('item-description').value.trim();
+            const price = parseInt(document.getElementById('item-price').value) || 0;
+            const selling = document.getElementById('item-selling').checked;
+            const data = document.getElementById('item-data').value.trim() || '{}';
+            const resultElement = document.getElementById('create-item-result');
+            
+            if (!name) {
+                resultElement.textContent = 'Item name is required';
+                resultElement.className = 'error';
+                return;
+            }
+            
+            try {
+                const itemData = {
+                    name: name,
+                    description: description,
+                    price: price,
+                    selling: selling,
+                    data: JSON.parse(data)
+                };
+                
+                const response = await fetch(`${API_BASE_URL}/items/create?auth=${encodeURIComponent(authToken)}&item=${encodeURIComponent(JSON.stringify(itemData))}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultElement.textContent = `Item "${name}" created successfully!`;
+                    resultElement.className = 'success';
+                    
+                    // Clear form
+                    document.getElementById('item-name').value = '';
+                    document.getElementById('item-description').value = '';
+                    document.getElementById('item-price').value = '';
+                    document.getElementById('item-selling').checked = false;
+                    document.getElementById('item-data').value = '';
+                    
+                    // Refresh items if on my items tab
+                    loadMyItems();
+                    loadMarketplace();
+                    
+                    setTimeout(() => {
+                        resultElement.textContent = '';
+                    }, 5000);
+                } else {
+                    resultElement.textContent = result.error || 'Failed to create item';
+                    resultElement.className = 'error';
+                }
+            } catch (error) {
+                resultElement.textContent = 'Invalid JSON data or network error';
+                resultElement.className = 'error';
+                console.error('Create item error:', error);
+            }
+        }
+
+        async function putItemForSale(itemName) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/sell/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage(itemName, 'Item put up for sale successfully!', 'success');
+                    loadMyItems();
+                    loadMarketplace();
+                } else {
+                    showMessage(itemName, result.error || 'Failed to put item for sale', 'error');
+                }
+            } catch (error) {
+                showMessage(itemName, 'Network error occurred', 'error');
+                console.error('Put for sale error:', error);
+            }
+        }
+
+        async function stopSelling(itemName) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/stop_selling/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage(itemName, 'Item removed from sale successfully!', 'success');
+                    loadMyItems();
+                    loadMarketplace();
+                } else {
+                    showMessage(itemName, result.error || 'Failed to stop selling item', 'error');
+                }
+            } catch (error) {
+                showMessage(itemName, 'Network error occurred', 'error');
+                console.error('Stop selling error:', error);
+            }
+        }
+
+        async function updatePrice(itemName) {
+            const newPrice = parseInt(document.getElementById(`price-${itemName}`).value) || 0;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/set_price/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}&price=${newPrice}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage(itemName, `Price updated to ${newPrice} credits!`, 'success');
+                    loadMyItems();
+                    loadMarketplace();
+                } else {
+                    showMessage(itemName, result.error || 'Failed to update price', 'error');
+                }
+            } catch (error) {
+                showMessage(itemName, 'Network error occurred', 'error');
+                console.error('Update price error:', error);
+            }
+        }
+
+        async function transferItem(itemName) {
+            const targetUser = document.getElementById(`transfer-${itemName}`).value.trim();
+            
+            if (!targetUser) {
+                showMessage(itemName, 'Target username is required', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/transfer/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}&username=${encodeURIComponent(targetUser)}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage(itemName, `Item transferred to ${targetUser} successfully!`, 'success');
+                    loadMyItems();
+                    document.getElementById(`transfer-${itemName}`).value = '';
+                } else {
+                    showMessage(itemName, result.error || 'Failed to transfer item', 'error');
+                }
+            } catch (error) {
+                showMessage(itemName, 'Network error occurred', 'error');
+                console.error('Transfer item error:', error);
+            }
+        }
+
+        async function deleteItem(itemName) {
+            if (!confirm(`Are you sure you want to delete "${itemName}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/delete/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    loadMyItems();
+                } else {
+                    showMessage(itemName, result.error || 'Failed to delete item', 'error');
+                }
+            } catch (error) {
+                showMessage(itemName, 'Network error occurred', 'error');
+                console.error('Delete item error:', error);
+            }
+        }
+
+        async function buyItem(itemName) {
+            if (!confirm(`Are you sure you want to buy "${itemName}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/buy/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMarketplaceMessage(itemName, 'Item purchased successfully!', 'success');
+                    loadMyItems();
+                    loadMarketplace();
+                    // Refresh user currency
+                    validateAuthAndFetchUser(authToken);
+                } else {
+                    showMarketplaceMessage(itemName, result.error || 'Failed to purchase item', 'error');
+                }
+            } catch (error) {
+                showMarketplaceMessage(itemName, 'Network error occurred', 'error');
+                console.error('Buy item error:', error);
+            }
+        }
+
+        function showMessage(itemName, message, type) {
+            const messageElement = document.querySelector(`.item-message-${itemName}`);
+            const errorElement = document.querySelector(`.item-error-${itemName}`);
+            
+            if (type === 'success') {
+                messageElement.textContent = message;
+                errorElement.textContent = '';
+            } else {
+                errorElement.textContent = message;
+                messageElement.textContent = '';
+            }
+            
+            setTimeout(() => {
+                messageElement.textContent = '';
+                errorElement.textContent = '';
+            }, 5000);
+        }
+
+        function showMarketplaceMessage(itemName, message, type) {
+            const messageElement = document.querySelector(`.marketplace-message-${itemName}`);
+            const errorElement = document.querySelector(`.marketplace-error-${itemName}`);
+            
+            if (type === 'success') {
+                messageElement.textContent = message;
+                errorElement.textContent = '';
+            } else {
+                errorElement.textContent = message;
+                messageElement.textContent = '';
+            }
+            
+            setTimeout(() => {
+                messageElement.textContent = '';
+                errorElement.textContent = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
