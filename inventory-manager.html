@@ -723,8 +723,13 @@
                     showMarketplaceMessage(itemName, 'Item purchased successfully!', 'success');
                     loadMyItems();
                     loadMarketplace();
-                    // Refresh user currency
-                    validateAuthAndFetchUser(authToken);
+                    // Refresh user currency by fetching updated user data
+                    const userResponse = await fetch(`${API_BASE_URL}/get_user?auth=${encodeURIComponent(authToken)}`);
+                    const userData = await userResponse.json();
+                    if (userResponse.ok) {
+                        userCurrency = userData['sys.currency'] || 0;
+                        userCurrencySpan.textContent = userCurrency;
+                    }
                 } else {
                     showMarketplaceMessage(itemName, result.error || 'Failed to purchase item', 'error');
                 }
