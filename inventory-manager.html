@@ -339,6 +339,8 @@
                 if (storedAuth && storedUser) {
                     authToken = storedAuth;
                     currentUser = storedUser;
+                    // Refresh user data including currency
+                    refreshUserCurrency();
                     showLoggedInState();
                 }
             }
@@ -591,9 +593,10 @@
                     document.getElementById('item-selling').checked = false;
                     document.getElementById('item-data').value = '';
                     
-                    // Refresh items if on my items tab
+                    // Refresh items and currency
                     loadMyItems();
                     loadMarketplace();
+                    await refreshUserCurrency();
                     
                     setTimeout(() => {
                         resultElement.textContent = '';
@@ -618,6 +621,7 @@
                     showMessage(itemName, 'Item put up for sale successfully!', 'success');
                     loadMyItems();
                     loadMarketplace();
+                    await refreshUserCurrency();
                 } else {
                     showMessage(itemName, result.error || 'Failed to put item for sale', 'error');
                 }
@@ -636,6 +640,7 @@
                     showMessage(itemName, 'Item removed from sale successfully!', 'success');
                     loadMyItems();
                     loadMarketplace();
+                    await refreshUserCurrency();
                 } else {
                     showMessage(itemName, result.error || 'Failed to stop selling item', 'error');
                 }
@@ -724,18 +729,26 @@
                     loadMyItems();
                     loadMarketplace();
                     // Refresh user currency by fetching updated user data
-                    const userResponse = await fetch(`${API_BASE_URL}/get_user?auth=${encodeURIComponent(authToken)}`);
-                    const userData = await userResponse.json();
-                    if (userResponse.ok) {
-                        userCurrency = userData['sys.currency'] || 0;
-                        userCurrencySpan.textContent = userCurrency;
-                    }
+                    await refreshUserCurrency();
                 } else {
                     showMarketplaceMessage(itemName, result.error || 'Failed to purchase item', 'error');
                 }
             } catch (error) {
                 showMarketplaceMessage(itemName, 'Network error occurred', 'error');
                 console.error('Buy item error:', error);
+            }
+        }
+
+        async function refreshUserCurrency() {
+            try {
+                const userResponse = await fetch(`${API_BASE_URL}/get_user?auth=${encodeURIComponent(authToken)}`);
+                const userData = await userResponse.json();
+                if (userResponse.ok) {
+                    userCurrency = userData['sys.currency'] || 0;
+                    userCurrencySpan.textContent = userCurrency;
+                }
+            } catch (error) {
+                console.error('Failed to refresh user currency:', error);
             }
         }
 
