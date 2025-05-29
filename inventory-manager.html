@@ -612,6 +612,24 @@
         const userNameSpan = document.getElementById('user-name');
         const userCurrencySpan = document.getElementById('user-currency');
 
+        // Utility function to escape HTML
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Function to create safe IDs from item names
+        function createSafeId(name) {
+            return btoa(encodeURIComponent(name)).replace(/[^a-zA-Z0-9]/g, '');
+        }
+
         // Event listeners for page load
         document.addEventListener('DOMContentLoaded', () => {
             // Check for token in URL parameters (from auth redirect)
@@ -789,36 +807,37 @@
             const listElement = document.getElementById('my-items-list');
             const itemCard = document.createElement('div');
             itemCard.className = 'my-item-card';
-            const escapedName = item.name.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+            const safeId = createSafeId(item.name);
+            
             itemCard.innerHTML = `
                 <div class="my-item-header">
                     <h3 class="my-item-name">
-                        ${item.name}
+                        ${escapeHtml(item.name)}
                         ${item.selling ? '<span class="selling-badge">For Sale</span>' : ''}
                     </h3>
                 </div>
                 <div class="my-item-description">
-                    ${item.description || 'No description'}
+                    ${escapeHtml(item.description) || 'No description'}
                 </div>
                 <div class="my-item-price">
-                    ${item.price} credits
+                    ${parseInt(item.price) || 0} credits
                 </div>
                 <div class="my-item-meta">
                     <div><strong>Created:</strong> ${new Date(item.created * 1000).toLocaleDateString()}</div>
-                    <div><strong>Author:</strong> ${item.author}</div>
-                    <div><strong>Total Income:</strong> ${item.total_income || 0} credits</div>
+                    <div><strong>Author:</strong> ${escapeHtml(item.author)}</div>
+                    <div><strong>Total Income:</strong> ${parseInt(item.total_income) || 0} credits</div>
                 </div>
                 ${item.transfer_history && item.transfer_history.length > 0 ? `
                     <div class="transfer-history-container">
-                        <button class="transfer-history-toggle" onclick="toggleTransferHistory('${escapedName}')">
+                        <button class="transfer-history-toggle" onclick="toggleTransferHistory('${safeId}')">
                             View Transfer History
                         </button>
-                        <div id="transfer-history-${escapedName}" class="transfer-history" style="display: none;">
+                        <div id="transfer-history-${safeId}" class="transfer-history" style="display: none;">
                             ${item.transfer_history.map(transfer => `
                                 <div class="transfer-item">
                                     ${transfer.type === 'creation' ? 'Created' : 
-                                      transfer.type === 'transfer' ? `Transferred from ${transfer.from} to ${transfer.to}` :
-                                      transfer.type === 'purchase' ? `Purchased by ${transfer.to} for ${transfer.price} credits` : 'Unknown'}
+                                      transfer.type === 'transfer' ? `Transferred from ${escapeHtml(transfer.from)} to ${escapeHtml(transfer.to)}` :
+                                      transfer.type === 'purchase' ? `Purchased by ${escapeHtml(transfer.to)} for ${parseInt(transfer.price) || 0} credits` : 'Unknown'}
                                     - ${new Date(transfer.timestamp * 1000).toLocaleDateString()}
                                 </div>
                             `).join('')}
@@ -827,21 +846,21 @@
                 ` : ''}
                 <div class="my-item-actions">
                     ${!item.selling ? 
-                        `<button class="action-button sell-btn primary-action" onclick="putItemForSale('${escapedName}')">Put For Sale</button>` : 
-                        `<button class="action-button primary-action" onclick="stopSelling('${escapedName}')">Stop Selling</button>`
+                        `<button class="action-button sell-btn primary-action" data-item-name="${escapeHtml(item.name)}" onclick="putItemForSale(this.dataset.itemName)">Put For Sale</button>` : 
+                        `<button class="action-button primary-action" data-item-name="${escapeHtml(item.name)}" onclick="stopSelling(this.dataset.itemName)">Stop Selling</button>`
                     }
                     <div class="action-row">
-                        <input type="number" id="price-${escapedName}" class="action-input" value="${item.price}" min="0" placeholder="Price">
-                        <button class="action-button" onclick="updatePrice('${escapedName}')">Update Price</button>
+                        <input type="number" id="price-${safeId}" class="action-input" value="${parseInt(item.price) || 0}" min="0" placeholder="Price">
+                        <button class="action-button" data-item-name="${escapeHtml(item.name)}" onclick="updatePrice(this.dataset.itemName, '${safeId}')">Update Price</button>
                     </div>
                     <div class="action-row">
-                        <input type="text" id="transfer-${escapedName}" class="action-input" placeholder="Username">
-                        <button class="action-button transfer-btn" onclick="transferItem('${escapedName}')">Transfer</button>
+                        <input type="text" id="transfer-${safeId}" class="action-input" placeholder="Username">
+                        <button class="action-button transfer-btn" data-item-name="${escapeHtml(item.name)}" onclick="transferItem(this.dataset.itemName, '${safeId}')">Transfer</button>
                     </div>
-                    <button class="action-button delete-btn" onclick="deleteItem('${escapedName}')">Delete Item</button>
+                    <button class="action-button delete-btn" data-item-name="${escapeHtml(item.name)}" onclick="deleteItem(this.dataset.itemName)">Delete Item</button>
                 </div>
-                <div class="item-message-${escapedName} success"></div>
-                <div class="item-error-${escapedName} error"></div>
+                <div class="item-message-${safeId} success"></div>
+                <div class="item-error-${safeId} error"></div>
             `;
             listElement.appendChild(itemCard);
         }
@@ -850,32 +869,33 @@
             const listElement = document.getElementById('marketplace-list');
             const itemCard = document.createElement('div');
             itemCard.className = 'marketplace-item-card';
-            const escapedName = item.name.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+            const safeId = createSafeId(item.name);
+            
             itemCard.innerHTML = `
                 <div class="marketplace-item-header">
-                    <h3 class="marketplace-item-name">${item.name}</h3>
+                    <h3 class="marketplace-item-name">${escapeHtml(item.name)}</h3>
                 </div>
                 <div class="marketplace-item-description">
-                    ${item.description || 'No description available'}
+                    ${escapeHtml(item.description) || 'No description available'}
                 </div>
                 <div class="marketplace-item-price">
-                    ${item.price} credits
+                    ${parseInt(item.price) || 0} credits
                 </div>
                 <div class="marketplace-item-meta">
-                    <div><strong>Owner:</strong> ${item.owner}</div>
-                    <div><strong>Author:</strong> ${item.author}</div>
+                    <div><strong>Owner:</strong> ${escapeHtml(item.owner)}</div>
+                    <div><strong>Author:</strong> ${escapeHtml(item.author)}</div>
                     <div><strong>Created:</strong> ${new Date(item.created * 1000).toLocaleDateString()}</div>
                 </div>
                 <div class="marketplace-item-actions">
                     ${item.owner.toLowerCase() !== currentUser.toLowerCase() ? 
-                        `<button class="buy-button" onclick="buyItem('${escapedName}')">
-                            Buy for ${item.price} credits
+                        `<button class="buy-button" data-item-name="${escapeHtml(item.name)}" onclick="buyItem(this.dataset.itemName)">
+                            Buy for ${parseInt(item.price) || 0} credits
                         </button>` :
                         '<div class="own-item-notice">This is your item</div>'
                     }
                 </div>
-                <div class="marketplace-message-${escapedName} success"></div>
-                <div class="marketplace-error-${escapedName} error"></div>
+                <div class="marketplace-message-${safeId} success"></div>
+                <div class="marketplace-error-${safeId} error"></div>
             `;
             listElement.appendChild(itemCard);
         }
@@ -889,10 +909,10 @@
             }
             
             const filteredItems = allMarketplaceItems.filter(item => {
-                return item.name.toLowerCase().includes(searchTerm) ||
+                return (item.name && item.name.toLowerCase().includes(searchTerm)) ||
                        (item.description && item.description.toLowerCase().includes(searchTerm)) ||
-                       item.owner.toLowerCase().includes(searchTerm) ||
-                       item.author.toLowerCase().includes(searchTerm);
+                       (item.owner && item.owner.toLowerCase().includes(searchTerm)) ||
+                       (item.author && item.author.toLowerCase().includes(searchTerm));
             });
             
             renderMarketplaceItems(filteredItems);
@@ -900,129 +920,69 @@
 
         // ...existing code...
 
-        async function createNewItem() {
-            const name = document.getElementById('item-name').value.trim();
-            const description = document.getElementById('item-description').value.trim();
-            const price = parseInt(document.getElementById('item-price').value) || 0;
-            const selling = document.getElementById('item-selling').checked;
-            const data = document.getElementById('item-data').value.trim() || '{}';
-            const resultElement = document.getElementById('create-item-result');
-            
-            if (!name) {
-                resultElement.textContent = 'Item name is required';
-                resultElement.className = 'error';
-                return;
-            }
-            
-            try {
-                const itemData = {
-                    name: name,
-                    description: description,
-                    price: price,
-                    selling: selling,
-                    data: JSON.parse(data)
-                };
-                
-                const response = await fetch(`${API_BASE_URL}/items/create?auth=${encodeURIComponent(authToken)}&item=${encodeURIComponent(JSON.stringify(itemData))}`);
-                const result = await response.json();
-                
-                if (response.ok) {
-                    resultElement.textContent = `Item "${name}" created successfully!`;
-                    resultElement.className = 'success';
-                    
-                    // Clear form
-                    document.getElementById('item-name').value = '';
-                    document.getElementById('item-description').value = '';
-                    document.getElementById('item-price').value = '';
-                    document.getElementById('item-selling').checked = false;
-                    document.getElementById('item-data').value = '';
-                    
-                    // Refresh items and currency
-                    loadMyItems();
-                    loadMarketplace();
-                    await refreshUserCurrency();
-                    
-                    setTimeout(() => {
-                        resultElement.textContent = '';
-                    }, 5000);
-                } else {
-                    resultElement.textContent = result.error || 'Failed to create item';
-                    resultElement.className = 'error';
-                }
-            } catch (error) {
-                resultElement.textContent = 'Invalid JSON data or network error';
-                resultElement.className = 'error';
-                console.error('Create item error:', error);
-            }
-        }
-
-        async function putItemForSale(escapedName) {
-            const itemName = escapedName.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+        async function putItemForSale(itemName) {
             try {
                 const response = await fetch(`${API_BASE_URL}/items/sell/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}`);
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showMessage(escapedName, 'Item put up for sale successfully!', 'success');
+                    showMessage(itemName, 'Item put up for sale successfully!', 'success');
                     loadMyItems();
                     loadMarketplace();
                     await refreshUserCurrency();
                 } else {
-                    showMessage(escapedName, result.error || 'Failed to put item for sale', 'error');
+                    showMessage(itemName, result.error || 'Failed to put item for sale', 'error');
                 }
             } catch (error) {
-                showMessage(escapedName, 'Network error occurred', 'error');
+                showMessage(itemName, 'Network error occurred', 'error');
                 console.error('Put for sale error:', error);
             }
         }
 
-        async function stopSelling(escapedName) {
-            const itemName = escapedName.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+        async function stopSelling(itemName) {
             try {
                 const response = await fetch(`${API_BASE_URL}/items/stop_selling/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}`);
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showMessage(escapedName, 'Item removed from sale successfully!', 'success');
+                    showMessage(itemName, 'Item removed from sale successfully!', 'success');
                     loadMyItems();
                     loadMarketplace();
                     await refreshUserCurrency();
                 } else {
-                    showMessage(escapedName, result.error || 'Failed to stop selling item', 'error');
+                    showMessage(itemName, result.error || 'Failed to stop selling item', 'error');
                 }
             } catch (error) {
-                showMessage(escapedName, 'Network error occurred', 'error');
+                showMessage(itemName, 'Network error occurred', 'error');
                 console.error('Stop selling error:', error);
             }
         }
 
-        async function updatePrice(escapedName) {
-            const itemName = escapedName.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
-            const newPrice = parseInt(document.getElementById(`price-${escapedName}`).value) || 0;
+        async function updatePrice(itemName, safeId) {
+            const newPrice = parseInt(document.getElementById(`price-${safeId}`).value) || 0;
             
             try {
                 const response = await fetch(`${API_BASE_URL}/items/set_price/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}&price=${newPrice}`);
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showMessage(escapedName, `Price updated to ${newPrice} credits!`, 'success');
+                    showMessage(itemName, `Price updated to ${newPrice} credits!`, 'success');
                     loadMyItems();
                     loadMarketplace();
                 } else {
-                    showMessage(escapedName, result.error || 'Failed to update price', 'error');
+                    showMessage(itemName, result.error || 'Failed to update price', 'error');
                 }
             } catch (error) {
-                showMessage(escapedName, 'Network error occurred', 'error');
+                showMessage(itemName, 'Network error occurred', 'error');
                 console.error('Update price error:', error);
             }
         }
 
-        async function transferItem(escapedName) {
-            const itemName = escapedName.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
-            const targetUser = document.getElementById(`transfer-${escapedName}`).value.trim();
+        async function transferItem(itemName, safeId) {
+            const targetUser = document.getElementById(`transfer-${safeId}`).value.trim();
             
             if (!targetUser) {
-                showMessage(escapedName, 'Target username is required', 'error');
+                showMessage(itemName, 'Target username is required', 'error');
                 return;
             }
             
@@ -1031,20 +991,19 @@
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showMessage(escapedName, `Item transferred to ${targetUser} successfully!`, 'success');
+                    showMessage(itemName, `Item transferred to ${escapeHtml(targetUser)} successfully!`, 'success');
                     loadMyItems();
-                    document.getElementById(`transfer-${escapedName}`).value = '';
+                    document.getElementById(`transfer-${safeId}`).value = '';
                 } else {
-                    showMessage(escapedName, result.error || 'Failed to transfer item', 'error');
+                    showMessage(itemName, result.error || 'Failed to transfer item', 'error');
                 }
             } catch (error) {
-                showMessage(escapedName, 'Network error occurred', 'error');
+                showMessage(itemName, 'Network error occurred', 'error');
                 console.error('Transfer item error:', error);
             }
         }
 
-        async function deleteItem(escapedName) {
-            const itemName = escapedName.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+        async function deleteItem(itemName) {
             if (!confirm(`Are you sure you want to delete "${itemName}"? This action cannot be undone.`)) {
                 return;
             }
@@ -1056,16 +1015,15 @@
                 if (response.ok) {
                     loadMyItems();
                 } else {
-                    showMessage(escapedName, result.error || 'Failed to delete item', 'error');
+                    showMessage(itemName, result.error || 'Failed to delete item', 'error');
                 }
             } catch (error) {
-                showMessage(escapedName, 'Network error occurred', 'error');
+                showMessage(itemName, 'Network error occurred', 'error');
                 console.error('Delete item error:', error);
             }
         }
 
-        async function buyItem(escapedName) {
-            const itemName = escapedName.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+        async function buyItem(itemName) {
             if (!confirm(`Are you sure you want to buy "${itemName}"?`)) {
                 return;
             }
@@ -1075,16 +1033,15 @@
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showMarketplaceMessage(escapedName, 'Item purchased successfully!', 'success');
+                    showMarketplaceMessage(itemName, 'Item purchased successfully!', 'success');
                     loadMyItems();
                     loadMarketplace();
-                    // Refresh user currency by fetching updated user data
                     await refreshUserCurrency();
                 } else {
-                    showMarketplaceMessage(escapedName, result.error || 'Failed to purchase item', 'error');
+                    showMarketplaceMessage(itemName, result.error || 'Failed to purchase item', 'error');
                 }
             } catch (error) {
-                showMarketplaceMessage(escapedName, 'Network error occurred', 'error');
+                showMarketplaceMessage(itemName, 'Network error occurred', 'error');
                 console.error('Buy item error:', error);
             }
         }
@@ -1102,9 +1059,10 @@
             }
         }
 
-        function showMessage(escapedName, message, type) {
-            const messageElement = document.querySelector(`.item-message-${escapedName}`);
-            const errorElement = document.querySelector(`.item-error-${escapedName}`);
+        function showMessage(itemName, message, type) {
+            const safeId = createSafeId(itemName);
+            const messageElement = document.querySelector(`.item-message-${safeId}`);
+            const errorElement = document.querySelector(`.item-error-${safeId}`);
             
             if (messageElement && errorElement) {
                 if (type === 'success') {
@@ -1122,9 +1080,10 @@
             }
         }
 
-        function showMarketplaceMessage(escapedName, message, type) {
-            const messageElement = document.querySelector(`.marketplace-message-${escapedName}`);
-            const errorElement = document.querySelector(`.marketplace-error-${escapedName}`);
+        function showMarketplaceMessage(itemName, message, type) {
+            const safeId = createSafeId(itemName);
+            const messageElement = document.querySelector(`.marketplace-message-${safeId}`);
+            const errorElement = document.querySelector(`.marketplace-error-${safeId}`);
             
             if (messageElement && errorElement) {
                 if (type === 'success') {
@@ -1142,9 +1101,9 @@
             }
         }
 
-        function toggleTransferHistory(escapedName) {
-            const historyElement = document.getElementById(`transfer-history-${escapedName}`);
-            const toggleButton = document.querySelector(`[onclick="toggleTransferHistory('${escapedName}')"]`);
+        function toggleTransferHistory(safeId) {
+            const historyElement = document.getElementById(`transfer-history-${safeId}`);
+            const toggleButton = document.querySelector(`[onclick="toggleTransferHistory('${safeId}')"]`);
             
             if (historyElement && toggleButton) {
                 if (historyElement.style.display === 'none') {
