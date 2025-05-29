@@ -918,7 +918,62 @@
             renderMarketplaceItems(filteredItems);
         }
 
-        // ...existing code...
+        async function createNewItem() {
+            const name = document.getElementById('item-name').value.trim();
+            const description = document.getElementById('item-description').value.trim();
+            const price = parseInt(document.getElementById('item-price').value) || 0;
+            const selling = document.getElementById('item-selling').checked;
+            const data = document.getElementById('item-data').value.trim() || '{}';
+            const resultElement = document.getElementById('create-item-result');
+            
+            if (!name) {
+                resultElement.textContent = 'Item name is required';
+                resultElement.className = 'error';
+                return;
+            }
+            
+            try {
+                const itemData = {
+                    name: name,
+                    description: description,
+                    price: price,
+                    selling: selling,
+                    data: JSON.parse(data)
+                };
+                
+                const response = await fetch(`${API_BASE_URL}/items/create?auth=${encodeURIComponent(authToken)}&item=${encodeURIComponent(JSON.stringify(itemData))}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultElement.textContent = `Item "${escapeHtml(name)}" created successfully!`;
+                    resultElement.className = 'success';
+                    
+                    // Clear form
+                    document.getElementById('item-name').value = '';
+                    document.getElementById('item-description').value = '';
+                    document.getElementById('item-price').value = '';
+                    document.getElementById('item-selling').checked = false;
+                    document.getElementById('item-data').value = '';
+                    
+                    // Refresh items and currency
+                    loadMyItems();
+                    loadMarketplace();
+                    await refreshUserCurrency();
+                    
+                    setTimeout(() => {
+                        resultElement.textContent = '';
+                        resultElement.className = '';
+                    }, 5000);
+                } else {
+                    resultElement.textContent = result.error || 'Failed to create item';
+                    resultElement.className = 'error';
+                }
+            } catch (error) {
+                resultElement.textContent = 'Invalid JSON data or network error';
+                resultElement.className = 'error';
+                console.error('Create item error:', error);
+            }
+        }
 
         async function putItemForSale(itemName) {
             try {
