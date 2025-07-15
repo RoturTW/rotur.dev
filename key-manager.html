@@ -369,6 +369,8 @@
             <h3>Create New Key</h3>
             <div>
                 <div>
+                    <!-- Add name input field -->
+                    <input type="text" id="new-key-name" placeholder="Key Name (required)" required>
                     <select id="new-key-type">
                         <option value="regular">Regular Key</option>
                         <option value="subscription">Subscription Key</option>
@@ -938,6 +940,7 @@
         async function createNewKey() {
             const priceInput = document.getElementById('new-key-price');
             const keyType = document.getElementById('new-key-type').value;
+            const nameInput = document.getElementById('new-key-name'); // new line
             const createKeyResult = document.getElementById('create-key-result');
             
             // Clear previous messages
@@ -945,16 +948,21 @@
             createKeyResult.classList.remove('error', 'success');
             
             try {
-                // 1. Validate the price first
+                // 1. Validate the name first
+                const name = nameInput.value.trim();
+                if (!name) {
+                    throw new Error("Key name is required");
+                }
+                // 2. Validate the price
                 const price = priceInput.value ? Math.floor(parseInt(priceInput.value)) : 0;
                 if (isNaN(price) || price < 0) {
                     throw new Error("Price must be a non-negative number");
                 }
                 
-                // 2. Prepare basic URL
-                let url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}${price ? `&price=${price}` : ''}`;
+                // 3. Prepare basic URL (add name parameter)
+                let url = `${API_BASE_URL}/keys/create?auth=${encodeURIComponent(authToken)}&name=${encodeURIComponent(name)}${price ? `&price=${price}` : ''}`;
                 
-                // 3. Handle subscription-specific parameters if needed
+                // 4. Handle subscription-specific parameters if needed
                 if (keyType === 'subscription') {
                     const frequencyInput = document.getElementById('billing-frequency');
                     const frequency = frequencyInput.value ? Math.floor(parseInt(frequencyInput.value)) : 1;
@@ -968,22 +976,23 @@
                     url += `&subscription=true&frequency=${frequency}&period=${period}`;
                 }
                 
-                // 4. Make the API request
+                // 5. Make the API request
                 createKeyResult.textContent = 'Creating key...';
                 const response = await fetch(url);
                 const data = await response.json();
                 
-                // 5. Handle the response
+                // 6. Handle the response
                 if (response.ok) {
                     createKeyResult.textContent = `Key created successfully: ${data.key}`;
                     createKeyResult.classList.add('success');
                     
-                    // 6. Reset form fields
+                    // 7. Reset form fields
                     priceInput.value = '';
+                    nameInput.value = ''; // reset name field
                     document.getElementById('new-key-type').value = 'regular';
                     document.getElementById('subscription-fields').style.display = 'none';
                     
-                    // 7. Refresh the key list
+                    // 8. Refresh the key list
                     fetchUserKeys();
                     
                     // Clear success message after 5 seconds
@@ -1226,7 +1235,7 @@
                     const userList = keyElement.querySelector('.user-list');
                     
                     // Check if "No users" message is there and remove it
-                    if (userList.querySelector('p')) {
+                    if userList.querySelector('p')) {
                         userList.innerHTML = '';
                     }
                     
