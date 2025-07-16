@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Rotur</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: white;
+            margin-top: 20px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            color: #6c757d;
+            margin: 10px 0 0 0;
+            font-size: 1.1em;
+        }
+        .terms-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #e9ecef;
+        }
+        .terms-content h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .terms-content h2 {
+            color: #34495e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .terms-content p, .terms-content li {
+            margin-bottom: 10px;
+        }
+        .terms-content ul {
+            padding-left: 20px;
+        }
+        .terms-content hr {
+            margin: 30px 0;
+            border: none;
+            border-top: 1px solid #dee2e6;
+        }
+        .acceptance-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4fd;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+        }
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 4px;
+            transform: scale(1.2);
+        }
+        .checkbox-container label {
+            font-size: 16px;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover:not(:disabled) {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        #success-container {
+            text-align: center;
+        }
+        #token-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            word-break: break-all;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            color: #155724;
+        }
+        .error-message {
+            color: #e74c3c;
+            background-color: #fadbd8;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        .contact-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <div class="header">
+            <h1>Terms of Service</h1>
+            <p>Please review and accept our terms of service to continue</p>
+        </div>
+        
+        <div class="terms-content" id="terms-content">
+            <h1>Terms of Service – Rotur</h1>
+            <p><strong>Effective Date:</strong> July 16, 2025<br>
+            <strong>Contact:</strong> mist@mistium.com</p>
+            
+            <hr>
+            
+            <p>These Terms of Service ("Terms") govern the use of Rotur, an account system for web-based operating systems and connected services, including Claw (a microblogging platform) and originChats (a decentralized messaging platform). By creating an account or using any part of the Rotur ecosystem, users agree to be bound by these Terms.</p>
+            
+            <hr>
+            
+            <h2>1. Scope</h2>
+            <p>These Terms apply to:</p>
+            <ul>
+                <li>The Rotur account system and its associated services</li>
+                <li>Claw, a Twitter-like public posting service</li>
+                <li>originChats, a Discord-like self-hosted messaging platform</li>
+                <li>Any future or affiliated services operated by the owner of Rotur</li>
+                <li>Third-party services that use Rotur for authentication</li>
+            </ul>
+            <p>These Terms form a binding agreement between the user and the owner of Rotur (Sophie Kimber), regardless of which integrated service the user is accessing.</p>
+            
+            <hr>
+            
+            <h2>2. The Rotur Team</h2>
+            <p>Rotur is developed and maintained by <strong>Sophie</strong> along with the <strong>Rotur Team</strong>, a group of trusted members who assist with operations, moderation, and support.</p>
+            <p>While some team members may act on behalf of Rotur and Sophie, direct access to servers and core infrastructure is restricted to authorized personnel only.</p>
+            <p>All official communications and legal correspondence should be directed to Sophie at <strong>mist@mistium.com</strong>.</p>
+            
+            <hr>
+            
+            <h2>3. Eligibility</h2>
+            <p>Use of Rotur is intended for individuals aged 13 and older. Users under the age of 13 are not permitted to use the platform.</p>
+            
+            <hr>
+            
+            <h2>4. Accounts</h2>
+            <p>Users may register a Rotur account to access core functionality and related services. By doing so, they agree to:</p>
+            <ul>
+                <li>Use an identity that does not impersonate others or intentionally mislead, defraud, or harm</li>
+                <li>Maintain the security of their account</li>
+                <li>Accept responsibility for any activity under their credentials</li>
+            </ul>
+            <p>Accounts may be suspended or terminated for any violation of these Terms by Sophie or authorized members of the Rotur Team.</p>
+            
+            <hr>
+            
+            <h2>5. Data Collection and Privacy</h2>
+            <p>Rotur collects and stores the following data:</p>
+            <ul>
+                <li>Account data (e.g. username, optional email address)</li>
+                <li>IP addresses (for moderation and security)</li>
+                <li>Uploaded files and user-submitted profile content</li>
+                <li>User-specific customization data (e.g. themes, wallpapers, banners)</li>
+                <li>Transactional or activity history associated with the account</li>
+            </ul>
+            <p>This data is used solely to operate, maintain, and moderate the platform. It will not be sold or shared with third parties unless legally required.</p>
+            <p>User data will be retained as necessary to comply with legal obligations and to enforce these Terms.</p>
+            <p>Users may request deletion of their data by contacting mist@mistium.com.</p>
+            
+            <hr>
+            
+            <h2>6. Content Guidelines</h2>
+            <p>Users may upload files and customize their profile. The following are prohibited:</p>
+            <ul>
+                <li>Illegal content or copyrighted material without permission</li>
+                <li>Malicious code or harmful software</li>
+                <li>Harassment, impersonation, or abusive behavior</li>
+                <li>Any content classified as NSFW, including but not limited to:
+                    <ul>
+                        <li>Sexually explicit or suggestive imagery</li>
+                        <li>Nudity</li>
+                        <li>Fetish material</li>
+                        <li>Graphic violence or gore</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>This NSFW restriction applies globally, including to:</p>
+            <ul>
+                <li>Public and private profiles</li>
+                <li>Profile pictures, banners, bios, usernames</li>
+                <li>Claw posts and replies</li>
+                <li>originChats server content if hosted by Rotur</li>
+            </ul>
+            <p>Content found in violation may be removed without notice. Accounts may be suspended or terminated at the discretion of Sophie or authorized members of the Rotur Team.</p>
+            
+            <hr>
+            
+            <h2>7. Third-Party Services</h2>
+            <p>Rotur may be used to log into or interact with third-party services not owned or operated by the platform owner. These services:</p>
+            <ul>
+                <li>May have their own Terms of Service and Privacy Policies</li>
+                <li>Are not moderated or maintained by Rotur</li>
+                <li>Are solely responsible for their own content, behavior, and data use</li>
+            </ul>
+            <p>Users are encouraged to review the policies of any third-party service before use. Misuse of Rotur accounts through third-party services may result in suspension or termination of the associated Rotur account.</p>
+            
+            <hr>
+            
+            <h2>8. Suspension and Termination</h2>
+            <p>Sophie and authorized members of the Rotur Team reserve the right to:</p>
+            <ul>
+                <li>Suspend, restrict, or terminate any account for any reason</li>
+                <li>Remove or delete user data at their discretion</li>
+                <li>Deny access to any or all parts of Rotur and related services without prior notice</li>
+            </ul>
+            
+            <hr>
+            
+            <h2>9. Availability</h2>
+            <p>No guarantee is made regarding the uptime, performance, or future availability of Rotur or any related services. Features may be added, removed, or changed at any time.</p>
+            
+            <hr>
+            
+            <h2>10. Copyright Infringement</h2>
+            <p>To report unauthorized use of copyrighted content, please contact:</p>
+            <p><strong>Copyright Agent</strong><br>
+            Sophie (creator of Rotur)<br>
+            📧 Email: <strong>mist@mistium.com</strong></p>
+            <p>Include:</p>
+            <ul>
+                <li>Identification of the copyrighted work</li>
+                <li>URL or reference to the infringing content</li>
+                <li>Contact information</li>
+                <li>Statement of good faith and accuracy</li>
+            </ul>
+            
+            <hr>
+            
+            <h2>11. Limitation of Liability</h2>
+            <p>Rotur is provided "as is" with no warranties or guarantees. The platform owner is not liable for any:</p>
+            <ul>
+                <li>Loss of data</li>
+                <li>Damages arising from use or inability to use the service</li>
+                <li>Misuse by third parties</li>
+            </ul>
+            <p>Use of the platform is at the user's own risk.</p>
+            
+            <hr>
+            
+            <h2>12. Changes to These Terms</h2>
+            <p>These Terms may be updated at any time. Continued use of the service constitutes acceptance of any changes. Users are responsible for reviewing the most current version.</p>
+            
+            <hr>
+            
+            <h2>13. Contact</h2>
+            <p>Questions or concerns may be directed to:</p>
+            <p>📧 <strong>mist@mistium.com</strong></p>
+        </div>
+        
+        <div class="acceptance-section">
+            <div class="checkbox-container">
+                <input type="checkbox" id="accept-terms" required>
+                <label for="accept-terms">
+                    I have read and agree to the Terms of Service. I understand that by checking this box and clicking "Accept Terms", I am entering into a legally binding agreement with Rotur.
+                </label>
+            </div>
+            <button id="accept-button" disabled>Accept Terms & Authenticate</button>
+        </div>
+        
+        <div class="contact-info">
+            <strong>Need help?</strong> Contact us at mist@mistium.com for any questions about these terms.
+        </div>
+    </div>
+    
+    <div class="container" id="success-container" style="display: none;">
+        <div class="header">
+            <h1>Terms Accepted Successfully!</h1>
+            <p>You have successfully accepted the Terms of Service and completed authentication.</p>
+        </div>
+        <div id="token-display"></div>
+        <div class="contact-info">
+            You can now safely close this window or proceed to use Rotur services.
+        </div>
+    </div>
+
+    <script>
+        // Function to call the accept_tos API
+        async function callAcceptTosAPI(token) {
+            try {
+                const response = await fetch(`https://social.rotur.dev/accept_tos?auth=${encodeURIComponent(token)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    console.log('Terms of Service acceptance recorded successfully');
+                } else {
+                    console.error('Failed to record TOS acceptance:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('Error calling accept_tos API:', error);
+            }
+        }
+        
+        // Check for token parameter when page loads
+        window.onload = function() {
+            // Get URL parameters using URLSearchParams
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            
+            if (token) {
+                // If token exists, call the accept_tos API
+                callAcceptTosAPI(token);
+                
+                // Show the success page
+                document.getElementById('main-container').style.display = 'none';
+                document.getElementById('success-container').style.display = 'block';
+                document.getElementById('token-display').innerHTML = '<strong>Your authentication token:</strong><br>' + token;
+                
+                // Remove token from URL by replacing current history state
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                // Setup checkbox and button functionality
+                const checkbox = document.getElementById('accept-terms');
+                const button = document.getElementById('accept-button');
+                
+                checkbox.addEventListener('change', function() {
+                    button.disabled = !this.checked;
+                });
+                
+                button.addEventListener('click', function() {
+                    if (checkbox.checked) {
+                        // Redirect to auth with a return URL
+                        const returnUrl = encodeURIComponent(window.location.href);
+                        window.location.href = `https://rotur.dev/auth?return_to=${returnUrl}`;
+                    } else {
+                        alert('Please accept the Terms of Service to continue.');
+                    }
+                });
+            }
+        };
+        
+        // Scroll to top when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.scrollTo(0, 0);
+        });
+    </script>
+</body>
+</html>
