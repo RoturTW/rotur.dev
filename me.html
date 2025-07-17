@@ -1155,7 +1155,7 @@
       document.getElementById('stat-credits').textContent = user['sys.currency'] || 0;
       document.getElementById('stat-system').textContent = user.system || 'None';
       
-      document.getElementById('profile-display-name').textContent = user.display_name || user.name || 'Your Name';
+      document.getElementById('profile-display-name').textContent = user.display_name || user.username;
       document.getElementById('profile-username-display').textContent = '@' + (user.username || 'username');
       document.getElementById('profile-avatar-large').style.backgroundImage = user.pfp ? `url('${user.pfp}')` : '';
     }
