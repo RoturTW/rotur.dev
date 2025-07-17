@@ -864,7 +864,7 @@
         <span class="sidebar-name" id="sidebar-name"></span>
       </div>
       <div class="sidebar-system" id="sidebar-system" style="color:#5f6368;font-size:13px;padding:0 24px 12px 24px;"></div>
-      <div class="sidebar-currency" id="sidebar-currency">₹ 0 Credits</div>
+      <div class="sidebar-currency" id="sidebar-currency">0 Credits</div>
       
       <nav class="sidebar-nav">
         <ul id="sidebar-tabs">
@@ -1357,7 +1357,7 @@
         document.getElementById('sidebar-avatar').style.backgroundImage = user.pfp ? `url('${user.pfp}')` : '';
         document.getElementById('sidebar-name').textContent = user.name || user.username || '';
         document.getElementById('sidebar-system').textContent = user.system ? `System: ${user.system}` : '';
-        document.getElementById('sidebar-currency').textContent = `₹ ${user['sys.currency'] || 0} Credits`;
+        document.getElementById('sidebar-currency').textContent = `${user['sys.currency'] || 0} Credits`;
         
         // Set avatars for all settings tabs
         ['main-avatar-settings2', 'main-avatar-settings3', 'main-avatar-settings4', 'main-avatar-settings5', 'main-avatar-friends'].forEach(id => {
