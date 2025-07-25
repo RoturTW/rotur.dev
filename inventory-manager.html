@@ -515,6 +515,133 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
         }
+        .copy-link-btn {
+            background: none;
+            border: none;
+            color: #6bff9f;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            margin-left: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .copy-link-btn:hover {
+            background-color: rgba(107, 255, 159, 0.1);
+            color: #4caf50;
+            transform: scale(1.1);
+        }
+        .copy-link-btn:active {
+            transform: scale(0.95);
+        }
+        .single-item-view {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+        .single-item-name {
+            color: #6bff9f;
+            font-weight: bold;
+            font-size: 32px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .single-item-description {
+            color: #ccc;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .single-item-price {
+            color: #ffeb3b;
+            font-weight: bold;
+            font-size: 28px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 235, 59, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .single-item-meta {
+            font-size: 16px;
+            color: #aaa;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            text-align: left;
+        }
+        .single-item-meta div {
+            margin: 8px 0;
+        }
+        .single-item-actions {
+            margin-top: 30px;
+        }
+        .single-item-buy-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+            margin: 0 10px;
+        }
+        .single-item-buy-btn:hover {
+            background: linear-gradient(45deg, #45a049, #5aa75c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+        }
+        .sale-status {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .sale-status.for-sale {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+        .sale-status.not-for-sale {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+            border: 1px solid #ff9800;
+        }
+        .back-to-inventory {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .back-btn {
+            padding: 8px 16px;
+            background-color: #444;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        .back-btn:hover {
+            background-color: #555;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -594,6 +721,23 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Single Item View -->
+        <div id="single-item-view" class="hidden">
+            <div class="back-to-inventory">
+                <a href="#" class="back-btn" onclick="hideSingleItemView()">← Back to Inventory</a>
+            </div>
+            <div class="single-item-view">
+                <h2 id="single-item-name" class="single-item-name"></h2>
+                <div id="single-item-description" class="single-item-description"></div>
+                <div id="single-item-price" class="single-item-price"></div>
+                <div id="single-item-sale-status" class="sale-status"></div>
+                <div id="single-item-meta" class="single-item-meta"></div>
+                <div id="single-item-actions" class="single-item-actions"></div>
+                <div id="single-item-message" class="success"></div>
+                <div id="single-item-error" class="error"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -602,12 +746,14 @@
         let currentUser = '';
         let userCurrency = 0;
         let allMarketplaceItems = [];
+        let currentSingleItem = null;
         const API_BASE_URL = 'https://social.rotur.dev';
 
         // DOM elements
         const loginSection = document.getElementById('login-section');
         const userInfoSection = document.getElementById('user-info');
         const mainContent = document.getElementById('main-content');
+        const singleItemView = document.getElementById('single-item-view');
         const loginError = document.getElementById('login-error');
         const userNameSpan = document.getElementById('user-name');
         const userCurrencySpan = document.getElementById('user-currency');
@@ -630,11 +776,40 @@
             return btoa(encodeURIComponent(name)).replace(/[^a-zA-Z0-9]/g, '');
         }
 
+        // Function to copy item link to clipboard
+        async function copyItemLink(itemName) {
+            const url = `${window.location.origin}${window.location.pathname}?view=${encodeURIComponent(itemName)}`;
+            try {
+                await navigator.clipboard.writeText(url);
+                
+                // Show temporary feedback
+                const button = event.target;
+                const originalTitle = button.title;
+                button.title = 'Copied!';
+                button.style.color = '#4caf50';
+                
+                setTimeout(() => {
+                    button.title = originalTitle;
+                    button.style.color = '';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy link:', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+        }
+
         // Event listeners for page load
         document.addEventListener('DOMContentLoaded', () => {
             // Check for token in URL parameters (from auth redirect)
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
+            const viewItem = urlParams.get('view');
             
             if (token) {
                 authToken = token;
@@ -652,6 +827,11 @@
                     refreshUserCurrency();
                     showLoggedInState();
                 }
+            }
+            
+            // Check if we need to show a specific item
+            if (viewItem) {
+                showSingleItem(decodeURIComponent(viewItem));
             }
             
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
@@ -705,6 +885,177 @@
             // Load initial data
             loadMyItems();
             loadMarketplace();
+        }
+
+        async function showSingleItem(itemName) {
+            try {
+                // First try to find in marketplace (for items for sale)
+                let item = null;
+                
+                // Check marketplace first
+                const marketplaceResponse = await fetch(`${API_BASE_URL}/items/selling`);
+                if (marketplaceResponse.ok) {
+                    const marketplaceData = await marketplaceResponse.json();
+                    item = marketplaceData.find(i => i.name === itemName);
+                }
+                
+                // If not found in marketplace and user is logged in, check their items
+                if (!item && authToken && currentUser) {
+                    const userItemsResponse = await fetch(`${API_BASE_URL}/items/list/${encodeURIComponent(currentUser)}?auth=${encodeURIComponent(authToken)}`);
+                    if (userItemsResponse.ok) {
+                        const userItemsData = await userItemsResponse.json();
+                        item = userItemsData.find(i => i.name === itemName);
+                    }
+                }
+                
+                if (!item) {
+                    // Try to get item from any user (fallback)
+                    const searchResponse = await fetch(`${API_BASE_URL}/items/search?name=${encodeURIComponent(itemName)}`);
+                    if (searchResponse.ok) {
+                        const searchData = await searchResponse.json();
+                        if (searchData.length > 0) {
+                            item = searchData[0];
+                        }
+                    }
+                }
+                
+                if (item) {
+                    currentSingleItem = item;
+                    renderSingleItem(item);
+                    
+                    // Hide main content and show single item view
+                    loginSection.classList.add('hidden');
+                    mainContent.classList.add('hidden');
+                    if (authToken && currentUser) {
+                        userInfoSection.classList.remove('hidden');
+                    }
+                    singleItemView.classList.remove('hidden');
+                } else {
+                    alert('Item not found');
+                    hideSingleItemView();
+                }
+            } catch (error) {
+                console.error('Error loading single item:', error);
+                alert('Error loading item');
+                hideSingleItemView();
+            }
+        }
+
+        function hideSingleItemView() {
+            singleItemView.classList.add('hidden');
+            
+            if (authToken && currentUser) {
+                mainContent.classList.remove('hidden');
+                userInfoSection.classList.remove('hidden');
+            } else {
+                loginSection.classList.remove('hidden');
+            }
+            
+            // Clear URL parameter
+            const url = new URL(window.location);
+            url.searchParams.delete('view');
+            window.history.replaceState({}, document.title, url.pathname + url.search);
+            
+            currentSingleItem = null;
+        }
+
+        function renderSingleItem(item) {
+            const nameElement = document.getElementById('single-item-name');
+            const descriptionElement = document.getElementById('single-item-description');
+            const priceElement = document.getElementById('single-item-price');
+            const saleStatusElement = document.getElementById('single-item-sale-status');
+            const metaElement = document.getElementById('single-item-meta');
+            const actionsElement = document.getElementById('single-item-actions');
+            
+            nameElement.innerHTML = `
+                ${escapeHtml(item.name)}
+                <button class="copy-link-btn" onclick="copyItemLink('${escapeHtml(item.name)}')" title="Copy link to this item">
+                    📋
+                </button>
+            `;
+            
+            descriptionElement.textContent = item.description || 'No description available';
+            priceElement.textContent = `${parseInt(item.price) || 0} credits`;
+            
+            // Sale status
+            if (item.selling) {
+                saleStatusElement.textContent = '✅ For Sale';
+                saleStatusElement.className = 'sale-status for-sale';
+            } else {
+                saleStatusElement.textContent = '❌ Not For Sale';
+                saleStatusElement.className = 'sale-status not-for-sale';
+            }
+            
+            // Meta information
+            metaElement.innerHTML = `
+                <div><strong>Owner:</strong> ${escapeHtml(item.owner || item.author)}</div>
+                <div><strong>Author:</strong> ${escapeHtml(item.author)}</div>
+                <div><strong>Created:</strong> ${new Date(item.created * 1000).toLocaleDateString()}</div>
+                ${item.total_income !== undefined ? `<div><strong>Total Income:</strong> ${parseInt(item.total_income) || 0} credits</div>` : ''}
+            `;
+            
+            // Actions
+            let actionsHTML = '';
+            
+            if (item.selling && authToken && currentUser && item.owner.toLowerCase() !== currentUser.toLowerCase()) {
+                actionsHTML = `
+                    <button class="single-item-buy-btn" onclick="buySingleItem()">
+                        Buy for ${parseInt(item.price) || 0} credits
+                    </button>
+                `;
+            } else if (item.selling && (!authToken || !currentUser)) {
+                actionsHTML = `
+                    <p style="color: #aaa; font-style: italic;">Login to purchase this item</p>
+                    <button onclick="window.location.href='https://rotur.dev/auth'" class="single-item-buy-btn">Login</button>
+                `;
+            } else if (item.owner && authToken && currentUser && item.owner.toLowerCase() === currentUser.toLowerCase()) {
+                actionsHTML = `
+                    <p style="color: #6bff9f; font-style: italic;">This is your item</p>
+                `;
+            } else if (!item.selling) {
+                actionsHTML = `
+                    <p style="color: #aaa; font-style: italic;">This item is not currently for sale</p>
+                `;
+            }
+            
+            actionsElement.innerHTML = actionsHTML;
+        }
+
+        async function buySingleItem() {
+            if (!currentSingleItem || !authToken || !currentUser) {
+                return;
+            }
+            
+            const itemName = currentSingleItem.name;
+            
+            if (!confirm(`Are you sure you want to buy "${itemName}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/items/buy/${encodeURIComponent(itemName)}?auth=${encodeURIComponent(authToken)}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('single-item-message').textContent = 'Item purchased successfully!';
+                    document.getElementById('single-item-error').textContent = '';
+                    
+                    // Refresh the item data and user currency
+                    await refreshUserCurrency();
+                    showSingleItem(itemName); // Reload the item to show updated status
+                    
+                    setTimeout(() => {
+                        document.getElementById('single-item-message').textContent = '';
+                    }, 5000);
+                } else {
+                    document.getElementById('single-item-error').textContent = result.error || 'Failed to purchase item';
+                    document.getElementById('single-item-message').textContent = '';
+                }
+            } catch (error) {
+                document.getElementById('single-item-error').textContent = 'Network error occurred';
+                document.getElementById('single-item-message').textContent = '';
+                console.error('Buy item error:', error);
+            }
         }
 
         function switchTab(tabName) {
@@ -814,6 +1165,9 @@
                     <h3 class="my-item-name">
                         ${escapeHtml(item.name)}
                         ${item.selling ? '<span class="selling-badge">For Sale</span>' : ''}
+                        <button class="copy-link-btn" onclick="copyItemLink('${escapeHtml(item.name)}')" title="Copy link to this item">
+                            📋
+                        </button>
                     </h3>
                 </div>
                 <div class="my-item-description">
@@ -873,7 +1227,12 @@
             
             itemCard.innerHTML = `
                 <div class="marketplace-item-header">
-                    <h3 class="marketplace-item-name">${escapeHtml(item.name)}</h3>
+                    <h3 class="marketplace-item-name">
+                        ${escapeHtml(item.name)}
+                        <button class="copy-link-btn" onclick="copyItemLink('${escapeHtml(item.name)}')" title="Copy link to this item">
+                            📋
+                        </button>
+                    </h3>
                 </div>
                 <div class="marketplace-item-description">
                     ${escapeHtml(item.description) || 'No description available'}
