@@ -1218,7 +1218,16 @@
         if (account.key) {
           // Save this account for future use
           saveAccount(account);
-          
+
+          // Send token to parent if in iframe
+          if (window.parent !== window) {
+            window.parent.postMessage({
+              type: 'rotur-auth-token',
+              token: account.key,
+              username: account.username
+            }, '*');
+          }
+
           const refUrl = new URL(return_to);
           refUrl.searchParams.set('token', account.key);
           window.location.href = refUrl.toString();
@@ -1226,13 +1235,13 @@
           console.error("Token is undefined");
         }
       });
-      
+
       document.getElementById("logoutButton").addEventListener("click", () => {
         document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         document.location.reload();
       });
-      
+
       document.getElementById("cancelAccess").addEventListener("click", () => {
         window.history.back();
       });
