@@ -64,6 +64,12 @@
               Don't have an account? 
               <button type="button" id="show-signup-btn" style="background: none; border: none; color: #1a73e8; cursor: pointer; font-size: 14px; text-decoration: underline;">Create one</button>
             </p>
+            <p style="margin: 8px 0 0 0; font-size: 12px; color: #5f6368;">
+              By signing in, you agree to our 
+              <a href="./terms-of-service.html" target="_blank" style="color: #1a73e8; text-decoration: none;">Terms of Service</a>
+              and 
+              <a href="./privacy-policy.html" target="_blank" style="color: #1a73e8; text-decoration: none;">Privacy Policy</a>
+            </p>
           </div>
         </div>
 
@@ -91,6 +97,12 @@
               Already have an account? 
               <button type="button" id="show-signin-btn" style="background: none; border: none; color: #1a73e8; cursor: pointer; font-size: 14px; text-decoration: underline;">Sign in</button>
             </p>
+            <p style="margin: 8px 0 0 0; font-size: 12px; color: #5f6368;">
+              By creating an account, you agree to our 
+              <a href="./terms-of-service.html" target="_blank" style="color: #1a73e8; text-decoration: none;">Terms of Service</a>
+              and 
+              <a href="./privacy-policy.html" target="_blank" style="color: #1a73e8; text-decoration: none;">Privacy Policy</a>
+            </p>
           </div>
         </div>
       </div>
@@ -113,6 +125,14 @@
             <i class="fas fa-user-plus"></i>
             Create Account
           </button>
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+          <p style="margin: 0; font-size: 12px; color: #5f6368;">
+            By signing in, you agree to our 
+            <a href="./terms-of-service.html" target="_blank" style="color: #1a73e8; text-decoration: none;">Terms of Service</a>
+            and 
+            <a href="./privacy-policy.html" target="_blank" style="color: #1a73e8; text-decoration: none;">Privacy Policy</a>
+          </p>
         </div>
       </div>
     </div>
@@ -483,6 +503,11 @@
 
 
     function updateModalForLoggedInUser() {
+      // Check if user has accepted TOS before proceeding
+      if (!checkTOSAcceptance(account)) {
+        return; // Will redirect to TOS page
+      }
+
       const modalContent = document.querySelector(".modal-content");
       modalContent.innerHTML = `
         <!-- Left sidebar for account list -->
@@ -523,6 +548,14 @@
           <div style="margin-top: 24px;">
             <button id="allowAccess" class="btn-primary" style="margin-bottom: 12px;">Continue</button>
             <button id="cancelAccess" class="btn-secondary">Cancel</button>
+          </div>
+          
+          <div style="margin-top: 16px; text-align: center;">
+            <p style="margin: 0; font-size: 12px; color: #5f6368;">
+              <a href="./privacy-policy.html" target="_blank" style="color: #1a73e8; text-decoration: none;">Privacy Policy</a>
+              • 
+              <a href="./terms-of-service.html" target="_blank" style="color: #1a73e8; text-decoration: none;">Terms of Service</a>
+            </p>
           </div>
         </div>
       `;
@@ -723,6 +756,23 @@
       return json;
     }
 
+    // Function to check TOS acceptance and redirect if needed
+    function checkTOSAcceptance(userData) {
+      if (userData["sys.tos_accepted"] !== true) {
+        // Store the return_to parameter for after TOS acceptance
+        if (return_to) {
+          sessionStorage.setItem('rotur_return_to', return_to);
+        }
+        
+        // User hasn't accepted TOS, redirect to terms of service page
+        const tosUrl = new URL('./terms-of-service.html', window.location.origin);
+        tosUrl.searchParams.set('token', userData.key);
+        window.location.href = tosUrl.toString();
+        return false;
+      }
+      return true;
+    }
+
     window.addEventListener("load", () => {
       // Load stylesheet first
       loadStylesheet();
@@ -732,7 +782,10 @@
       renderAccountList();
       
       const urlParams = new URLSearchParams(window.location.search);
-      return_to = urlParams.get('return_to') ?? document.referrer
+      return_to = urlParams.get('return_to') ?? sessionStorage.getItem('rotur_return_to') ?? document.referrer;
+      
+      // Clear sessionStorage after retrieval
+      sessionStorage.removeItem('rotur_return_to');
 
       const username = getCookie("username");
       const password = getCookie("password");

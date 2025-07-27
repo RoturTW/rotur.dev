@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Service - Rotur</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -110,6 +111,13 @@
             background-color: #bdc3c7;
             cursor: not-allowed;
             transform: none;
+        }
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         #success-container {
             text-align: center;
@@ -301,6 +309,7 @@
                 <li>Credits may be earned through platform activities and participation</li>
                 <li>Credits may expire or be subject to terms of use specific to their intended purpose</li>
                 <li>Users may not transfer, sell, or exchange credits with other users unless explicitly permitted by platform features</li>
+                <li>Users may not use bots, scripts, automated tools, or any form of artificial intelligence to earn credits or participate in credit-generating activities. All credit earning must be through genuine human interaction and participation</li>
                 <li>Misuse of credits, including fraudulent acquisition, exploitation of system vulnerabilities, unauthorized generation, or violations of intended use, may result in credit forfeiture and account suspension</li>
                 <li>Rotur reserves the right to control, adjust, modify, or discontinue credit balances, credit systems, or credit programs at any time without prior notice</li>
                 <li>Credit transactions and balances are subject to platform monitoring for security and fraud prevention</li>
@@ -487,49 +496,86 @@
                 
                 if (response.ok) {
                     console.log('Terms of Service acceptance recorded successfully');
+                    return true;
                 } else {
                     console.error('Failed to record TOS acceptance:', response.status, response.statusText);
+                    return false;
                 }
             } catch (error) {
                 console.error('Error calling accept_tos API:', error);
+                return false;
             }
         }
         
         // Check for token parameter when page loads
-        window.onload = function() {
+        window.onload = async function() {
             // Get URL parameters using URLSearchParams
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
             
+            // Remove token from URL immediately for security
             if (token) {
-                // If token exists, call the accept_tos API
-                callAcceptTosAPI(token);
-                
-                // Show the success page
-                document.getElementById('main-container').style.display = 'none';
-                document.getElementById('success-container').style.display = 'block';
-                document.getElementById('token-display').innerHTML = '<strong>Your authentication token:</strong><br>' + token;
-                
-                // Remove token from URL by replacing current history state
                 window.history.replaceState({}, document.title, window.location.pathname);
-            } else {
-                // Setup checkbox and button functionality
-                const checkbox = document.getElementById('accept-terms');
-                const button = document.getElementById('accept-button');
-                
-                checkbox.addEventListener('change', function() {
-                    button.disabled = !this.checked;
-                });
-                
-                button.addEventListener('click', function() {
-                    if (checkbox.checked) {
-                        // Redirect to auth with a return URL
-                        const returnUrl = encodeURIComponent(window.location.href);
-                        window.location.href = `https://rotur.dev/auth?return_to=${returnUrl}`;
+            }
+            
+            // Setup checkbox and button functionality
+            const checkbox = document.getElementById('accept-terms');
+            const button = document.getElementById('accept-button');
+            
+            checkbox.addEventListener('change', function() {
+                button.disabled = !this.checked;
+            });
+            
+            button.addEventListener('click', async function() {
+                if (checkbox.checked) {
+                    if (token) {
+                        // User has a token, so accept TOS via API
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Accepting Terms...';
+                        button.disabled = true;
+                        
+                        const success = await callAcceptTosAPI(token);
+                        
+                        if (success) {
+                            // Show success message briefly, then redirect back to auth
+                            document.getElementById('main-container').style.display = 'none';
+                            document.getElementById('success-container').style.display = 'block';
+                            document.getElementById('token-display').innerHTML = '<strong>Terms of Service accepted successfully!</strong><br>Redirecting you back to continue...';
+                            
+                            // Redirect back to auth after 2 seconds
+                            setTimeout(() => {
+                                const authUrl = new URL('./auth.html', window.location.origin);
+                                // Get the return_to parameter from the original auth page if it was passed
+                                const returnTo = sessionStorage.getItem('rotur_return_to');
+                                if (returnTo) {
+                                    authUrl.searchParams.set('return_to', returnTo);
+                                }
+                                window.location.href = authUrl.toString();
+                            }, 2000);
+                        } else {
+                            // Show error message
+                            button.innerHTML = 'Error - Try Again';
+                            button.style.backgroundColor = '#e74c3c';
+                            setTimeout(() => {
+                                button.innerHTML = 'Accept Terms & Authenticate';
+                                button.style.backgroundColor = '';
+                                button.disabled = false;
+                            }, 3000);
+                        }
                     } else {
-                        alert('Please accept the Terms of Service to continue.');
+                        // No token, redirect to auth with a return URL
+                        const returnUrl = encodeURIComponent(window.location.href);
+                        window.location.href = `./auth.html?return_to=${returnUrl}`;
                     }
-                });
+                } else {
+                    alert('Please accept the Terms of Service to continue.');
+                }
+            });
+            
+            // Update button text if token is present
+            if (token) {
+                button.textContent = 'Accept Terms & Continue';
+                // Update header text to indicate this is required
+                document.querySelector('.header p').textContent = 'You must accept our terms of service to continue using your account';
             }
         };
         
