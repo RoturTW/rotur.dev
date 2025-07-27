@@ -156,6 +156,11 @@
         <div class="header">
             <h1>Terms of Service</h1>
             <p>Please review and accept our terms of service to continue</p>
+            <div id="back-button-container" style="display: none; margin-top: 15px;">
+                <button id="back-button" style="background-color: #6c757d; padding: 8px 16px; font-size: 14px; width: auto;">
+                    <i class="fas fa-arrow-left" style="margin-right: 6px;"></i>Back to Authentication
+                </button>
+            </div>
         </div>
         
         <div class="terms-content" id="terms-content">
@@ -512,10 +517,34 @@
             // Get URL parameters using URLSearchParams
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
+            const fromAuth = urlParams.get('from') === 'auth' || document.referrer.includes('auth.html');
+            
+            // Show back button if coming from auth page
+            if (fromAuth || token) {
+                const backButtonContainer = document.getElementById('back-button-container');
+                const backButton = document.getElementById('back-button');
+                
+                backButtonContainer.style.display = 'block';
+                
+                backButton.addEventListener('click', function() {
+                    // Navigate back to auth page, preserving any return_to parameter
+                    const returnTo = sessionStorage.getItem('rotur_return_to');
+                    let authUrl = './auth.html';
+                    if (returnTo) {
+                        authUrl += '?return_to=' + encodeURIComponent(returnTo);
+                    }
+                    window.location.href = authUrl;
+                });
+            }
             
             // Remove token from URL immediately for security
             if (token) {
-                window.history.replaceState({}, document.title, window.location.pathname);
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.delete('token');
+                if (fromAuth) {
+                    newUrl.searchParams.set('from', 'auth');
+                }
+                window.history.replaceState({}, document.title, newUrl.toString());
             }
             
             // Setup checkbox and button functionality
@@ -540,6 +569,15 @@
                             document.getElementById('main-container').style.display = 'none';
                             document.getElementById('success-container').style.display = 'block';
                             document.getElementById('token-display').innerHTML = '<strong>Terms of Service accepted successfully!</strong><br>Redirecting you back to continue...';
+                            
+                            // Send token to parent if in iframe
+                            if (window.parent !== window) {
+                                window.parent.postMessage({
+                                    type: 'rotur-tos-accepted',
+                                    token: token,
+                                    message: 'Terms of Service accepted successfully'
+                                }, '*');
+                            }
                             
                             // Redirect back to auth after 2 seconds
                             setTimeout(() => {
