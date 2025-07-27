@@ -574,10 +574,9 @@
                             document.getElementById('token-display').innerHTML = '<strong>Terms of Service accepted successfully!</strong><br>Redirecting you back to continue...';
                             
                             // Send token to parent if in iframe
-                            console.log(window.parent)
                             if (window.parent !== window) {
                                 window.parent.postMessage({
-                                    type: 'rotur-tos-accepted',
+                                    type: 'rotur-auth-token',
                                     token: userToken
                                 }, '*');
                             }
