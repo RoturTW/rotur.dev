@@ -543,13 +543,18 @@
                             
                             // Redirect back to auth after 2 seconds
                             setTimeout(() => {
-                                const authUrl = new URL('./auth.html', window.location.origin);
                                 // Get the return_to parameter from the original auth page if it was passed
                                 const returnTo = sessionStorage.getItem('rotur_return_to');
                                 if (returnTo) {
-                                    authUrl.searchParams.set('return_to', returnTo);
+                                    // Redirect directly to the original destination with the token
+                                    const finalUrl = new URL(returnTo);
+                                    finalUrl.searchParams.set('token', token);
+                                    window.location.href = finalUrl.toString();
+                                } else {
+                                    // Fallback to auth page if no return_to
+                                    const authUrl = new URL('./auth.html', window.location.href);
+                                    window.location.href = authUrl.toString();
                                 }
-                                window.location.href = authUrl.toString();
                             }, 2000);
                         } else {
                             // Show error message

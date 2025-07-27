@@ -747,9 +747,19 @@
     });
 
     async function requestAccount(username, password) {
-      const response = await fetch(`https://social.rotur.dev/get_user?username=${username}&password=${password}`);
+      const response = await fetch(`https://social.rotur.dev/get_user_new?username=${username}&password=${password}`);
       const json = await response.json();
       if (json.error) {
+        // Check if it's a TOS error with a token
+        if (json.error.includes("Terms-Of-Service") && json.token) {
+          // Return a special object indicating TOS needs to be accepted
+          return {
+            key: json.token,
+            username: username,
+            "sys.tos_accepted": false,
+            requiresTOSAcceptance: true
+          };
+        }
         console.error(json.error);
         return null;
       }
@@ -758,14 +768,14 @@
 
     // Function to check TOS acceptance and redirect if needed
     function checkTOSAcceptance(userData) {
-      if (userData["sys.tos_accepted"] !== true) {
+      if (userData["sys.tos_accepted"] !== true || userData.requiresTOSAcceptance) {
         // Store the return_to parameter for after TOS acceptance
         if (return_to) {
           sessionStorage.setItem('rotur_return_to', return_to);
         }
         
         // User hasn't accepted TOS, redirect to terms of service page
-        const tosUrl = new URL('./terms-of-service.html', window.location.origin);
+        const tosUrl = new URL('./terms-of-service.html', window.location.href);
         tosUrl.searchParams.set('token', userData.key);
         window.location.href = tosUrl.toString();
         return false;
