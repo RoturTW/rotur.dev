@@ -519,6 +519,9 @@
             const token = urlParams.get('token');
             const fromAuth = urlParams.get('from') === 'auth' || document.referrer.includes('auth.html');
             
+            // Store token in a variable that persists throughout the session
+            let userToken = token;
+            
             // Show back button if coming from auth page
             if (fromAuth || token) {
                 const backButtonContainer = document.getElementById('back-button-container');
@@ -557,12 +560,12 @@
             
             button.addEventListener('click', async function() {
                 if (checkbox.checked) {
-                    if (token) {
+                    if (userToken) {
                         // User has a token, so accept TOS via API
                         button.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Accepting Terms...';
                         button.disabled = true;
                         
-                        const success = await callAcceptTosAPI(token);
+                        const success = await callAcceptTosAPI(userToken);
                         
                         if (success) {
                             // Show success message briefly, then redirect back to auth
@@ -574,8 +577,7 @@
                             if (window.parent !== window) {
                                 window.parent.postMessage({
                                     type: 'rotur-tos-accepted',
-                                    token: token,
-                                    message: 'Terms of Service accepted successfully'
+                                    token: userToken
                                 }, '*');
                             }
                             
@@ -586,7 +588,7 @@
                                 if (returnTo) {
                                     // Redirect directly to the original destination with the token
                                     const finalUrl = new URL(returnTo);
-                                    finalUrl.searchParams.set('token', token);
+                                    finalUrl.searchParams.set('token', userToken);
                                     window.location.href = finalUrl.toString();
                                 } else {
                                     // Fallback to auth page if no return_to
@@ -615,7 +617,7 @@
             });
             
             // Update button text if token is present
-            if (token) {
+            if (userToken) {
                 button.textContent = 'Accept Terms & Continue';
                 // Update header text to indicate this is required
                 document.querySelector('.header p').textContent = 'You must accept our terms of service to continue using your account';

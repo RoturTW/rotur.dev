@@ -569,8 +569,7 @@
           if (window.parent !== window) {
             window.parent.postMessage({
               type: 'rotur-auth-token',
-              token: account.key,
-              username: account.username
+              token: account.key
             }, '*');
           }
 
