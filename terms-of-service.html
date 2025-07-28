@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,14 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 800px;
+            max-width: min(1200px, 90%);
             margin: 0 auto;
             padding: 20px;
             line-height: 1.6;
             color: #333;
             background-color: #f8f9fa;
         }
+
         .container {
             background: white;
             margin-top: 20px;
@@ -22,24 +24,28 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
         .header {
             text-align: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 2px solid #e9ecef;
         }
+
         .header h1 {
             color: #2c3e50;
             margin: 0;
             font-size: 2.5em;
         }
+
         .header p {
             color: #6c757d;
             margin: 10px 0 0 0;
             font-size: 1.1em;
         }
+
         .terms-content {
-            max-height: 400px;
+            max-height: min(700px, 80vh);
             overflow-y: auto;
             padding: 20px;
             background-color: #f8f9fa;
@@ -47,27 +53,34 @@
             margin: 20px 0;
             border: 1px solid #e9ecef;
         }
+
         .terms-content h1 {
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
         }
+
         .terms-content h2 {
             color: #34495e;
             margin-top: 30px;
             margin-bottom: 15px;
         }
-        .terms-content p, .terms-content li {
+
+        .terms-content p,
+        .terms-content li {
             margin-bottom: 10px;
         }
+
         .terms-content ul {
             padding-left: 20px;
         }
+
         .terms-content hr {
             margin: 30px 0;
             border: none;
             border-top: 1px solid #dee2e6;
         }
+
         .acceptance-section {
             margin-top: 30px;
             padding: 20px;
@@ -75,21 +88,25 @@
             border-radius: 8px;
             border-left: 4px solid #3498db;
         }
+
         .checkbox-container {
             display: flex;
             align-items: flex-start;
             margin: 20px 0;
         }
+
         .checkbox-container input[type="checkbox"] {
             margin-right: 12px;
             margin-top: 4px;
             transform: scale(1.2);
         }
+
         .checkbox-container label {
             font-size: 16px;
             color: #2c3e50;
             cursor: pointer;
         }
+
         button {
             background-color: #3498db;
             color: white;
@@ -103,25 +120,36 @@
             width: 100%;
             margin-top: 20px;
         }
+
         button:hover:not(:disabled) {
             background-color: #2980b9;
             transform: translateY(-1px);
         }
+
         button:disabled {
             background-color: #bdc3c7;
             cursor: not-allowed;
             transform: none;
         }
+
         .fa-spinner {
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
+
         #success-container {
             text-align: center;
         }
+
         #token-display {
             margin-top: 20px;
             padding: 15px;
@@ -133,6 +161,7 @@
             font-size: 14px;
             color: #155724;
         }
+
         .error-message {
             color: #e74c3c;
             background-color: #fadbd8;
@@ -141,6 +170,7 @@
             margin: 10px 0;
             border-left: 4px solid #e74c3c;
         }
+
         .contact-info {
             background-color: #f8f9fa;
             padding: 15px;
@@ -151,41 +181,58 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container" id="main-container">
         <div class="header">
             <h1>Terms of Service</h1>
             <p>Please review and accept our terms of service to continue</p>
             <div id="back-button-container" style="display: none; margin-top: 15px;">
-                <button id="back-button" style="background-color: #6c757d; padding: 8px 16px; font-size: 14px; width: auto;">
+                <button id="back-button"
+                    style="background-color: #6c757d; padding: 8px 16px; font-size: 14px; width: auto;">
                     <i class="fas fa-arrow-left" style="margin-right: 6px;"></i>Back to Authentication
                 </button>
             </div>
         </div>
-        
+
         <div class="terms-content" id="terms-content">
             <h1>Terms of Service – Rotur</h1>
             <p><strong>Effective Date:</strong> July 16, 2025<br>
-            <strong>Contact:</strong> mist@mistium.com</p>
-            
+                <strong>Contact:</strong> d.a.kimber@icloud.com
+            </p>
+
             <hr>
-            
+
             <h2>Introduction</h2>
-            <p>Welcome to Rotur. These Terms of Service ("Terms") constitute a legally binding agreement between you ("User," "you," or "your") and Rotur, operated by Sophie Kimber and the Rotur Team ("we," "us," or "our"). By accessing or using any part of the Rotur ecosystem, including but not limited to the Rotur account system, Claw, originChats, and any affiliated or third-party services, you agree to be bound by these Terms. If you do not agree to these Terms, you may not use Rotur or any related services.</p>
-            <p><strong>Our Mission:</strong> Rotur aims to make Turbowarp-based operating systems and other compatible environments more interconnected, secure, and easy to develop for. We believe in open, collaborative, and innovative digital experiences, and strive to provide a robust, user-friendly networking and account standard for the community.</p>
-            <p><strong>Vision and Use Cases:</strong> Rotur is designed to enable seamless cross-platform experiences, such as cross-play gaming, collaborative editing, and unified authentication across diverse projects. Our goal is to empower developers and users to build and participate in a vibrant, interconnected ecosystem.</p>
+            <p>Welcome to Rotur. These Terms of Service ("Terms") constitute a legally binding agreement between you
+                ("User," "you," or "your") and Rotur, operated by Sophie Kimber and the Rotur Team ("we," "us," or
+                "our"). By accessing or using any part of the Rotur ecosystem, including but not limited to the Rotur
+                account system, Claw, originChats, and any affiliated or third-party services, you agree to be bound by
+                these Terms. If you do not agree to these Terms, you may not use Rotur or any related services.</p>
+            <p><strong>Our Mission:</strong> Rotur aims to make Turbowarp-based operating systems and other compatible
+                environments more interconnected, secure, and easy to develop for. We believe in open, collaborative,
+                and innovative digital experiences, and strive to provide a robust, user-friendly networking and account
+                standard for the community.</p>
+            <p><strong>Vision and Use Cases:</strong> Rotur is designed to enable seamless cross-platform experiences,
+                such as cross-play gaming, collaborative editing, and unified authentication across diverse projects.
+                Our goal is to empower developers and users to build and participate in a vibrant, interconnected
+                ecosystem.</p>
 
             <h2>Definitions</h2>
             <ul>
-                <li><strong>Rotur:</strong> The cloudlink-based networking packet standard, accounts system, and related services, including but not limited to Claw and originChats.</li>
+                <li><strong>Rotur:</strong> The cloudlink-based networking packet standard, accounts system, and related
+                    services, including but not limited to Claw and originChats.</li>
                 <li><strong>User:</strong> Any individual or entity accessing or using Rotur services.</li>
-                <li><strong>Rotur Team:</strong> The developers and authorized personnel responsible for maintaining and operating Rotur.</li>
-                <li><strong>Content:</strong> Any data, files, text, images, or other material uploaded, submitted, or transmitted by users through Rotur.</li>
-                <li><strong>Services:</strong> All features, functionality, and offerings provided by Rotur, including third-party integrations.</li>
+                <li><strong>Rotur Team:</strong> The developers and authorized personnel responsible for maintaining and
+                    operating Rotur.</li>
+                <li><strong>Content:</strong> Any data, files, text, images, or other material uploaded, submitted, or
+                    transmitted by users through Rotur.</li>
+                <li><strong>Services:</strong> All features, functionality, and offerings provided by Rotur, including
+                    third-party integrations.</li>
             </ul>
 
             <hr>
-            
+
             <h2>1. Scope</h2>
             <p>These Terms apply to:</p>
             <ul>
@@ -195,42 +242,64 @@
                 <li>Any future or affiliated services operated by Rotur</li>
                 <li>Third-party services that use Rotur for authentication</li>
             </ul>
-            <p>These Terms form a binding agreement between the user and the owner of Rotur (Sophie Kimber), regardless of which integrated service the user is accessing.</p>
-            
+            <p>These Terms form a binding agreement between the user and the owner of Rotur (Sophie Kimber), regardless
+                of which integrated service the user is accessing.</p>
+
             <hr>
-            
+
             <h2>2. Service Description</h2>
-            <p>Rotur is a unified account system designed to provide authentication and identity management for web-based operating systems and connected services. The platform offers:</p>
+            <p>Rotur is a unified account system designed to provide authentication and identity management for
+                web-based operating systems and connected services. The platform offers:</p>
             <ul>
-                <li><strong>Account Management:</strong> Centralized user accounts with customizable profiles, themes, and personal settings</li>
-                <li><strong>Authentication Services:</strong> Single sign-on (SSO) capabilities for integrated services and third-party applications</li>
+                <li><strong>Account Management:</strong> Centralized user accounts with customizable profiles, themes,
+                    and personal settings</li>
+                <li><strong>Authentication Services:</strong> Single sign-on (SSO) capabilities for integrated services
+                    and third-party applications</li>
                 <li><strong>File Storage:</strong> Personal file storage and management capabilities</li>
             </ul>
             <h3>Service Limitations</h3>
             <p>Users acknowledge and accept the following limitations:</p>
             <ul>
-                <li>The service is provided on a best-effort basis with no guaranteed uptime, performance, or availability.</li>
-                <li>Features may be experimental, in beta, or subject to change or discontinuation at any time without notice.</li>
+                <li>The service is provided on a best-effort basis with no guaranteed uptime, performance, or
+                    availability.</li>
+                <li>Features may be experimental, in beta, or subject to change or discontinuation at any time without
+                    notice.</li>
                 <li>Storage capacity and bandwidth may be subject to reasonable limits to ensure fair usage.</li>
                 <li>Third-party integrations may be discontinued or modified based on external factors.</li>
-                <li>The platform is designed for personal and non-commercial use; enterprise features may be limited.</li>
+                <li>The platform is designed for personal and non-commercial use; enterprise features may be limited.
+                </li>
                 <li>Support is provided by a small team and response times may vary.</li>
-                <li>Data backup and recovery capabilities may be limited; users are responsible for maintaining their own backups of important content.</li>
+                <li>Data backup and recovery capabilities may be limited; users are responsible for maintaining their
+                    own backups of important content.</li>
             </ul>
             <hr>
-            
+
             <h2>3. The Rotur Team</h2>
-            <p>Rotur is developed and maintained by Sophie Kimber and the Rotur Team, including Flufi and Layz. The Rotur Team is responsible for platform development, security, moderation, support, and community engagement. Team members may serve in roles such as developers, moderators, support staff, or community managers. While some team members may act on behalf of Rotur, direct access to servers and core infrastructure is restricted to authorized personnel only. Users can expect the Rotur Team to provide support, enforce these Terms, and foster a safe and welcoming environment. All official communications and legal correspondence should be directed to Sophie at <strong>mist@mistium.com</strong>.</p>
-            <p><strong>How to Contact the Team:</strong> For support, feedback, or to report issues, users may contact the Rotur Team via the official email or through designated support channels on the Rotur platform.</p>
+            <p>Rotur is developed and maintained by Sophie Kimber and the Rotur Team, including Flufi and Layz. The
+                Rotur Team is responsible for platform development, security, moderation, support, and community
+                engagement. Team members may serve in roles such as developers, moderators, support staff, or community
+                managers. While some team members may act on behalf of Rotur, direct access to servers and core
+                infrastructure is restricted to authorized personnel only. Users can expect the Rotur Team to provide
+                support, enforce these Terms, and foster a safe and welcoming environment. All official communications
+                and legal correspondence should be directed to Sophie at <strong>d.a.kimber@icloud.com</strong>.</p>
+            <p><strong>How to Contact the Team:</strong> For support, feedback, or to report issues, users may contact
+                the Rotur Team via the official email or through designated support channels on the Rotur platform.</p>
             <hr>
-            
+
             <h2>4. Eligibility & Children’s Privacy</h2>
-            <p>Use of Rotur is intended for individuals aged 13 and older. By using Rotur, you represent and warrant that you are at least 13 years of age. Users under the age of 13 are strictly prohibited from using the platform. If you are using Rotur on behalf of an entity, you represent that you have the authority to bind that entity to these Terms.</p>
-            <p><strong>Children’s Privacy:</strong> Rotur does not knowingly collect or solicit personal information from children under 13. If we learn that we have collected personal information from a child under 13, we will promptly delete that information. If you believe a child under 13 has provided us with personal information, please contact us immediately.</p>
+            <p>Use of Rotur is intended for individuals aged 13 and older. By using Rotur, you represent and warrant
+                that you are at least 13 years of age. Users under the age of 13 are strictly prohibited from using the
+                platform. If you are using Rotur on behalf of an entity, you represent that you have the authority to
+                bind that entity to these Terms.</p>
+            <p><strong>Children’s Privacy:</strong> Rotur does not knowingly collect or solicit personal information
+                from children under 13. If we learn that we have collected personal information from a child under 13,
+                we will promptly delete that information. If you believe a child under 13 has provided us with personal
+                information, please contact us immediately.</p>
             <hr>
-            
+
             <h2>5. Accounts and User Responsibilities</h2>
-            <p>Users may register a Rotur account to access core functionality and related services. By doing so, you agree to:</p>
+            <p>Users may register a Rotur account to access core functionality and related services. By doing so, you
+                agree to:</p>
             <ul>
                 <li>Provide accurate, current, and complete information during registration and keep it updated.</li>
                 <li>Use an identity that does not impersonate others or intentionally mislead, defraud, or harm.</li>
@@ -247,10 +316,14 @@
                 <li>Comply with all applicable laws and regulations in connection with your use of Rotur.</li>
                 <li>Respect the rights and dignity of other users and the Rotur Team.</li>
             </ul>
-            <p>Examples of prohibited account activity include, but are not limited to: creating multiple accounts to evade bans, using automated scripts to access the service, or providing false information during registration.</p>
-            <p>Accounts may be suspended or terminated for any violation of these Terms by Sophie or authorized members of the Rotur Team. You are solely responsible for your conduct and any content you submit, post, or display on or via Rotur.</p>
+            <p>Examples of prohibited account activity include, but are not limited to: creating multiple accounts to
+                evade bans, using automated scripts to access the service, or providing false information during
+                registration.</p>
+            <p>Accounts may be suspended or terminated for any violation of these Terms by Sophie or authorized members
+                of the Rotur Team. You are solely responsible for your conduct and any content you submit, post, or
+                display on or via Rotur.</p>
             <hr>
-            
+
             <h2>6. Data Collection, Privacy, and Data Retention</h2>
             <p>Rotur collects and stores the following data:</p>
             <ul>
@@ -260,64 +333,321 @@
                 <li>User-specific customization data (e.g. themes, wallpapers, banners)</li>
                 <li>Transactional or activity history associated with the account</li>
             </ul>
-            <p>This data is used solely to operate, maintain, and moderate the platform. It will not be sold or shared with third parties except as required by law, regulation, or legal process, or to protect the rights, property, or safety of Rotur, its users, or the public.</p>
-            <p>User data will be retained as necessary to comply with legal obligations, resolve disputes, and enforce these Terms. Users may request deletion of their data by contacting mist@mistium.com. However, some data may be retained for a reasonable period as required by law or for legitimate business purposes.</p>
-            <p><strong>Third-Party Data Sharing:</strong> Rotur may integrate with third-party services for authentication or additional features. When you use these integrations, your data may be shared with those third parties as necessary to provide the service. We encourage you to review the privacy policies of any third-party service you use in connection with Rotur.</p>
-            <p><strong>User Rights:</strong> You have the right to access, correct, or request deletion of your personal data, subject to certain legal exceptions. To exercise these rights, contact us at mist@mistium.com.</p>
+            <p>This data is used solely to operate, maintain, and moderate the platform. It will not be sold or shared
+                with third parties except as required by law, regulation, or legal process, or to protect the rights,
+                property, or safety of Rotur, its users, or the public.</p>
+            <p>User data will be retained as necessary to comply with legal obligations, resolve disputes, and enforce
+                these Terms. Users may request deletion of their data by contacting d.a.kimber@icloud.com. However, some data
+                may be retained for a reasonable period as required by law or for legitimate business purposes.</p>
+            <p><strong>Third-Party Data Sharing:</strong> Rotur may integrate with third-party services for
+                authentication or additional features. When you use these integrations, your data may be shared with
+                those third parties as necessary to provide the service. We encourage you to review the privacy policies
+                of any third-party service you use in connection with Rotur.</p>
+            <p><strong>User Rights:</strong> You have the right to access, correct, or request deletion of your personal
+                data, subject to certain legal exceptions. To exercise these rights, contact us at d.a.kimber@icloud.com.</p>
             <hr>
-            
+
             <h2>7. Content Guidelines and Prohibited Conduct</h2>
+
             <p>Users may upload files and customize their profile. The following are strictly prohibited:</p>
+
             <ul>
-                <li>Illegal content or copyrighted material without permission (e.g., pirated software, unlicensed media)</li>
+                <li>Illegal content or copyrighted material without permission (e.g., pirated software, unlicensed
+                    media)</li>
                 <li>Malicious code, viruses, or harmful software (e.g., malware, ransomware, phishing tools)</li>
-                <li>Harassment, impersonation, or abusive behavior (e.g., targeted harassment, doxxing, hate speech)</li>
-                <li>Any content classified as NSFW, including but not limited to:
-                    <ul>
-                        <li>Sexually explicit or suggestive imagery</li>
-                        <li>Nudity</li>
-                        <li>Fetish material</li>
-                        <li>Graphic violence or gore</li>
-                    </ul>
+                <li>Harassment, impersonation, or abusive behavior (e.g., targeted harassment, doxxing, hate speech)
                 </li>
+                <li><strong>NSFW Content</strong> as defined below</li>
                 <li>Spam, scams, or fraudulent activity (e.g., pyramid schemes, phishing attempts, fake giveaways)</li>
-                <li>Attempts to circumvent security or moderation systems (e.g., exploiting bugs, using proxies to evade bans)</li>
+                <li>Attempts to circumvent security or moderation systems (e.g., exploiting bugs, using proxies to evade
+                    bans)</li>
                 <li>Any activity that violates applicable law or regulation</li>
             </ul>
-            <p>This NSFW restriction applies globally, including to public and private profiles, profile pictures, banners, bios, usernames, Claw posts and replies, and originChats server content if hosted by Rotur. Content found in violation may be removed without notice. Accounts may be suspended or terminated at the discretion of Sophie or authorized members of the Rotur Team.</p>
-            <p><strong>Examples of Acceptable Content:</strong> Original artwork, personal status updates, collaborative project files, and non-offensive memes are generally permitted, provided they comply with these Terms and applicable law.</p>
+
+            <div class="danger-box">
+                <strong>⚠️ NSFW Content Policy:</strong> All NSFW content is strictly prohibited across all Rotur
+                services. This policy is enforced with zero tolerance and automatic detection systems.
+            </div>
+
+            <h3>NSFW Content - Detailed Definitions</h3>
+
+            <p><strong>NSFW (Not Safe For Work) content is strictly prohibited</strong> and includes, but is not limited
+                to:</p>
+
+            <h4>Sexual Content</h4>
+            <ul>
+                <li><strong>Nudity:</strong> Any depiction of exposed genitals, female nipples, or buttocks, regardless
+                    of artistic intent</li>
+                <li><strong>Sexual Acts:</strong> Any visual depiction, illustration, or description of sexual activity,
+                    including but not limited to:
+                    <ul>
+                        <li>Intercourse, oral sex, or sexual touching</li>
+                        <li>Masturbation or sexual self-stimulation</li>
+                        <li>Sexual roleplay scenarios</li>
+                    </ul>
+                </li>
+                <li><strong>Sexually Suggestive Content:</strong> Content that implies or suggests sexual activity,
+                    including:
+                    <ul>
+                        <li>Poses that emphasize or draw attention to sexual body parts</li>
+                        <li>Clothing or lack thereof intended to be sexually arousing (lingerie modeled in suggestive
+                            poses, swimwear in non-beach/pool contexts with suggestive posing)</li>
+                        <li>Text, usernames, or descriptions with sexual innuendo or explicit sexual references</li>
+                        <li>"Ahegao" faces or expressions designed to simulate sexual arousal</li>
+                    </ul>
+                </li>
+                <li><strong>Fetish Material:</strong> Any content depicting or catering to sexual fetishes, including
+                    but not limited to:
+                    <ul>
+                        <li>BDSM equipment, scenarios, or roleplay</li>
+                        <li>Foot fetish content (sexualized depictions of feet)</li>
+                        <li>Any content sexualizing non-sexual objects or scenarios</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>Violence and Gore</h4>
+            <ul>
+                <li><strong>Graphic Violence:</strong> Real or realistic depictions of:
+                    <ul>
+                        <li>Severe injury with visible blood, wounds, or bodily harm</li>
+                        <li>Torture, mutilation, or dismemberment</li>
+                        <li>Death or dying in graphic detail</li>
+                    </ul>
+                </li>
+                <li><strong>Gore:</strong> Any content showing:
+                    <ul>
+                        <li>Internal organs, exposed bone, or severe tissue damage</li>
+                        <li>Excessive blood or bodily fluids in violent contexts</li>
+                        <li>Decomposition or corpses in graphic detail</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Exception:</strong> Stylized cartoon violence (e.g., typical video game violence) without
+                realistic gore is permitted.
+            </div>
+
+            <h4>Age-Related Restrictions</h4>
+            <ul>
+                <li><strong>Minors in Inappropriate Content:</strong> Any content featuring individuals under 18 in:
+                    <ul>
+                        <li>Revealing clothing or poses</li>
+                        <li>Adult-oriented scenarios or contexts</li>
+                        <li>Content that could be construed as sexualizing minors in any way</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>Platform-Specific Applications</h4>
+            <p>This NSFW restriction applies <strong>universally across all Rotur services</strong> including:</p>
+            <ul>
+                <li>Profile pictures and banners</li>
+                <li>Account usernames and display names</li>
+                <li>Biography and status text</li>
+                <li>File uploads and shared content</li>
+                <li>Claw posts, replies, and media attachments</li>
+                <li>originChats messages, server names, and channel content</li>
+                <li>Any content hosted on Rotur infrastructure</li>
+                <li>Third-party service integrations using Rotur authentication</li>
+            </ul>
+
             <hr>
-            
+
+            <h3>Content Review Process</h3>
+
+            <h4>Automated Detection</h4>
+            <ul>
+                <li>Content is subject to automated scanning for prohibited material</li>
+                <li>Flagged content is automatically hidden pending manual review</li>
+                <li>Users will be notified when content is flagged for review</li>
+            </ul>
+
+            <h4>Manual Review Criteria</h4>
+            <p>Content moderators will apply the following standards:</p>
+            <ul>
+                <li><strong>Context Consideration:</strong> Artistic, educational, or news context does not exempt
+                    content from NSFW rules</li>
+                <li><strong>Intent Irrelevant:</strong> Content is judged by its appearance and potential impact, not
+                    creator intent</li>
+                <li><strong>Community Standards:</strong> Content must be appropriate for a general audience including
+                    13+ users</li>
+                <li><strong>Borderline Content:</strong> When in doubt, content will be classified as NSFW and removed
+                </li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Artistic, educational, or news context does NOT exempt content from NSFW
+                rules. Content is judged solely by its appearance and appropriateness for all users.
+            </div>
+
+            <h4>Appeals Process</h4>
+            <p>Users may appeal content removal decisions:</p>
+            <ol>
+                <li><strong>Initial Appeal:</strong> Submit appeal within 7 days of removal notice via support channels
+                </li>
+                <li><strong>Review Timeline:</strong> Appeals are reviewed within 5 business days</li>
+                <li><strong>Appeal Decision:</strong> Final decision communicated with specific reasoning</li>
+                <li><strong>Escalation:</strong> Decisions may be escalated to Platform Owner for final review</li>
+                <li><strong>False Claims:</strong> Repeated frivolous appeals may result in account restrictions</li>
+            </ol>
+
+            <hr>
+
+            <h3>Enforcement Actions</h3>
+
+            <table class="enforcement-table">
+                <thead>
+                    <tr>
+                        <th>Violation Level</th>
+                        <th>Timeframe</th>
+                        <th>Actions Taken</th>
+                        <th>Additional Consequences</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>First Violation</strong></td>
+                        <td>-</td>
+                        <td>
+                            • Content removal with warning notice<br>
+                            • 24-hour temporary restriction on new uploads<br>
+                            • Educational notice about community guidelines
+                        </td>
+                        <td>Warning recorded on account</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Second Violation</strong></td>
+                        <td>Within 90 days</td>
+                        <td>
+                            • Content removal<br>
+                            • 7-day suspension of upload privileges<br>
+                            • Mandatory acknowledgment of guidelines before restoration
+                        </td>
+                        <td>Account flagged for monitoring</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Third Violation</strong></td>
+                        <td>Within 180 days</td>
+                        <td>
+                            • 30-day account suspension<br>
+                            • All content subject to manual review for 90 days after reinstatement<br>
+                            • Final warning issued
+                        </td>
+                        <td>Next violation results in permanent ban</td>
+                    </tr>
+                    <tr style="background-color: #f8d7da;">
+                        <td><strong>Severe Violations</strong></td>
+                        <td>Immediate</td>
+                        <td>
+                            • Immediate account termination<br>
+                            • Content reported to authorities if applicable<br>
+                            • IP and device bans implemented
+                        </td>
+                        <td>No appeals process</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="danger-box">
+                <strong>Severe Violations - Immediate Account Termination:</strong>
+                <ul>
+                    <li>Content involving minors in inappropriate contexts</li>
+                    <li>Extreme violence or illegal content</li>
+                    <li>Deliberate attempts to circumvent content filters</li>
+                    <li>Commercial distribution of prohibited content</li>
+                </ul>
+            </div>
+
+            <hr>
+
+            <h3>Reporting Mechanisms</h3>
+
+            <p>Users can report NSFW content via:</p>
+            <ul>
+                <li><strong>Email Reports:</strong> d.a.kimber@icloud.com with specific content URLs</li>
+                <li><strong>Emergency Reports:</strong> For illegal content, contact authorities and notify us
+                    immediately</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Reporter Protection:</strong> Users reporting in good faith are protected from retaliation.
+                False reporting for harassment purposes will result in penalties for the reporting user.
+            </div>
+
+            <hr>
+
+            <h3>Content Creator Responsibilities</h3>
+
+            <p>Users uploading content must:</p>
+            <ul>
+                <li>Review all content before uploading to ensure compliance</li>
+                <li>Understand that "accidental" violations are still violations</li>
+                <li>Take responsibility for content shared through their accounts</li>
+                <li>Monitor content shared by others using their integrations or services</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>No Safe Harbor:</strong> Claiming ignorance of these guidelines, technical errors, or
+                third-party responsibility does not exempt users from enforcement actions.
+            </div>
+
+            <hr>
+
+            <h3>Regular Policy Updates</h3>
+
+            <p>These content guidelines may be updated to address new types of prohibited content or clarify existing
+                definitions. Users will be notified of significant changes and given reasonable time to comply with
+                updated standards.</p>
+
+
             <h2>8. Fees and Payments</h2>
-            <p>Rotur operates as a free service with optional paid features and an internal credit system. Users should be aware of the following:</p>
+            <p>Rotur operates as a free service with optional paid features and an internal credit system. Users should
+                be aware of the following:</p>
             <h3>Current Service Model</h3>
             <ul>
                 <li>Account creation and basic platform access are provided at no cost</li>
-                <li>Core features including authentication, file storage (within limits), and integrated services are free to use</li>
+                <li>Core features including authentication, file storage (within limits), and integrated services are
+                    free to use</li>
                 <li>Premium features and services may require credits or direct payment</li>
                 <li>No credit card or payment information is required for standard account registration</li>
             </ul>
             <h3>Payment Features</h3>
             <p>Rotur offers optional paid features and premium services with the following terms:</p>
             <ul>
-                <li><strong>Billing Practices:</strong> All charges are clearly disclosed before purchase, with transparent pricing and billing cycles</li>
-                <li><strong>Payment Processing:</strong> Payments are processed through secure third-party providers with industry-standard security measures</li>
-                <li><strong>Refund Policy:</strong> Refund eligibility is determined on a case-by-case basis, with consideration for service availability and user satisfaction</li>
-                <li><strong>Subscription Terms:</strong> Any recurring charges require explicit user consent and include clear cancellation procedures</li>
+                <li><strong>Billing Practices:</strong> All charges are clearly disclosed before purchase, with
+                    transparent pricing and billing cycles</li>
+                <li><strong>Payment Processing:</strong> Payments are processed through secure third-party providers
+                    with industry-standard security measures</li>
+                <li><strong>Refund Policy:</strong> Refund eligibility is determined on a case-by-case basis, with
+                    consideration for service availability and user satisfaction</li>
+                <li><strong>Subscription Terms:</strong> Any recurring charges require explicit user consent and include
+                    clear cancellation procedures</li>
             </ul>
             <h3>Internal Currency and Credits</h3>
             <p>Rotur operates an internal credit system with the following terms:</p>
             <ul>
-                <li>Credits are virtual currency used within the Rotur ecosystem and have no real-world monetary value through official channels</li>
-                <li>Rotur will never provide official means to exchange credits for cash or real-world monetary value</li>
-                <li>Users may engage in private exchanges or transactions for credits outside of official Rotur channels at their own discretion and risk</li>
+                <li>Credits are virtual currency used within the Rotur ecosystem and have no real-world monetary value
+                    through official channels</li>
+                <li>Rotur will never provide official means to exchange credits for cash or real-world monetary value
+                </li>
+                <li>Users may engage in private exchanges or transactions for credits outside of official Rotur channels
+                    at their own discretion and risk</li>
                 <li>Credits may be earned through platform activities and participation</li>
                 <li>Credits may expire or be subject to terms of use specific to their intended purpose</li>
-                <li>Users may not transfer, sell, or exchange credits with other users unless explicitly permitted by platform features</li>
-                <li>Users may not use bots, scripts, automated tools, or any form of artificial intelligence to earn credits or participate in credit-generating activities. All credit earning must be through genuine human interaction and participation</li>
-                <li>Misuse of credits, including fraudulent acquisition, exploitation of system vulnerabilities, unauthorized generation, or violations of intended use, may result in credit forfeiture and account suspension</li>
-                <li>Rotur reserves the right to control, adjust, modify, or discontinue credit balances, credit systems, or credit programs at any time without prior notice</li>
-                <li>Credit transactions and balances are subject to platform monitoring for security and fraud prevention</li>
+                <li>Users may not transfer, sell, or exchange credits with other users unless explicitly permitted by
+                    platform features</li>
+                <li>Users may not use bots, scripts, automated tools, or any form of artificial intelligence to earn
+                    credits or participate in credit-generating activities. All credit earning must be through genuine
+                    human interaction and participation</li>
+                <li>Misuse of credits, including fraudulent acquisition, exploitation of system vulnerabilities,
+                    unauthorized generation, or violations of intended use, may result in credit forfeiture and account
+                    suspension</li>
+                <li>Rotur reserves the right to control, adjust, modify, or discontinue credit balances, credit systems,
+                    or credit programs at any time without prior notice</li>
+                <li>Credit transactions and balances are subject to platform monitoring for security and fraud
+                    prevention</li>
             </ul>
             <h3>Prohibited Financial Activities</h3>
             <p>Users may NOT:</p>
@@ -334,71 +664,95 @@
                 <li>Discontinue free services or features if necessary for platform sustainability</li>
                 <li>Update pricing, billing terms, or payment policies with advance notification</li>
             </ul>
-            <p>Significant changes to the service model will be communicated to users with reasonable advance notice.</p>
+            <p>Significant changes to the service model will be communicated to users with reasonable advance notice.
+            </p>
             <hr>
-            
+
             <h2>9. Third-Party Services</h2>
-            <p>Rotur may be used to log into or interact with third-party services not owned or operated by the platform owner. These services:</p>
+            <p>Rotur may be used to log into or interact with third-party services not owned or operated by the platform
+                owner. These services:</p>
             <ul>
                 <li>May have their own Terms of Service and Privacy Policies</li>
                 <li>Are not moderated or maintained by Rotur</li>
                 <li>Are solely responsible for their own content, behavior, and data use</li>
             </ul>
-            <p>Users are encouraged to review the policies of any third-party service before use. Misuse of Rotur accounts through third-party services may result in suspension or termination of the associated Rotur account.</p>
+            <p>Users are encouraged to review the policies of any third-party service before use. Misuse of Rotur
+                accounts through third-party services may result in suspension or termination of the associated Rotur
+                account.</p>
             <hr>
-            
+
             <h2>10. Suspension and Termination</h2>
             <p>Sophie and authorized members of the Rotur Team reserve the right to:</p>
             <ul>
-                <li>Suspend, restrict, or terminate any account for any reason, including but not limited to violation of these Terms, suspected fraud, or security concerns</li>
+                <li>Suspend, restrict, or terminate any account for any reason, including but not limited to violation
+                    of these Terms, suspected fraud, or security concerns</li>
                 <li>Remove or delete user data at their discretion</li>
                 <li>Deny access to any or all parts of Rotur and related services without prior notice</li>
             </ul>
-            <p>Upon termination, your right to use Rotur will immediately cease. All provisions of these Terms which by their nature should survive termination shall survive, including but not limited to ownership provisions, warranty disclaimers, indemnity, and limitations of liability.</p>
-            <p><strong>User Recourse and Appeal:</strong> If you believe your account was suspended or terminated in error, you may contact the Rotur Team at mist@mistium.com to request a review. While we strive to be fair and transparent, all suspension and termination decisions are at the sole discretion of the Rotur Team and may be final.</p>
+            <p>Upon termination, your right to use Rotur will immediately cease. All provisions of these Terms which by
+                their nature should survive termination shall survive, including but not limited to ownership
+                provisions, warranty disclaimers, indemnity, and limitations of liability.</p>
+            <p><strong>User Recourse and Appeal:</strong> If you believe your account was suspended or terminated in
+                error, you may contact the Rotur Team at d.a.kimber@icloud.com to request a review. While we strive to be
+                fair and transparent, all suspension and termination decisions are at the sole discretion of the Rotur
+                Team and may be final.</p>
             <hr>
-            
+
             <h2>11. Availability and Disclaimer of Warranties</h2>
-            <p>No guarantee is made regarding the uptime, performance, or future availability of Rotur or any related services. Features may be added, removed, or changed at any time. Rotur is provided "as is" and "as available" without warranties of any kind, either express or implied, including but not limited to merchantability, fitness for a particular purpose, or non-infringement.</p>
+            <p>No guarantee is made regarding the uptime, performance, or future availability of Rotur or any related
+                services. Features may be added, removed, or changed at any time. Rotur is provided "as is" and "as
+                available" without warranties of any kind, either express or implied, including but not limited to
+                merchantability, fitness for a particular purpose, or non-infringement.</p>
             <hr>
-            
+
             <h2>12. Intellectual Property</h2>
-            <p>All content, trademarks, service marks, logos, trade names, and intellectual property on the Rotur platform are the exclusive property of Sophie Kimber (owner of Rotur) or their respective owners. This includes but is not limited to:</p>
+            <p>All content, trademarks, service marks, logos, trade names, and intellectual property on the Rotur
+                platform are the exclusive property of Sophie Kimber (owner of Rotur) or their respective owners. This
+                includes but is not limited to:</p>
             <ul>
                 <li>The Rotur name, logo, and branding</li>
                 <li>Platform design, user interface, and user experience elements</li>
-                <li>Software, code, algorithms, and technical implementations</li>
                 <li>Documentation, help materials, and promotional content</li>
                 <li>Service marks and trademarks associated with Rotur, Claw, and originChats</li>
             </ul>
             <h3>User Content Rights</h3>
-            <p>Users retain ownership of content they create and upload to Rotur. However, by using the platform, users grant Rotur a non-exclusive, worldwide, royalty-free license to:</p>
+            <p>Users retain ownership of content they create and upload to Rotur. However, by using the platform, users
+                grant Rotur a non-exclusive, worldwide, royalty-free license to:</p>
             <ul>
                 <li>Store, display, and distribute user content as necessary to provide the service</li>
-                <li>Make technical modifications (such as format conversion or compression) for platform functionality</li>
+                <li>Make technical modifications (such as format conversion or compression) for platform functionality
+                </li>
                 <li>Allow other users to view and interact with content according to the user's privacy settings</li>
             </ul>
-            <p>This license terminates when content is deleted from the platform, except for content that has been shared with or cached by other users or services.</p>
+            <p>This license terminates when content is deleted from the platform, except for content that has been
+                shared with or cached by other users or services.</p>
             <h3>Permitted Use</h3>
             <p>Users may:</p>
             <ul>
                 <li>Reference Rotur in connection with their legitimate use of the service</li>
-                <li>Share screenshots or descriptions of their Rotur experience for personal, educational, or review purposes</li>
-                <li>Use Rotur branding when developing integrations or third-party services that support Rotur authentication</li>
+                <li>Share screenshots or descriptions of their Rotur experience for personal, educational, or review
+                    purposes</li>
+                <li>Use Rotur branding when developing integrations or third-party services that support Rotur
+                    authentication</li>
             </ul>
             <h3>Prohibited Use</h3>
             <p>Users may NOT:</p>
             <ul>
-                <li>Use the Rotur name, logo, or branding for commercial purposes unrelated to Rotur authentication or integration</li>
-                <li>Create derivative works, modifications, or competing services using Rotur's intellectual property</li>
+                <li>Use the Rotur name, logo, or branding for commercial purposes unrelated to Rotur authentication or
+                    integration</li>
+                <li>Create derivative works, modifications, or competing services using Rotur's intellectual property
+                </li>
                 <li>Reverse engineer, decompile, or attempt to extract the source code of Rotur services</li>
-                <li>Register domain names, social media accounts, or trademarks that contain or are confusingly similar to Rotur branding</li>
+                <li>Register domain names, social media accounts, or trademarks that contain or are confusingly similar
+                    to Rotur branding</li>
                 <li>Imply endorsement, partnership, or affiliation with Rotur without authorization</li>
             </ul>
             <hr>
-            
+
             <h2>13. Copyright Infringement and DMCA Policy</h2>
-            <p>Rotur respects the intellectual property rights of others. If you believe that your copyrighted work has been used in a way that constitutes copyright infringement, please contact our Copyright Agent at <strong>mist@mistium.com</strong> with the following information:</p>
+            <p>Rotur respects the intellectual property rights of others. If you believe that your copyrighted work has
+                been used in a way that constitutes copyright infringement, please contact our Copyright Agent at
+                <strong>d.a.kimber@icloud.com</strong> with the following information:</p>
             <ul>
                 <li>Identification of the copyrighted work</li>
                 <li>URL or reference to the infringing content</li>
@@ -406,77 +760,121 @@
                 <li>Statement of good faith and accuracy</li>
                 <li>Your physical or electronic signature</li>
             </ul>
-            <p>Upon receipt of a valid notice, Rotur will investigate and take appropriate action, which may include removal of the infringing content.</p>
+            <p>Upon receipt of a valid notice, Rotur will investigate and take appropriate action, which may include
+                removal of the infringing content.</p>
             <hr>
-            
+
             <h2>14. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, Rotur, its owner, developers, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses, resulting from (a) your use or inability to use the service; (b) any unauthorized access to or use of our servers and/or any personal information stored therein; (c) any interruption or cessation of transmission to or from the service; (d) any bugs, viruses, trojan horses, or the like that may be transmitted to or through our service by any third party; or (e) any errors or omissions in any content or for any loss or damage incurred as a result of the use of any content posted, emailed, transmitted, or otherwise made available through the service, whether based on warranty, contract, tort, or any other legal theory, and whether or not Rotur has been informed of the possibility of such damage.</p>
+            <p>To the maximum extent permitted by law, Rotur, its owner, developers, and affiliates shall not be liable
+                for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or
+                revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other
+                intangible losses, resulting from (a) your use or inability to use the service; (b) any unauthorized
+                access to or use of our servers and/or any personal information stored therein; (c) any interruption or
+                cessation of transmission to or from the service; (d) any bugs, viruses, trojan horses, or the like that
+                may be transmitted to or through our service by any third party; or (e) any errors or omissions in any
+                content or for any loss or damage incurred as a result of the use of any content posted, emailed,
+                transmitted, or otherwise made available through the service, whether based on warranty, contract, tort,
+                or any other legal theory, and whether or not Rotur has been informed of the possibility of such damage.
+            </p>
             <hr>
-            
+
             <h2>15. Indemnification</h2>
-            <p>You agree to indemnify, defend, and hold harmless Rotur, its owner, developers, affiliates, and agents from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to attorney's fees) arising from: (a) your use of and access to the service; (b) your violation of any term of these Terms; (c) your violation of any third-party right, including without limitation any copyright, property, or privacy right; or (d) any claim that your content caused damage to a third party.</p>
+            <p>You agree to indemnify, defend, and hold harmless Rotur, its owner, developers, affiliates, and agents
+                from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and
+                expenses (including but not limited to attorney's fees) arising from: (a) your use of and access to the
+                service; (b) your violation of any term of these Terms; (c) your violation of any third-party right,
+                including without limitation any copyright, property, or privacy right; or (d) any claim that your
+                content caused damage to a third party.</p>
             <hr>
-            
+
             <h2>16. Changes to These Terms</h2>
             <p>Rotur reserves the right to update or modify these Terms at any time. When changes are made:</p>
             <ul>
-                <li>Users will be required to review and accept the updated Terms before continuing to use Rotur services</li>
+                <li>Users will be required to review and accept the updated Terms before continuing to use Rotur
+                    services</li>
                 <li>The updated Terms will be presented to users upon their next login or service access</li>
-                <li>Users who do not accept the updated Terms will not be able to access Rotur services until acceptance is provided</li>
-                <li>Continued use of the service after accepting updated Terms constitutes agreement to the new provisions</li>
+                <li>Users who do not accept the updated Terms will not be able to access Rotur services until acceptance
+                    is provided</li>
+                <li>Continued use of the service after accepting updated Terms constitutes agreement to the new
+                    provisions</li>
             </ul>
-            <p>Users are responsible for reviewing the most current version of these Terms and understanding any changes that may affect their use of the service.</p>
+            <p>Users are responsible for reviewing the most current version of these Terms and understanding any changes
+                that may affect their use of the service.</p>
             <hr>
-            
+
             <h2>17. Governing Law and Dispute Resolution</h2>
-            <p>These Terms shall be governed by and construed in accordance with the laws of the United Kingdom, without regard to its conflict of law principles. Any disputes arising from or relating to these Terms or the use of Rotur services will be resolved exclusively in the courts located in the United Kingdom. You agree to submit to the personal jurisdiction of such courts and waive any objection as to inconvenient forum.</p>
+            <p>These Terms shall be governed by and construed in accordance with the laws of the United Kingdom, without
+                regard to its conflict of law principles. Any disputes arising from or relating to these Terms or the
+                use of Rotur services will be resolved exclusively in the courts located in the United Kingdom. You
+                agree to submit to the personal jurisdiction of such courts and waive any objection as to inconvenient
+                forum.</p>
             <hr>
-            
+
             <h2>18. Export Controls and Compliance</h2>
-            <p>You may not use, export, re-export, import, or transfer Rotur except as authorized by United Kingdom law, the laws of the jurisdiction in which you obtained Rotur, and any other applicable laws. In particular, but without limitation, Rotur may not be exported or re-exported (a) into any UK-embargoed countries or (b) to anyone on the UK Treasury sanctions list or similar lists. By using Rotur, you represent and warrant that you are not located in any such country or on any such list.</p>
+            <p>You may not use, export, re-export, import, or transfer Rotur except as authorized by United Kingdom law,
+                the laws of the jurisdiction in which you obtained Rotur, and any other applicable laws. In particular,
+                but without limitation, Rotur may not be exported or re-exported (a) into any UK-embargoed countries or
+                (b) to anyone on the UK Treasury sanctions list or similar lists. By using Rotur, you represent and
+                warrant that you are not located in any such country or on any such list.</p>
             <hr>
-            
+
             <h2>19. Force Majeure</h2>
-            <p>Rotur shall not be liable for any failure to perform its obligations hereunder where such failure results from any cause beyond Rotur's reasonable control, including, without limitation, mechanical, electronic, or communications failure or degradation, acts of God, war, terrorism, strikes, labor disputes, civil disturbances, government actions, or interruptions in internet services.</p>
+            <p>Rotur shall not be liable for any failure to perform its obligations hereunder where such failure results
+                from any cause beyond Rotur's reasonable control, including, without limitation, mechanical, electronic,
+                or communications failure or degradation, acts of God, war, terrorism, strikes, labor disputes, civil
+                disturbances, government actions, or interruptions in internet services.</p>
             <hr>
-            
+
             <h2>20. Severability</h2>
-            <p>If any provision of these Terms is found to be unlawful, void, or unenforceable, that provision shall be deemed severable from these Terms and shall not affect the validity and enforceability of any remaining provisions.</p>
+            <p>If any provision of these Terms is found to be unlawful, void, or unenforceable, that provision shall be
+                deemed severable from these Terms and shall not affect the validity and enforceability of any remaining
+                provisions.</p>
             <hr>
-            
+
             <h2>21. Entire Agreement</h2>
-            <p>These Terms constitute the entire agreement between you and Rotur regarding your use of the service and supersede all prior or contemporaneous understandings regarding such subject matter. No waiver of any provision of these Terms shall be deemed a further or continuing waiver of such term or any other term.</p>
+            <p>These Terms constitute the entire agreement between you and Rotur regarding your use of the service and
+                supersede all prior or contemporaneous understandings regarding such subject matter. No waiver of any
+                provision of these Terms shall be deemed a further or continuing waiver of such term or any other term.
+            </p>
             <hr>
-            
+
             <h2>22. User Feedback and Suggestions</h2>
-            <p>We welcome feedback, suggestions, and ideas from our users. By submitting feedback to Rotur, you grant us a non-exclusive, worldwide, royalty-free, perpetual, and irrevocable license to use, reproduce, modify, and incorporate your feedback into our services without any obligation to compensate you. While we value your input, we are not obligated to implement any suggestions or respond to every submission.</p>
+            <p>We welcome feedback, suggestions, and ideas from our users. By submitting feedback to Rotur, you grant us
+                a non-exclusive, worldwide, royalty-free, perpetual, and irrevocable license to use, reproduce, modify,
+                and incorporate your feedback into our services without any obligation to compensate you. While we value
+                your input, we are not obligated to implement any suggestions or respond to every submission.</p>
             <hr>
-            
+
             <h2>23. Beta and Experimental Features</h2>
-            <p>Some features of Rotur may be released as beta or experimental. These features are provided "as is" and may be changed, discontinued, or removed at any time. By using beta or experimental features, you acknowledge and accept the associated risks, including potential data loss, instability, or incompatibility. We encourage users to provide feedback on these features to help us improve the platform.</p>
-            
+            <p>Some features of Rotur may be released as beta or experimental. These features are provided "as is" and
+                may be changed, discontinued, or removed at any time. By using beta or experimental features, you
+                acknowledge and accept the associated risks, including potential data loss, instability, or
+                incompatibility. We encourage users to provide feedback on these features to help us improve the
+                platform.</p>
+
             <hr>
-            
+
             <h2>24. Contact</h2>
             <p>Questions or concerns may be directed to:</p>
-            <p>📧 <strong>mist@mistium.com</strong></p>
+            <p>📧 <strong>d.a.kimber@icloud.com</strong></p>
         </div>
-        
+
         <div class="acceptance-section">
             <div class="checkbox-container">
                 <input type="checkbox" id="accept-terms" required>
                 <label for="accept-terms">
-                    I have read and agree to the Terms of Service. I understand that by checking this box and clicking "Accept Terms", I am entering into a legally binding agreement with Rotur.
+                    I have read and agree to the Terms of Service. I understand that by checking this box and clicking
+                    "Accept Terms", I am entering into a legally binding agreement with Rotur.
                 </label>
             </div>
             <button id="accept-button" disabled>Accept Terms & Authenticate</button>
         </div>
-        
+
         <div class="contact-info">
-            <strong>Need help?</strong> Contact us at mist@mistium.com for any questions about these terms.
+            <strong>Need help?</strong> Contact us at d.a.kimber@icloud.com for any questions about these terms.
         </div>
     </div>
-    
+
     <div class="container" id="success-container" style="display: none;">
         <div class="header">
             <h1>Terms Accepted Successfully!</h1>
@@ -498,7 +896,7 @@
                         'Content-Type': 'application/json',
                     }
                 });
-                
+
                 if (response.ok) {
                     console.log('Terms of Service acceptance recorded successfully');
                     return true;
@@ -511,25 +909,25 @@
                 return false;
             }
         }
-        
+
         // Check for token parameter when page loads
-        window.onload = async function() {
+        window.onload = async function () {
             // Get URL parameters using URLSearchParams
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
             const fromAuth = urlParams.get('from') === 'auth' || document.referrer.includes('auth.html');
-            
+
             // Store token in a variable that persists throughout the session
             let userToken = token;
-            
+
             // Show back button if coming from auth page
             if (fromAuth || token) {
                 const backButtonContainer = document.getElementById('back-button-container');
                 const backButton = document.getElementById('back-button');
-                
+
                 backButtonContainer.style.display = 'block';
-                
-                backButton.addEventListener('click', function() {
+
+                backButton.addEventListener('click', function () {
                     // Navigate back to auth page, preserving any return_to parameter
                     const returnTo = sessionStorage.getItem('rotur_return_to');
                     let authUrl = './auth.html';
@@ -539,7 +937,7 @@
                     window.location.href = authUrl;
                 });
             }
-            
+
             // Remove token from URL immediately for security
             if (token) {
                 const newUrl = new URL(window.location);
@@ -549,30 +947,30 @@
                 }
                 window.history.replaceState({}, document.title, newUrl.toString());
             }
-            
+
             // Setup checkbox and button functionality
             const checkbox = document.getElementById('accept-terms');
             const button = document.getElementById('accept-button');
-            
-            checkbox.addEventListener('change', function() {
+
+            checkbox.addEventListener('change', function () {
                 button.disabled = !this.checked;
             });
-            
-            button.addEventListener('click', async function() {
+
+            button.addEventListener('click', async function () {
                 if (checkbox.checked) {
                     if (userToken) {
                         // User has a token, so accept TOS via API
                         button.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Accepting Terms...';
                         button.disabled = true;
-                        
+
                         const success = await callAcceptTosAPI(userToken);
-                        
+
                         if (success) {
                             // Show success message briefly, then redirect back to auth
                             document.getElementById('main-container').style.display = 'none';
                             document.getElementById('success-container').style.display = 'block';
                             document.getElementById('token-display').innerHTML = '<strong>Terms of Service accepted successfully!</strong><br>Redirecting you back to continue...';
-                            
+
                             // Send token to parent if in iframe
                             if (window.parent !== window) {
                                 window.parent.postMessage({
@@ -580,7 +978,7 @@
                                     token: userToken
                                 }, '*');
                             }
-                            
+
                             // Redirect back to auth after 2 seconds
                             setTimeout(() => {
                                 // Get the return_to parameter from the original auth page if it was passed
@@ -615,7 +1013,7 @@
                     alert('Please accept the Terms of Service to continue.');
                 }
             });
-            
+
             // Update button text if token is present
             if (userToken) {
                 button.textContent = 'Accept Terms & Continue';
@@ -623,11 +1021,12 @@
                 document.querySelector('.header p').textContent = 'You must accept our terms of service to continue using your account';
             }
         };
-        
+
         // Scroll to top when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             window.scrollTo(0, 0);
         });
     </script>
 </body>
+
 </html>
