@@ -567,7 +567,7 @@
 
 
           // Send token to opener if this is a popup
-          if (window.opener !== window) {
+          if (window.opener) {
             window.opener.postMessage({
               type: 'rotur-auth-token',
               token: account.key
