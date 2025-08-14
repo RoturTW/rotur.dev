@@ -565,6 +565,15 @@
           // Save this account for future use
           saveAccount(account);
 
+
+          // Send token to opener if this is a popup
+          if (window.opener) {
+            window.opener.postMessage({
+              type: 'rotur-auth-token',
+              token: account.key
+            }, '*');
+          }
+
           // Send token to parent if in iframe
           if (window.parent !== window) {
             window.parent.postMessage({
