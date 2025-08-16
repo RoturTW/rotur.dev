@@ -147,6 +147,8 @@
     let return_to = "";
     let account = "";
     let savedAccounts = [];
+  // System identifier (from ?system=, defaults to 'rotur')
+  let systemName = 'rotur';
 
     // Load saved accounts from localStorage
     function loadSavedAccounts() {
@@ -698,7 +700,8 @@
           body: JSON.stringify({
             username: username,
             email: email,
-            password: hash
+            password: hash,
+            system: systemName || 'rotur'
           })
         });
         
@@ -776,7 +779,7 @@
 
     // Function to check TOS acceptance and redirect if needed
     function checkTOSAcceptance(userData) {
-      if (userData["sys.tos_accepted"] !== true || userData.requiresTOSAcceptance) {
+      if (`${userData["sys.tos_accepted"]}` !== "true") {
         // Store the return_to parameter for after TOS acceptance
         if (return_to) {
           sessionStorage.setItem('rotur_return_to', return_to);
@@ -801,6 +804,11 @@
       
       const urlParams = new URLSearchParams(window.location.search);
       return_to = urlParams.get('return_to') ?? sessionStorage.getItem('rotur_return_to') ?? document.referrer;
+      // Capture system parameter (default already set to 'rotur')
+      const systemParam = urlParams.get('system');
+      if (systemParam && systemParam.trim()) {
+        systemName = systemParam.trim();
+      }
       
       // Clear sessionStorage after retrieval
       sessionStorage.removeItem('rotur_return_to');
@@ -823,5 +831,4 @@
   </script>
   <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
 </body>
-
 </html>
