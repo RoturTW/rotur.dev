@@ -1036,11 +1036,7 @@
             }
             
             try {
-                // Use proper data structure for the update endpoint
-                // The backend expects a JSON string in the 'data' parameter
-                const updateData = { price: price };
-                
-                const url = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&data=${encodeURIComponent(JSON.stringify(updateData))}`;
+                const url = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&key=price&data=${encodeURIComponent(price)}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 
