@@ -110,7 +110,7 @@ body {
 .nav a#roturTXT {
   font-weight: 600;
   color: var(--color-text);
-  padding-left: 0;
+  padding-left: .9rem;
 }
 
 @media (max-width:760px) {

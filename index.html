@@ -32,7 +32,6 @@
 </head>
 
 <body>
-  <canvas id="background-canvas"></canvas>
   <div id="navbar-placeholder"></div>
   <div class="hero container">
     <div class="headings fade-in">
@@ -258,28 +257,6 @@
       link.click();
       document.body.removeChild(link);
     }
-
-    // Interactive Background with Dots (optimized)
-    const canvas = document.getElementById('background-canvas');
-    const ctx = canvas.getContext('2d');
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-    let dots = [];
-    let mouseX = 0;
-    let mouseY = 0;
-
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      initDots();
-    });
-
-    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-
-    class Dot { constructor(x,y){ this.x=x; this.y=y; this.baseX=x; this.baseY=y; this.size=Math.random()*1.5+0.6; this.density=Math.random()*18+6;} draw(){ ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); } update(){ const dx=mouseX-this.x; const dy=mouseY-this.y; const dist=Math.hypot(dx,dy); const maxDistance=90; if(dist<maxDistance && dist>0){ const force=(maxDistance-dist)/maxDistance; this.x-=(dx/dist)*force*this.density; this.y-=(dy/dist)*force*this.density; } else { this.x+=(this.baseX-this.x)*0.05; this.y+=(this.baseY-this.y)*0.05; } } }
-    function initDots(){ dots=[]; const spacing=55; const xCount=Math.ceil(width/spacing); const yCount=Math.ceil(height/spacing); for(let y=0;y<yCount;y++){ for(let x=0;x<xCount;x++){ dots.push(new Dot(x*spacing+spacing/2,y*spacing+spacing/2)); } } }
-    function animate(){ ctx.clearRect(0,0,width,height); const len=dots.length; for(let i=0;i<len;i++){ const d=dots[i]; d.update(); d.draw(); } const maxDist=70; const maxLinesPerDot=6; for(let i=0;i<len;i++){ let connections=0; const a=dots[i]; for(let j=i+1;j<len && j<i+55;j++){ const b=dots[j]; const dx=a.x-b.x; const dy=a.y-b.y; const dist=dx*dx+dy*dy; if(dist<maxDist*maxDist){ const alpha=0.18*(1-Math.sqrt(dist)/maxDist); ctx.strokeStyle=`rgba(255,255,255,${alpha})`; ctx.lineWidth=0.45; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); if(++connections>=maxLinesPerDot) break; } } } requestAnimationFrame(animate); }
-    initDots(); animate();
 
     let accounts = "sys-rotur";
     let server = "wss://rotur.mistium.com";
