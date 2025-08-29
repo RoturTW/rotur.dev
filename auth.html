@@ -26,22 +26,22 @@
           <h2>Choose an account</h2>
           <p>to continue to Rotur</p>
         </div>
-        
+
         <div class="account-list" id="account-list">
           <!-- Previously logged in accounts will be populated here -->
         </div>
-        
+
         <button class="add-account-btn" id="add-account-btn">
           <i class="fas fa-user-plus"></i> Use another account
         </button>
       </div>
-      
+
       <!-- Right content area -->
       <div class="main-content">
         <div class="logo-container">
           <img src="./Rotur Logo.png" alt="Rotur Logo" draggable="false">
         </div>
-        
+
         <!-- Sign In Form -->
         <div id="signin-form">
           <h1>Sign in to Rotur</h1>
@@ -57,18 +57,23 @@
           </form>
           <div class="security-notice">
             <i class="fas fa-exclamation-triangle warning-icon"></i>
-            <strong>Security Notice:</strong> This will give the requesting website access to your Rotur account. Only proceed if you trust this website and understand the implications.
+            <strong>Security Notice:</strong> This will give the requesting website access to your Rotur account. Only
+            proceed if you trust this website and understand the implications.
           </div>
           <div style="margin-top: 16px; text-align: center;">
             <p style="margin: 0; font-size: 14px; color: #5f6368;">
-              Don't have an account? 
-              <button type="button" id="show-signup-btn" style="background: none; border: none; color: #1a73e8; cursor: pointer; font-size: 14px; text-decoration: underline;">Create one</button>
+              Don't have an account?
+              <button type="button" id="show-signup-btn"
+                style="background: none; border: none; color: #1a73e8; cursor: pointer; font-size: 14px; text-decoration: underline;">Create
+                one</button>
             </p>
             <p style="margin: 8px 0 0 0; font-size: 12px; color: #5f6368;">
-              By signing in, you agree to our 
-              <a href="./terms-of-service.html?from=auth" style="color: #1a73e8; text-decoration: none;">Terms of Service</a>
-              and 
-              <a href="./privacy-policy.html?from=auth" style="color: #1a73e8; text-decoration: none;">Privacy Policy</a>
+              By signing in, you agree to our
+              <a href="./terms-of-service.html?from=auth" style="color: #1a73e8; text-decoration: none;">Terms of
+                Service</a>
+              and
+              <a href="./privacy-policy.html?from=auth" style="color: #1a73e8; text-decoration: none;">Privacy
+                Policy</a>
             </p>
           </div>
         </div>
@@ -94,14 +99,18 @@
           </form>
           <div style="margin-top: 16px; text-align: center;">
             <p style="margin: 0; font-size: 14px; color: #5f6368;">
-              Already have an account? 
-              <button type="button" id="show-signin-btn" style="background: none; border: none; color: #1a73e8; cursor: pointer; font-size: 14px; text-decoration: underline;">Sign in</button>
+              Already have an account?
+              <button type="button" id="show-signin-btn"
+                style="background: none; border: none; color: #1a73e8; cursor: pointer; font-size: 14px; text-decoration: underline;">Sign
+                in</button>
             </p>
             <p style="margin: 8px 0 0 0; font-size: 12px; color: #5f6368;">
-              By creating an account, you agree to our 
-              <a href="./terms-of-service.html?from=auth" style="color: #1a73e8; text-decoration: none;">Terms of Service</a>
-              and 
-              <a href="./privacy-policy.html?from=auth" style="color: #1a73e8; text-decoration: none;">Privacy Policy</a>
+              By creating an account, you agree to our
+              <a href="./terms-of-service.html?from=auth" style="color: #1a73e8; text-decoration: none;">Terms of
+                Service</a>
+              and
+              <a href="./privacy-policy.html?from=auth" style="color: #1a73e8; text-decoration: none;">Privacy
+                Policy</a>
             </p>
           </div>
         </div>
@@ -128,9 +137,10 @@
         </div>
         <div style="margin-top: 20px; text-align: center;">
           <p style="margin: 0; font-size: 12px; color: #5f6368;">
-            By signing in, you agree to our 
-            <a href="./terms-of-service.html?from=auth" style="color: #1a73e8; text-decoration: none;">Terms of Service</a>
-            and 
+            By signing in, you agree to our
+            <a href="./terms-of-service.html?from=auth" style="color: #1a73e8; text-decoration: none;">Terms of
+              Service</a>
+            and
             <a href="./privacy-policy.html?from=auth" style="color: #1a73e8; text-decoration: none;">Privacy Policy</a>
           </p>
         </div>
@@ -147,8 +157,8 @@
     let return_to = "";
     let account = "";
     let savedAccounts = [];
-  // System identifier (from ?system=, defaults to 'rotur')
-  let systemName = 'rotur';
+    // System identifier (from ?system=, defaults to 'rotur')
+    let systemName = 'rotur';
 
     // Load saved accounts from localStorage
     function loadSavedAccounts() {
@@ -165,10 +175,10 @@
     function saveAccount(accountData) {
       try {
         let accounts = loadSavedAccounts();
-        
+
         // Remove existing account with same username
         accounts = accounts.filter(acc => acc.username !== accountData.username);
-        
+
         // Add new account to beginning
         accounts.unshift({
           username: accountData.username,
@@ -176,10 +186,10 @@
           lastUsed: Date.now(),
           avatar: `https://avatars.rotur.dev/${accountData.username}`
         });
-        
+
         // Keep only last 5 accounts
         accounts = accounts.slice(0, 5);
-        
+
         localStorage.setItem('rotur_saved_accounts', JSON.stringify(accounts));
         savedAccounts = accounts;
         renderAccountList();
@@ -194,7 +204,7 @@
       const accounts = loadSavedAccounts();
       const mainContent = document.querySelector('.main-content');
       const welcomeArea = document.getElementById('welcome-area');
-      
+
       if (accounts.length === 0) {
         accountList.innerHTML = `
           <div style="padding: 24px; text-align: center; color: #666;">
@@ -205,18 +215,18 @@
             <p style="margin: 0; font-size: 13px; color: #999;">Sign in to save your account</p>
           </div>
         `;
-        
+
         // Update button to say "Sign in" instead
         const addAccountBtn = document.getElementById('add-account-btn');
         addAccountBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign in to Rotur';
-        
+
         return;
       }
-      
+
       // Always show welcome area by default (don't hide it when accounts exist)
       welcomeArea.classList.remove('hidden');
       mainContent.classList.remove('show');
-      
+
       accountList.innerHTML = accounts.map(acc => `
         <button class="account-item" data-username="${acc.username}">
           <img src="${acc.avatar}" alt="${acc.username}" onerror="this.src='./Rotur Logo.png'">
@@ -226,7 +236,7 @@
           </div>
         </button>
       `).join('');
-      
+
       // Add click handlers
       accountList.querySelectorAll('.account-item').forEach(item => {
         item.addEventListener('click', () => {
@@ -240,20 +250,20 @@
     async function selectSavedAccount(username) {
       const accounts = loadSavedAccounts();
       const savedAccount = accounts.find(acc => acc.username === username);
-      
+
       if (!savedAccount || !savedAccount.password) {
         // Fallback to manual entry if no password stored
         showSignInForm();
         const usernameInput = document.querySelector('#signin-form input[name="username"]');
         const passwordInput = document.querySelector('#signin-form input[name="password"]');
-        
+
         usernameInput.value = username;
         passwordInput.focus();
         passwordInput.placeholder = 'Password (no saved credentials)';
-        
+
         return;
       }
-      
+
       // Show loading state on the clicked account
       document.querySelectorAll('.account-item').forEach(item => {
         item.classList.remove('active');
@@ -262,7 +272,7 @@
       selectedItem.classList.add('active');
       selectedItem.style.opacity = '0.6';
       selectedItem.style.pointerEvents = 'none';
-      
+
       try {
         // Attempt automatic login
         const account_data = await requestAccount(username, savedAccount.password);
@@ -270,11 +280,11 @@
           // Set cookies for this account
           setCookie("username", username, 7);
           setCookie("password", savedAccount.password, 7);
-          
+
           account = account_data;
           // Update the saved account's last used time
           saveAccount(account_data);
-          
+
           // Always go to the authorization page (don't auto-redirect)
           updateModalForLoggedInUser();
         } else {
@@ -287,16 +297,16 @@
             return acc;
           });
           localStorage.setItem('rotur_saved_accounts', JSON.stringify(updatedAccounts));
-          
+
           // Reset UI and show manual login
           selectedItem.style.opacity = '';
           selectedItem.style.pointerEvents = '';
           selectedItem.classList.remove('active');
-          
+
           showSignInForm();
           const usernameInput = document.querySelector('#signin-form input[name="username"]');
           const passwordInput = document.querySelector('#signin-form input[name="password"]');
-          
+
           usernameInput.value = username;
           passwordInput.focus();
           passwordInput.placeholder = 'Password (credentials expired)';
@@ -307,11 +317,11 @@
         selectedItem.style.opacity = '';
         selectedItem.style.pointerEvents = '';
         selectedItem.classList.remove('active');
-        
+
         showSignInForm();
         const usernameInput = document.querySelector('#signin-form input[name="username"]');
         const passwordInput = document.querySelector('#signin-form input[name="password"]');
-        
+
         usernameInput.value = username;
         passwordInput.focus();
         passwordInput.placeholder = 'Password (login error)';
@@ -325,40 +335,40 @@
       const welcomeArea = document.getElementById('welcome-area');
       const welcomeSigninBtn = document.getElementById('welcome-signin-btn');
       const welcomeSignupBtn = document.getElementById('welcome-signup-btn');
-      
+
       // Function to show sign-in form
       function showSignInForm() {
         mainContent.classList.add('show');
         welcomeArea.classList.add('hidden');
-        
+
         // Show signin form, hide signup form
         document.getElementById('signin-form').style.display = 'block';
         document.getElementById('signup-form').style.display = 'none';
-        
+
         // Update sidebar header for context
         const sidebarHeader = document.querySelector('.sidebar-header');
         sidebarHeader.innerHTML = `
           <h2>Back to accounts</h2>
           <p>or sign in below</p>
         `;
-        
+
         // Change button text and functionality
         addAccountBtn.textContent = 'Back to account list';
         addAccountBtn.onclick = () => {
           // Hide the sign-in form and show welcome area
           mainContent.classList.remove('show');
           welcomeArea.classList.remove('hidden');
-          
+
           // Reset sidebar header
           sidebarHeader.innerHTML = `
             <h2>Choose an account</h2>
             <p>to continue to Rotur</p>
           `;
-          
+
           // Reset button
           addAccountBtn.innerHTML = '<i class="fas fa-user-plus"></i> Use another account';
           addAccountBtn.onclick = null; // Remove this handler to let the original event listener take over
-          
+
           // Clear any active account selections
           document.querySelectorAll('.account-item').forEach(item => {
             item.classList.remove('active');
@@ -366,15 +376,15 @@
             item.style.pointerEvents = '';
           });
         };
-        
+
         // Clear form and remove selection
         document.querySelector('#signin-form input[name="username"]').value = '';
         document.querySelector('#signin-form input[name="password"]').value = '';
         document.querySelector('#signin-form input[name="username"]').focus();
-        
+
         // Reset password placeholder
         document.querySelector('#signin-form input[name="password"]').placeholder = 'Password';
-        
+
         document.querySelectorAll('.account-item').forEach(item => {
           item.classList.remove('active');
         });
@@ -384,35 +394,35 @@
       function showSignUpForm() {
         mainContent.classList.add('show');
         welcomeArea.classList.add('hidden');
-        
+
         // Show signup form, hide signin form
         document.getElementById('signin-form').style.display = 'none';
         document.getElementById('signup-form').style.display = 'block';
-        
+
         // Update sidebar header for context
         const sidebarHeader = document.querySelector('.sidebar-header');
         sidebarHeader.innerHTML = `
           <h2>Create Account</h2>
           <p>join Rotur today</p>
         `;
-        
+
         // Change button text and functionality
         addAccountBtn.textContent = 'Back to account list';
         addAccountBtn.onclick = () => {
           // Hide the forms and show welcome area
           mainContent.classList.remove('show');
           welcomeArea.classList.remove('hidden');
-          
+
           // Reset sidebar header
           sidebarHeader.innerHTML = `
             <h2>Choose an account</h2>
             <p>to continue to Rotur</p>
           `;
-          
+
           // Reset button
           addAccountBtn.innerHTML = '<i class="fas fa-user-plus"></i> Use another account';
           addAccountBtn.onclick = null;
-          
+
           // Clear any active account selections
           document.querySelectorAll('.account-item').forEach(item => {
             item.classList.remove('active');
@@ -420,7 +430,7 @@
             item.style.pointerEvents = '';
           });
         };
-        
+
         // Clear signup form
         document.querySelector('#signup-form input[name="username"]').value = '';
         document.querySelector('#signup-form input[name="email"]').value = '';
@@ -428,19 +438,19 @@
         document.querySelector('#signup-form input[name="confirm-password"]').value = '';
         document.querySelector('#signup-form input[name="username"]').focus();
       }
-      
+
       // Make functions globally available
       window.showSignInForm = showSignInForm;
       window.showSignUpForm = showSignUpForm;
-      
+
       // Add account button handler
       addAccountBtn.addEventListener('click', showSignInForm);
-      
+
       // Welcome area button handlers
       welcomeSigninBtn.addEventListener('click', showSignInForm);
-      
+
       welcomeSignupBtn.addEventListener('click', showSignUpForm);
-      
+
       // Form switching handlers
       document.getElementById('show-signup-btn').addEventListener('click', showSignUpForm);
       document.getElementById('show-signin-btn').addEventListener('click', showSignInForm);
@@ -450,7 +460,7 @@
     function loadStylesheet() {
       const urlParams = new URLSearchParams(window.location.search);
       const stylesUrl = urlParams.get('styles') || './auth.css';
-      
+
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = stylesUrl;
@@ -550,6 +560,9 @@
           <div style="margin-top: 24px;">
             <button id="allowAccess" class="btn-primary" style="margin-bottom: 12px;">Continue</button>
             <button id="cancelAccess" class="btn-secondary">Cancel</button>
+            <div style="margin-top:16px;">
+              <button id="openLinkDevice" class="btn-secondary" style="width:auto;">Link a Device</button>
+            </div>
           </div>
           
           <div style="margin-top: 16px; text-align: center;">
@@ -601,24 +614,90 @@
       document.getElementById("cancelAccess").addEventListener("click", () => {
         window.history.back();
       });
+
+      document.getElementById("openLinkDevice").addEventListener("click", () => {
+        // Open link dialog / mode
+        openLinkMode();
+      });
     }
+
+    // Simple link mode overlay
+    function ensureLinkOverlay() {
+      if (document.getElementById('link-overlay')) return;
+      const div = document.createElement('div');
+      div.id = 'link-overlay';
+      div.style.position = 'fixed';
+      div.style.inset = '0';
+      div.style.background = 'rgba(0,0,0,0.55)';
+      div.style.display = 'flex';
+      div.style.alignItems = 'center';
+      div.style.justifyContent = 'center';
+      div.style.zIndex = '2000';
+      div.innerHTML = `
+        <div style="background:#fff; color:#202124; width:clamp(320px,90%,480px); border-radius:12px; padding:28px 28px 34px; font-family:inherit; position:relative;">
+          <h2 style="margin:0 0 4px; font-size:22px; font-weight:500;">Link This Account</h2>
+          <p style="margin:0 0 18px; font-size:14px; line-height:1.5; color:#5f6368;">Enter the 6-character code shown on the device you're trying to sign in to. You'll be granting it full access to this Rotur account.</p>
+          <form id="link-form" autocomplete="off">
+            <div style="display:flex; gap:8px; justify-content:center;">
+              ${Array.from({ length: 6 }).map((_, i) => `<input inputmode="latin" maxlength="1" data-idx="${i}" style="width:54px; min-width:48px; flex:none; text-align:center; font-size:22px; padding:7px 0; border:1px solid #dadce0; border-radius:8px; background:#f8f9fa; font-weight:700; letter-spacing:2px; box-sizing:border-box;" aria-label="Code character ${i + 1}" required>`).join('')}
+            </div>
+            <div id="link-error" style="display:none; color:#ea4335; font-size:13px; margin-top:12px;"></div>
+            <button id="submitLinkCode" type="submit" class="btn-primary" style="margin-top:20px; width:100%;">Link Device</button>
+            <button type="button" id="cancelLink" class="btn-secondary" style="margin-top:12px; width:100%;">Cancel</button>
+          </form>
+        </div>`;
+      document.body.appendChild(div);
+      // focus first
+      const inputs = div.querySelectorAll('input[data-idx]');
+      inputs[0].focus();
+      inputs.forEach(inp => {
+        inp.addEventListener('input', e => {
+          e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+          if (e.target.value && +e.target.dataset.idx < 5) { inputs[+e.target.dataset.idx + 1].focus(); }
+        });
+        inp.addEventListener('keydown', e => { if (e.key === 'Backspace' && !e.target.value && +e.target.dataset.idx > 0) { inputs[+e.target.dataset.idx - 1].focus(); } });
+      });
+      div.querySelector('#cancelLink').addEventListener('click', () => { div.remove(); });
+      div.querySelector('#link-form').addEventListener('submit', submitLinkCode);
+    }
+
+    async function submitLinkCode(e) {
+      e.preventDefault();
+      const overlay = document.getElementById('link-overlay');
+      const inputs = overlay.querySelectorAll('input[data-idx]');
+      const code = Array.from(inputs).map(i => i.value).join('');
+      const err = overlay.querySelector('#link-error');
+      if (code.length !== 6) { err.textContent = 'Enter the full 6-character code'; err.style.display = 'block'; return; }
+      err.style.display = 'none';
+      const btn = overlay.querySelector('#submitLinkCode');
+      const original = btn.textContent; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>&nbsp;Linking...'; btn.disabled = true;
+      try {
+        const res = await fetch('https://api.rotur.dev/link/code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, token: account.key }) });
+        if (!res.ok) { throw new Error('HTTP ' + res.status); }
+        const data = await res.json();
+        if (data.success) { btn.innerHTML = 'Linked!'; btn.style.background = '#34a853'; setTimeout(() => { overlay.remove(); }, 1200); }
+        else { throw new Error(data.error || 'Failed'); }
+      } catch (ex) { err.textContent = 'Link failed: ' + ex.message; err.style.display = 'block'; btn.innerHTML = original; btn.disabled = false; }
+    }
+
+    function openLinkMode() { ensureLinkOverlay(); }
 
     document.getElementById("signin-form-element").addEventListener("submit", async (e) => {
       e.preventDefault();
       const submitButton = document.querySelector("#signin-form-element button[type='submit']");
       const originalText = submitButton.innerHTML;
-      
+
       // Show loading state
       submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
       submitButton.disabled = true;
-      
+
       const username = document.querySelector("#signin-form input[name='username']").value;
       const password = document.querySelector("#signin-form input[name='password']").value;
       const hash = CryptoJS.MD5(password).toString();
-      
+
       setCookie("username", username, 7);
       setCookie("password", hash, 7);
-      
+
       try {
         const account_data = await requestAccount(username, hash);
         if (account_data) {
@@ -630,11 +709,11 @@
           // Clear cookies on failed login
           document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          
+
           // Show error state
           submitButton.innerHTML = 'Invalid credentials';
           submitButton.style.background = '#ea4335';
-          
+
           // Reset after 2 seconds
           setTimeout(() => {
             submitButton.innerHTML = originalText;
@@ -646,7 +725,7 @@
         console.error('Login error:', error);
         submitButton.innerHTML = 'Error occurred';
         submitButton.style.background = '#ea4335';
-        
+
         setTimeout(() => {
           submitButton.innerHTML = originalText;
           submitButton.style.background = '';
@@ -659,12 +738,12 @@
       e.preventDefault();
       const submitButton = document.querySelector("#signup-form-element button[type='submit']");
       const originalText = submitButton.innerHTML;
-      
+
       const username = document.querySelector("#signup-form input[name='username']").value;
       const email = document.querySelector("#signup-form input[name='email']").value;
       const password = document.querySelector("#signup-form input[name='password']").value;
       const confirmPassword = document.querySelector("#signup-form input[name='confirm-password']").value;
-      
+
       // Validation
       if (password !== confirmPassword) {
         submitButton.innerHTML = 'Passwords do not match';
@@ -675,7 +754,7 @@
         }, 2000);
         return;
       }
-      
+
       if (password.length < 8) {
         submitButton.innerHTML = 'Password must be at least 8 characters';
         submitButton.style.background = '#ea4335';
@@ -685,11 +764,11 @@
         }, 2000);
         return;
       }
-      
+
       // Show loading state
       submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
       submitButton.disabled = true;
-      
+
       try {
         const hash = CryptoJS.MD5(password).toString();
         const response = await fetch('https://social.rotur.dev/create_user', {
@@ -704,9 +783,9 @@
             system: systemName || 'rotur'
           })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.error) {
           // Show error message below the form
           let errorDiv = document.getElementById('signup-error-message');
@@ -727,7 +806,7 @@
           // Account created successfully, now sign in
           setCookie("username", username, 7);
           setCookie("password", hash, 7);
-          
+
           const account_data = await requestAccount(username, hash);
           if (account_data) {
             account = account_data;
@@ -748,7 +827,7 @@
         console.error('Signup error:', error);
         submitButton.innerHTML = 'Error occurred';
         submitButton.style.background = '#ea4335';
-        
+
         setTimeout(() => {
           submitButton.innerHTML = originalText;
           submitButton.style.background = '';
@@ -784,7 +863,7 @@
         if (return_to) {
           sessionStorage.setItem('rotur_return_to', return_to);
         }
-        
+
         // User hasn't accepted TOS, redirect to terms of service page
         const tosUrl = new URL('./terms-of-service.html', window.location.href);
         tosUrl.searchParams.set('token', userData.key);
@@ -797,19 +876,21 @@
     window.addEventListener("load", () => {
       // Load stylesheet first
       loadStylesheet();
-      
+
       // Load and render saved accounts
       savedAccounts = loadSavedAccounts();
       renderAccountList();
-      
+
       const urlParams = new URLSearchParams(window.location.search);
       return_to = urlParams.get('return_to') ?? sessionStorage.getItem('rotur_return_to') ?? document.referrer;
+      const linkMode = urlParams.get('link') === '1';
+      const forceSignup = urlParams.get('signup') === '1';
       // Capture system parameter (default already set to 'rotur')
       const systemParam = urlParams.get('system');
       if (systemParam && systemParam.trim()) {
         systemName = systemParam.trim();
       }
-      
+
       // Clear sessionStorage after retrieval
       sessionStorage.removeItem('rotur_return_to');
 
@@ -821,14 +902,25 @@
           if (account_data) {
             account = account_data;
             updateModalForLoggedInUser();
+            if (linkMode) { // automatically open linking UI
+              openLinkMode();
+            }
           } else {
             document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           }
         });
       }
+      // If explicitly requested to open signup and not already logged in
+      if (!username || !password) {
+        if (forceSignup) {
+          // Delay to allow DOMContentLoaded handlers to attach
+          setTimeout(() => { if (typeof showSignUpForm === 'function') { showSignUpForm(); } }, 50);
+        }
+      }
     });
   </script>
   <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
 </body>
+
 </html>

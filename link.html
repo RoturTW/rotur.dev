@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rotur Device Linking</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="./auth.css">
+  <style>
+    body { background:#f5f7fa; }
+    .link-explainer { font-size:13px; color:#5f6368; line-height:1.5; margin:0 0 20px; }
+    .code-input-row { display:flex; gap:10px; justify-content:center; margin:8px 0 4px; }
+    .code-input-row input { width:54px; height:66px; text-align:center; font-size:26px; font-weight:600; border:1px solid #e1e5e9; background:#fff; border-radius:8px; font-family:inherit; letter-spacing:2px; } 
+    .code-input-row input:focus { border-color:#1a73e8; box-shadow:0 0 0 2px rgba(26,115,232,0.15); outline:none; }
+    .inline-help { font-size:12px; color:#5f6368; margin-top:6px; text-align:center; }
+    .status-line { margin-top:18px; font-size:12px; color:#5f6368; display:flex; align-items:center; gap:8px; justify-content:center; }
+    .status-dot { width:10px; height:10px; border-radius:50%; background:#c4c7cc; }
+    .status-line.waiting .status-dot { background:#fbbc05; }
+    .status-line.success .status-dot { background:#34a853; }
+    .status-line.error .status-dot { background:#ea4335; }
+    .result-box { margin-top:18px; display:none; padding:14px 16px; background:#e8f0fe; border:1px solid #d2e3fc; border-radius:8px; color:#1a1a1a; font-size:13px; line-height:1.4; word-break:break-all; }
+    .result-box.success { background:#e6f4ea; border-color:#c3e7ca; }
+    .result-box.error { background:#fde8e6; border-color:#f8c7c1; }
+    .link-actions { margin-top:22px; display:flex; flex-direction:column; gap:12px; }
+    .secondary-inline { background:transparent; border:1px solid #dadce0; color:#1a73e8; border-radius:6px; padding:10px 18px; font-size:14px; font-weight:500; cursor:pointer; }
+    .secondary-inline:hover { background:#f8f9fa; }
+    .mini-note { margin-top:24px; font-size:11px; color:#80868b; text-align:center; }
+    .error-text { color:#ea4335; font-size:13px; margin-top:12px; display:none; text-align:center; }
+    .error-text.visible { display:block; }
+    @media (max-width:768px){ .modal-content { max-width:420px; } }
+  </style>
+</head>
+<body>
+  <div class="modal">
+    <div class="modal-content" style="max-width:860px;">
+      <!-- Left: Info / Illustration -->
+      <div class="account-sidebar" style="width:300px;">
+        <div class="sidebar-header">
+          <h2>Device Linking</h2>
+          <p>Connect a console or another device</p>
+        </div>
+        <div style="padding:0 24px; font-size:13px; line-height:1.5; color:#5f6368;">
+          <p style="margin-top:0;">1. On the device you want to link, generate or view a 6‑character code.</p>
+          <p>2. Enter that code here and sign in (or create an account & accept TOS).</p>
+          <p>3. We’ll securely attach that device to your Rotur account.</p>
+          <div style="margin:18px 0; padding:12px 14px; background:#f8f9fa; border:1px solid #e1e5e9; border-radius:8px; font-size:12px;">
+            <strong style="display:block; font-size:12px; margin-bottom:4px;">Security Tip</strong>
+            Only enter codes from devices you physically control. This grants full account access.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Interaction Area -->
+      <div class="main-content show" style="display:flex;">
+        <div class="logo-container">
+          <img src="./Rotur Logo.png" alt="Rotur Logo" draggable="false">
+        </div>
+        <h1 style="margin-top:8px;">Link a Device</h1>
+        <p class="subtitle" id="subtitle">Enter the 6‑character code to begin</p>
+
+        <form id="link-form" autocomplete="off" style="width:100%;">
+          <div class="code-input-row" id="codeRow"></div>
+          <div class="inline-help">Need to sign in first? We’ll redirect you automatically.</div>
+          <div id="code-error" class="error-text"></div>
+          <div class="link-actions">
+            <button type="button" id="linkSignIn" class="btn-primary">Sign in & Link</button>
+            <button type="button" id="pasteCode" class="secondary-inline">Paste Code</button>
+          </div>
+          <div class="inline-help" style="margin-top:6px;">Don't have an account yet? <button type="button" id="createAccountLink" style="background:none;border:none;color:#1a73e8;cursor:pointer;padding:0;font-size:12px;text-decoration:underline;">Create one</button></div>
+        </form>
+
+        <div id="statusLine" class="status-line" style="display:none;">
+          <span class="status-dot"></span>
+          <span id="statusText"></span>
+        </div>
+        <div id="resultBox" class="result-box"></div>
+        <div class="mini-note">By linking you agree to the <a href="./terms-of-service.html?from=auth" style="color:#1a73e8; text-decoration:none;">Terms</a> & <a href="./privacy-policy.html?from=auth" style="color:#1a73e8; text-decoration:none;">Privacy Policy</a>.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    (function(){
+      const API_BASE = 'https://api.rotur.dev/link';
+      const codeRow = document.getElementById('codeRow');
+      const signInBtn = document.getElementById('linkSignIn');
+      const pasteBtn = document.getElementById('pasteCode');
+      const errorBox = document.getElementById('code-error');
+      const statusLine = document.getElementById('statusLine');
+      const statusText = document.getElementById('statusText');
+      const resultBox = document.getElementById('resultBox');
+      const subtitle = document.getElementById('subtitle');
+
+      // Build 6 inputs
+      for(let i=0;i<6;i++){
+        const inp = document.createElement('input');
+        inp.setAttribute('maxlength','1');
+        inp.setAttribute('data-idx', i);
+        inp.setAttribute('inputmode','latin');
+        inp.setAttribute('aria-label', 'Code character '+(i+1));
+        codeRow.appendChild(inp);
+      }
+      const inputs = Array.from(codeRow.querySelectorAll('input'));
+      inputs[0].focus();
+
+      function getCode(){ return inputs.map(i=>i.value.toUpperCase().trim()).join(''); }
+      function setError(msg){ errorBox.textContent = msg; if(msg){ errorBox.classList.add('visible'); } else { errorBox.classList.remove('visible'); } }
+      function setStatus(state, text){ statusLine.style.display='flex'; statusLine.className='status-line '+state; statusText.textContent=text; }
+      function clearStatus(){ statusLine.style.display='none'; }
+      function showResult(type, message){ resultBox.style.display='block'; resultBox.className='result-box '+type; resultBox.textContent=message; }
+      function clearResult(){ resultBox.style.display='none'; resultBox.textContent=''; }
+
+      inputs.forEach((inp, idx)=>{
+        inp.addEventListener('input', e=>{
+          e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
+          if(e.target.value && idx < 5) inputs[idx+1].focus();
+          if(getCode().length === 6){ setError(''); }
+        });
+        inp.addEventListener('keydown', e=>{
+          if(e.key==='Backspace' && !inp.value && idx>0){ inputs[idx-1].focus(); }
+          if(e.key==='Enter'){ beginAuth(); }
+        });
+      });
+
+      pasteBtn.addEventListener('click', async ()=>{
+        try {
+          const txt = (await navigator.clipboard.readText()).trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+          if(!txt) return;
+            for(let i=0;i<6;i++){ inputs[i].value = txt[i]||''; }
+            inputs[Math.min(5, txt.length)].focus();
+        } catch(e){}
+      });
+
+      signInBtn.addEventListener('click', beginAuth);
+
+      function beginAuth(){
+        clearResult();
+        const code = getCode();
+        if(code.length!==6){ setError('Enter the full 6-character code'); return; }
+        setError('');
+        sessionStorage.setItem('rotur_link_code', code);
+        // redirect to auth so user can sign in / accept TOS. Auth will send them back with token param.
+        const returnTo = window.location.href.split('?')[0];
+        window.location.href = '/auth?return_to=' + encodeURIComponent(returnTo);
+      }
+      // Begin auth directly in signup mode
+      function beginSignup(){
+        clearResult();
+        const code = getCode();
+        if(code.length!==6){ setError('Enter the full 6-character code'); return; }
+        setError('');
+        sessionStorage.setItem('rotur_link_code', code);
+        const returnTo = window.location.href.split('?')[0];
+        window.location.href = '/auth?signup=1&return_to=' + encodeURIComponent(returnTo);
+      }
+      document.getElementById('createAccountLink').addEventListener('click', beginSignup);
+
+      async function handleReturn(){
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        const storedCode = sessionStorage.getItem('rotur_link_code');
+        // Clean URL
+        if(token){ const url = new URL(window.location.href); url.searchParams.delete('token'); window.history.replaceState({}, document.title, url.toString()); }
+
+        if(!storedCode){ return; }
+        // Fill inputs with stored code for clarity
+        storedCode.split('').forEach((c,i)=>{ if(inputs[i]) inputs[i].value = c; });
+
+        if(!token){ setError('Please sign in to complete device linking.'); return; }
+
+        subtitle.textContent = 'Linking device...';
+        signInBtn.disabled = true; pasteBtn.disabled = true; setStatus('waiting','Sending link request');
+
+        try {
+          // New API expects query params ?code=&auth= and returns 200 with plain JSON string or 404 with {error:""}
+          const postUrl = API_BASE + '/code?code=' + encodeURIComponent(storedCode) + '&auth=' + encodeURIComponent(token);
+          const res = await fetch(postUrl, { method:'POST' });
+          let data = null; let rawText = '';
+          try { rawText = await res.text(); } catch(_) {}
+          // Attempt to parse JSON; if it fails treat rawText as plain message
+          try { data = rawText ? JSON.parse(rawText) : null; } catch(_) { data = rawText; }
+          if(res.ok){
+            setStatus('success','Linked successfully');
+            const msg = (typeof data === 'string') ? data : 'Device linked successfully';
+            showResult('success', msg + ' Your session token has been applied. You may close this window.');
+            subtitle.textContent = 'Device linked';
+            try { localStorage.setItem('rotur_link_token', token); } catch(e){}
+          } else {
+            const errMsg = (data && data.error) ? data.error : ('Link failed (HTTP '+res.status+').');
+            setStatus('error','Link failed');
+            showResult('error', errMsg || 'Invalid code or token. Try again.');
+            signInBtn.disabled = false; pasteBtn.disabled = false; subtitle.textContent='Enter the 6‑character code';
+          }
+        } catch(err){
+          setStatus('error','Error');
+            showResult('error','Link failed: '+ err.message);
+            signInBtn.disabled = false; pasteBtn.disabled = false; subtitle.textContent='Enter the 6‑character code';
+        }
+      }
+
+      handleReturn();
+    })();
+  </script>
+  <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
+</body>
+</html>
