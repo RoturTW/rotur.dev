@@ -267,9 +267,8 @@
     }
 
     let username = getCookie("username");
-    let password = getCookie("password");
 
-    if (username && password) {
+    if (username) {
       (function waitForElements() {
         const txt = document.getElementById("roturTXT");
         const img = document.getElementById("roturIMG");
