@@ -179,10 +179,9 @@
         // Remove existing account with same username
         accounts = accounts.filter(acc => acc.username !== accountData.username);
 
-        // Add new account to beginning
+        // Add new account to beginning (username only for security)
         accounts.unshift({
           username: accountData.username,
-          password: getCookie("password"), // Store the hashed password
           lastUsed: Date.now(),
           avatar: `https://avatars.rotur.dev/${accountData.username}`
         });
@@ -231,7 +230,7 @@
         <button class="account-item" data-username="${acc.username}">
           <img src="${acc.avatar}" alt="${acc.username}" onerror="this.src='./Rotur Logo.png'">
           <div class="account-item-info">
-            <h3>${acc.username} ${acc.password ? '<i class="fas fa-check-circle" style="color: #34a853; font-size: 12px;" title="Saved credentials"></i>' : ''}</h3>
+            <h3>${acc.username}</h3>
             <p>Rotur Account</p>
           </div>
         </button>
@@ -246,86 +245,30 @@
       });
     }
 
-    // Select a saved account and auto-login
+    // Select a saved account and show manual login form
     async function selectSavedAccount(username) {
       const accounts = loadSavedAccounts();
       const savedAccount = accounts.find(acc => acc.username === username);
 
-      if (!savedAccount || !savedAccount.password) {
-        // Fallback to manual entry if no password stored
+      if (!savedAccount) {
+        // Account not found, show manual entry
         showSignInForm();
         const usernameInput = document.querySelector('#signin-form input[name="username"]');
         const passwordInput = document.querySelector('#signin-form input[name="password"]');
 
         usernameInput.value = username;
         passwordInput.focus();
-        passwordInput.placeholder = 'Password (no saved credentials)';
-
         return;
       }
 
-      // Show loading state on the clicked account
-      document.querySelectorAll('.account-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      const selectedItem = document.querySelector(`[data-username="${username}"]`);
-      selectedItem.classList.add('active');
-      selectedItem.style.opacity = '0.6';
-      selectedItem.style.pointerEvents = 'none';
+      // Always show manual login form for saved accounts
+      showSignInForm();
+      const usernameInput = document.querySelector('#signin-form input[name="username"]');
+      const passwordInput = document.querySelector('#signin-form input[name="password"]');
 
-      try {
-        // Attempt automatic login
-        const account_data = await requestAccount(username, savedAccount.password);
-        if (account_data) {
-          // Set cookies for this account
-          setCookie("username", username, 7);
-          setCookie("password", savedAccount.password, 7);
-
-          account = account_data;
-          // Update the saved account's last used time
-          saveAccount(account_data);
-
-          // Always go to the authorization page (don't auto-redirect)
-          updateModalForLoggedInUser();
-        } else {
-          // Login failed, remove stored password and show manual form
-          const accounts = loadSavedAccounts();
-          const updatedAccounts = accounts.map(acc => {
-            if (acc.username === username) {
-              delete acc.password; // Remove invalid password
-            }
-            return acc;
-          });
-          localStorage.setItem('rotur_saved_accounts', JSON.stringify(updatedAccounts));
-
-          // Reset UI and show manual login
-          selectedItem.style.opacity = '';
-          selectedItem.style.pointerEvents = '';
-          selectedItem.classList.remove('active');
-
-          showSignInForm();
-          const usernameInput = document.querySelector('#signin-form input[name="username"]');
-          const passwordInput = document.querySelector('#signin-form input[name="password"]');
-
-          usernameInput.value = username;
-          passwordInput.focus();
-          passwordInput.placeholder = 'Password (credentials expired)';
-        }
-      } catch (error) {
-        console.error('Auto-login error:', error);
-        // Reset UI on error
-        selectedItem.style.opacity = '';
-        selectedItem.style.pointerEvents = '';
-        selectedItem.classList.remove('active');
-
-        showSignInForm();
-        const usernameInput = document.querySelector('#signin-form input[name="username"]');
-        const passwordInput = document.querySelector('#signin-form input[name="password"]');
-
-        usernameInput.value = username;
-        passwordInput.focus();
-        passwordInput.placeholder = 'Password (login error)';
-      }
+      usernameInput.value = username;
+      passwordInput.focus();
+      passwordInput.placeholder = 'Enter your password';
     }
 
     // Handle "Use another account" button
@@ -607,7 +550,6 @@
 
       document.getElementById("logoutButton").addEventListener("click", () => {
         document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         document.location.reload();
       });
 
@@ -696,7 +638,6 @@
       const hash = CryptoJS.MD5(password).toString();
 
       setCookie("username", username, 7);
-      setCookie("password", hash, 7);
 
       try {
         const account_data = await requestAccount(username, hash);
@@ -708,7 +649,6 @@
         } else {
           // Clear cookies on failed login
           document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
           // Show error state
           submitButton.innerHTML = 'Invalid credentials';
@@ -805,7 +745,6 @@
         } else {
           // Account created successfully, now sign in
           setCookie("username", username, 7);
-          setCookie("password", hash, 7);
 
           const account_data = await requestAccount(username, hash);
           if (account_data) {
@@ -895,24 +834,24 @@
       sessionStorage.removeItem('rotur_return_to');
 
       const username = getCookie("username");
-      const password = getCookie("password");
-      if (username && password) {
-
-        requestAccount(username, password).then((account_data) => {
-          if (account_data) {
-            account = account_data;
-            updateModalForLoggedInUser();
-            if (linkMode) { // automatically open linking UI
-              openLinkMode();
+      if (username) {
+        setTimeout(() => {
+          const usernameInput = document.querySelector("#signin-form input[name='username']");
+          if (usernameInput) {
+            usernameInput.value = username;
+            // Show sign-in form and focus password field
+            if (typeof showSignInForm === 'function') {
+              showSignInForm();
+              const passwordInput = document.querySelector("#signin-form input[name='password']");
+              if (passwordInput) {
+                passwordInput.focus();
+              }
             }
-          } else {
-            document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           }
-        });
+        }, 100);
       }
       // If explicitly requested to open signup and not already logged in
-      if (!username || !password) {
+      if (!username) {
         if (forceSignup) {
           // Delay to allow DOMContentLoaded handlers to attach
           setTimeout(() => { if (typeof showSignUpForm === 'function') { showSignUpForm(); } }, 50);
