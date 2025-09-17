@@ -711,7 +711,7 @@
 
       try {
         const hash = CryptoJS.MD5(password).toString();
-        const response = await fetch('https://social.rotur.dev/create_user', {
+        const response = await fetch('https://api.rotur.dev/create_user', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -776,7 +776,7 @@
     });
 
     async function requestAccount(username, password) {
-      const response = await fetch(`https://social.rotur.dev/get_user_new?username=${username}&password=${password}`);
+      const response = await fetch(`https://api.rotur.dev/get_user?username=${username}&password=${password}`);
       const json = await response.json();
       if (json.error) {
         // Check if it's a TOS error with a token
@@ -821,7 +821,7 @@
       renderAccountList();
 
       const urlParams = new URLSearchParams(window.location.search);
-      return_to = urlParams.get('return_to') ?? sessionStorage.getItem('rotur_return_to') ?? document.referrer;
+      return_to = urlParams.get('return_to') ?? sessionStorage.getItem('rotur_return_to') ?? "https://rotur.dev/me";
       const linkMode = urlParams.get('link') === '1';
       const forceSignup = urlParams.get('signup') === '1';
       // Capture system parameter (default already set to 'rotur')

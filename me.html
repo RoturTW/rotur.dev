@@ -1,931 +1,910 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Account - Rotur</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Rotur Account</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <style>
-    /* --- General Styles --- */
+    :root {
+      --blue: #1a73e8;
+      --blue-hover: #1557b0;
+      --bg: #fafafa;
+      --card: #fff;
+      --border: #dadce0;
+      --text: #202124;
+      --text-secondary: #5f6368;
+      --hover-bg: #f8f9fa;
+      --radius: 8px;
+      --focus: 0 0 0 3px rgba(26, 115, 232, .2);
+      --shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+      --shadow-hover: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15)
+    }
+
     body {
-      font-family: 'Poppins', Arial, sans-serif;
-      background: #f5f7fa;
+      font-family: 'Google Sans', 'Roboto', sans-serif;
       margin: 0;
-      padding: 0;
-      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
     }
-    .account-layout {
-      display: flex;
-      width: 100vw;
-      min-height: 100vh;
-      background: #f5f7fa;
-    }
-    /* --- Sidebar --- */
-    .sidebar {
-      width: 280px;
-      background: #fff;
-      border-right: 1px solid #e1e5e9;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      padding: 24px 0 0 0;
-      min-height: 100vh;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.03);
-    }
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 24px 20px 24px;
-      width: 100%;
-      border-bottom: 1px solid #f1f3f4;
-      margin-bottom: 20px;
-    }
-    .sidebar-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #f1f3f4;
-      object-fit: cover;
-      background-size: cover;
-      border: 2px solid #e8f0fe;
-    }
-    .sidebar-name {
-      font-weight: 600;
-      font-size: 16px;
-      color: #1a1a1a;
-    }
-    .sidebar-system {
-      margin-bottom: 12px;
-      font-size: 13px;
-      color: #5f6368;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      padding: 0 24px 16px 24px;
-    }
-    .sidebar-currency {
-      background: linear-gradient(135deg, #1a73e8, #4285f4);
-      color: white;
-      padding: 12px 20px;
-      margin: 0 16px 20px 16px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(66,133,244,0.2);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    /* --- Sidebar Navigation --- */
-    .sidebar-nav {
-      width: 100%;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    .sidebar-nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .sidebar-nav li {
-      flex: 1 1 0;
-      padding: 16px 24px;
-      color: #5f6368;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 0;
-      margin: 0;
-      transition: all 0.2s;
-      user-select: none;
-      font-weight: 500;
-      border-left: 3px solid transparent;
-      width: 100%;
+
+    * {
       box-sizing: border-box;
-      display: block;
-      text-align: left;
-    }
-    .sidebar-nav li.active {
-      background: #e8f0fe;
-      color: #1a73e8;
-      border-left-color: #1a73e8;
-      font-weight: 600;
-    }
-    .sidebar-nav li:hover {
-      background: #f8f9fa;
-      color: #1a73e8;
-    }
-    /* --- Main Area --- */
-    .main-area {
-      flex: 1;
-      padding: 48px 32px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .main-card {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      padding: 48px;
-      max-width: 100%;
-      width: 100%;
-      margin-bottom: 32px;
-      border: 1px solid #e1e5e9;
-    }
-    .main-header {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid #f1f3f4;
-    }
-    .main-avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #f1f3f4;
-      object-fit: cover;
-      background-size: cover;
-      border: 2px solid #e8f0fe;
-    }
-    /* --- Profile Card --- */
-    .profile-card {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      padding: 48px;
-      width: 100%;
-      margin-bottom: 32px;
-      border: 1px solid #e1e5e9;
-    }
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      margin-bottom: 40px;
-      padding-bottom: 32px;
-      border-bottom: 1px solid #e1e5e9;
-    }
-    .profile-avatar-large {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: #eee;
-      background-size: cover;
-      background-position: center;
-      border: 4px solid #e8f0fe;
-      box-shadow: 0 4px 16px rgba(26,115,232,0.15);
-    }
-    .profile-info {
-      flex: 1;
-    }
-    .profile-name {
-      font-size: 32px;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin: 0 0 12px 0;
-    }
-    .profile-username {
-      font-size: 18px;
-      color: #5f6368;
-      margin: 0 0 16px 0;
-    }
-    .profile-stats {
-      display: flex;
-      gap: 32px;
-      margin-top: 16px;
-    }
-    .stat-item {
-      text-align: center;
-    }
-    .stat-number {
-      font-size: 22px;
-      font-weight: 700;
-      color: #1a73e8;
-    }
-    .stat-label {
-      font-size: 13px;
-      color: #5f6368;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    /* --- Data Usage --- */
-    .data-usage-section {
-      background: linear-gradient(135deg, #f8f9fa, #e8f0fe);
-      border-radius: 20px;
-      padding: 32px;
-      margin-bottom: 32px;
-      border: 1px solid #e1e5e9;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      width: 100%;
-    }
-    .data-usage-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .data-usage-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #1a73e8;
-    }
-    .data-usage-amount {
-      font-size: 16px;
-      color: #5f6368;
-      font-weight: 600;
-    }
-    .progress-bar {
-      width: 100%;
-      height: 14px;
-      background: #e8eaed;
-      border-radius: 7px;
-      overflow: hidden;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #34a853, #1a73e8);
-      border-radius: 7px;
-      transition: width 0.3s ease;
-    }
-    /* --- Responsive --- */
-    @media (max-width: 900px) {
-      .account-layout {
-        flex-direction: column;
-      }
-      .sidebar {
-        width: 100vw;
-        min-height: auto;
-        border-right: none;
-        border-bottom: 1px solid #e1e5e9;
-        flex-direction: row;
-        align-items: center;
-        padding: 16px 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        overflow-x: auto;
-      }
-      .sidebar-header {
-        padding: 0 16px;
-        border-bottom: none;
-        margin-bottom: 0;
-        flex-shrink: 0;
-      }
-      .sidebar-system {
-        display: none;
-      }
-      .sidebar-currency {
-        margin: 0 12px;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .sidebar-nav ul {
-        flex-direction: row;
-        gap: 4px;
-        padding: 0 16px;
-      }
-      .sidebar-nav li {
-        padding: 12px 16px;
-        font-size: 14px;
-        white-space: nowrap;
-        margin: 0 2px;
-        border-left: none;
-        border-radius: 8px;
-        width: auto;
-        text-align: center;
-      }
-      .main-area {
-        padding: 16px 12px;
-      }
-      .main-card, .profile-card, .data-usage-section {
-        padding: 24px 16px;
-      }
-      .main-header, .profile-header {
-        gap: 12px;
-        padding-bottom: 16px;
-      }
-      .main-avatar, .profile-avatar-large {
-        width: 64px;
-        height: 64px;
-      }
-      .profile-name {
-        font-size: 22px;
-      }
-      .profile-username {
-        font-size: 15px;
-      }
-      .profile-stats {
-        gap: 16px;
-      }
-      /* Friends grid responsive */
-      .friends-grid {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 12px;
-      }
-      .friend-card {
-        padding: 16px 8px;
-      }
-    }
-    /* --- Utility Classes --- */
-    .error-message {
-      color: #ea4335;
-      text-align: center;
-      margin: 10px 0 0 0;
-      font-size: 15px;
-    }
-    .success-message {
-      color: #34a853;
-      text-align: center;
-      margin: 10px 0 0 0;
-      font-size: 15px;
-    }
-    .token-warning {
-      color: #ea4335;
-      font-size: 14px;
-      margin-bottom: 18px;
-      text-align: center;
-    }
-    /* --- Modal --- */
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(30, 34, 45, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    .modal-content {
-      background: #fff;
-      border-radius: 16px;
-      padding: 32px 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-      text-align: center;
-      min-width: 320px;
-      max-width: 90vw;
-    }
-    .modal-content h2 {
-      margin-top: 0;
-      color: #1a73e8;
-      font-size: 22px;
-      font-weight: 700;
-    }
-    .modal-content p {
-      color: #5f6368;
-      font-size: 16px;
-      margin-bottom: 24px;
-    }
-    /* --- Button --- */
-    .btn-primary {
-      background: linear-gradient(90deg,#1a73e8 0%,#4285f4 100%);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 16px 32px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 16px;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(66,133,244,0.2);
-      min-height: 52px;
-    }
-    .btn-primary:hover {
-      background: linear-gradient(90deg,#1557b0 0%,#1a73e8 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(66,133,244,0.3);
-    }
-    /* --- Animation --- */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* --- Friends Page Styles --- */
-    .friends-page-section {
-      margin-bottom: 32px;
-    }
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .section-icon {
-      width: 36px;
-      height: 36px;
-      background: #e8f0fe;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      border: 1px solid #c3d3f7;
-    }
-    .section-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #1a73e8;
-      margin: 0;
-    }
-    .friends-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
-      margin-bottom: 12px;
-      width: 100%;
-    }
-    .friend-card {
-      background: #fafbfc;
-      border: 1px solid #e1e5e9;
-      border-radius: 16px;
-      padding: 24px 16px;
-      text-align: center;
-      transition: all 0.2s;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 160px;
-    }
-    .friend-card:hover {
-      background: #f8f9ff;
-      border-color: #1a73e8;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(26,115,232,0.10);
-    }
-    .friend-card-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: #e8f0fe;
-      background-size: cover;
-      background-position: center;
-      margin: 0 auto 12px auto;
-      border: 2px solid #e8f0fe;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .friend-card-name {
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 6px;
-      font-size: 16px;
-      word-break: break-all;
-    }
-    .friend-card-status {
-      font-size: 13px;
-      color: #34a853;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-    .friend-request-card {
-      border-color: #fbbc04;
-      background: #fffbf0;
-    }
-    .friend-request-card:hover {
-      background: #fff8e1;
-      border-color: #f9a825;
-    }
-    .friend-request-card .friend-card-name {
-      color: #ea4335;
-    }
-    .friend-request-card .friend-card-status {
-      color: #f57c00;
-    }
-    .accept-friend-btn {
-      background: #34a853;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.2s;
-      box-shadow: 0 2px 8px rgba(52,168,83,0.08);
-    }
-    .accept-friend-btn:hover {
-      background: #2d7d32;
-    }
-    /* --- End Friends Page Styles --- */
-
-    /* --- Section Block Consistency --- */
-    .section-block {
-      margin-bottom: 28px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #f1f3f4;
-    }
-    .section-block:last-child {
-      border-bottom: none;
-      margin-bottom: 24px;
-    }
-    /* --- Privacy Public List --- */
-    .privacy-public-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
-      margin-top: 16px;
-    }
-    .privacy-public-item {
-      background: #e8f0fe;
-      color: #1a73e8;
-      font-size: 14px;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      border: 1px solid #c3d3f7;
-      outline: none;
-      transition: all 0.2s;
-      text-align: center;
-    }
-    .privacy-public-item:hover {
-      background: #d2e3fc;
-      transform: translateY(-1px);
-    }
-    /* --- End Privacy List --- */
-
-    /* --- Transaction List Consistency --- */
-    .transaction-item {
+    /* Header */
+    .header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
       display: flex;
       align-items: center;
       gap: 16px;
-      padding: 18px 20px;
-      background: #fafbfc;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      border: 1px solid #e1e5e9;
-      transition: all 0.2s;
     }
-    .transaction-item:hover {
-      background: #f8f9ff;
-      border-color: #1a73e8;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(26,115,232,0.08);
+
+    .header-logo {
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-decoration: none;
     }
-    .transaction-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
+
+    .header-logo .logo-accent {
+      color: var(--blue);
+      font-weight: 500;
+    }
+
+    .header-title {
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-left: auto;
+    }
+
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--hover-bg);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .header-user:hover {
+      background: #f1f3f4;
+    }
+
+    .header-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #e8f0fe;
+      background-size: cover;
+    }
+
+    .header-username {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 256px;
+      flex-shrink: 0;
+    }
+
+    .nav-section {
+      margin-bottom: 24px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover {
+      background: var(--hover-bg);
+    }
+
+    .nav-item.active {
+      background: #e8f0fe;
+      color: var(--blue);
+    }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      font-weight: 700;
-      flex-shrink: 0;
     }
-    .transaction-icon.credit {
-      background: #e8f5e8;
-      color: #34a853;
-      border: 1px solid #c8e6c9;
+
+    .nav-icon i {
+      width: 16px;
+      height: 16px;
     }
-    .transaction-icon.debit {
-      background: #fce8e6;
-      color: #ea4335;
-      border: 1px solid #ffcdd2;
-    }
-    .transaction-details {
+
+    /* Main Content */
+    .main-content {
       flex: 1;
       min-width: 0;
     }
-    .transaction-title {
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 4px;
-      font-size: 15px;
+
+    .page-header {
+      margin-bottom: 32px;
     }
-    .transaction-date {
-      font-size: 13px;
-      color: #5f6368;
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--text);
+      margin: 0 0 8px 0;
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      margin: 0 0 8px 0;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Profile Section */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 0;
+    }
+
+    .profile-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: #f1f3f4;
+      background-size: cover;
+      border: 4px solid #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .profile-info h2 {
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--text);
+      margin: 0 0 4px 0;
+    }
+
+    .profile-info .username {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 0 0 8px 0;
+    }
+
+    .profile-info .bio {
+      font-size: 14px;
+      color: var(--text);
+      margin: 0;
+      max-width: 400px;
+    }
+
+    /* Info Rows */
+    .info-row {
+      display: flex;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid #f1f3f4;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      flex: 0 0 140px;
+      font-size: 14px;
+      color: var(--text);
       font-weight: 500;
     }
-    .transaction-amount {
-      font-weight: 700;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .transaction-amount.credit {
-      color: #34a853;
-    }
-    .transaction-amount.debit {
-      color: #ea4335;
-    }
-    /* --- End Transaction List --- */
 
-    /* --- End of Styles --- */
+    .info-value {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .info-value .primary-text {
+      color: var(--text);
+    }
+
+    .info-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Buttons */
+    .btn {
+      border: none;
+      border-radius: var(--radius);
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--blue);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--hover-bg);
+    }
+
+    .btn-text {
+      background: transparent;
+      color: var(--blue);
+      padding: 8px 12px;
+    }
+
+    .btn-text:hover {
+      background: var(--hover-bg);
+    }
+
+    /* Lists */
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f3f4;
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .list-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f1f3f4;
+      background-size: cover;
+    }
+
+    .list-content {
+      flex: 1;
+    }
+
+    .list-title {
+      font-size: 14px;
+      color: var(--text);
+      margin: 0 0 2px 0;
+      font-weight: 500;
+    }
+
+    .list-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+      }
+      
+      .sidebar {
+        width: 100%;
+        order: 2;
+      }
+      
+      .profile-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+      
+      .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .info-label {
+        flex: none;
+      }
+    }
+
+    /* Hide content by default */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Modal for editing */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      min-width: 400px;
+      max-width: 90vw;
+      box-shadow: var(--shadow-hover);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 0 0 16px 0;
+      color: var(--text);
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      margin-bottom: 16px;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .modal-input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: var(--focus);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    /* Message styles */
+    .message {
+      border: 1px solid;
+      font-weight: 500;
+    }
+
+    .message.success {
+      background: #e8f5e8;
+      color: #34a853;
+      border-color: #34a853;
+    }
+
+    .message.error {
+      background: #fce8e6;
+      color: #ea4335;
+      border-color: #ea4335;
+    }
   </style>
 </head>
+
 <body>
-  <div class="account-layout">
+  <!-- Header -->
+  <header class="header">
+    <a href="/" class="header-logo">
+      <span class="logo-accent">Rotur</span> Account
+    </a>
+    <div class="header-title">Personal info</div>
+    <div class="header-user" id="header-user">
+      <div class="header-avatar" id="header-avatar"></div>
+      <div class="header-username" id="header-username">Account</div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <span class="sidebar-avatar" id="sidebar-avatar"></span>
-        <span class="sidebar-name" id="sidebar-name"></span>
-      </div>
-      <div class="sidebar-system" id="sidebar-system" style="color:#5f6368;font-size:13px;padding:0 24px 12px 24px;"></div>
-      <div class="sidebar-currency" id="sidebar-currency">0 Credits</div>
-      
-      <nav class="sidebar-nav">
-        <ul id="sidebar-tabs">
-          <li class="active" data-tab="profile">Profile</li>
-          <li data-tab="friends">Friends</li>
-          <li data-tab="privacy">Privacy</li>
-          <li data-tab="transactions">Transactions</li>
-          <li data-tab="about">About</li>
-        </ul>
+      <nav class="nav-section">
+        <button class="nav-item active" data-tab="personal-info">
+          <div class="nav-icon"><i data-lucide="user"></i></div>
+          Personal info
+        </button>
+        <button class="nav-item" data-tab="data-privacy">
+          <div class="nav-icon"><i data-lucide="lock"></i></div>
+          Data & privacy
+        </button>
+        <button class="nav-item" data-tab="security">
+          <div class="nav-icon"><i data-lucide="shield"></i></div>
+          Security
+        </button>
+        <button class="nav-item" data-tab="people-sharing">
+          <div class="nav-icon"><i data-lucide="users"></i></div>
+          People & sharing
+        </button>
+        <button class="nav-item" data-tab="payments">
+          <div class="nav-icon"><i data-lucide="credit-card"></i></div>
+          Payments & subscriptions
+        </button>
+        <button class="nav-item" data-tab="about">
+          <div class="nav-icon"><i data-lucide="info"></i></div>
+          About
+        </button>
       </nav>
     </aside>
-    <main class="main-area">
-      <div id="auth-container" class="main-card tab-content" data-tab="auth" style="display:none;">
-        <div class="main-header">
-          <span class="main-avatar" id="main-avatar"></span>
-          <div>
-            <h2 id="main-name">Account Authentication</h2>
-          </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Personal Info Tab -->
+      <div id="personal-info" class="tab-content active">
+        <div class="page-header">
+          <h1 class="page-title">Personal info</h1>
+          <p class="page-subtitle">Info about you and your preferences across Rotur services</p>
         </div>
-        <div class="subtitle">Authenticate to view and edit your account.</div>
-        <button class="btn-primary" id="auth-btn">Authenticate</button>
-        <div class="token-warning" id="token-warning" style="display:none;">No token found. Please authenticate.</div>
-      </div>
-      
-      <div id="profile-container" class="tab-content active" data-tab="profile">
-        <div class="data-usage-section">
-          <div class="data-usage-header">
-            <div class="data-usage-title">Data Usage</div>
-            <div class="data-usage-amount" id="data-usage-text">0 MB / 0 MB</div>
+
+        <!-- Profile Section -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Your profile info in Rotur services</h2>
+            <p class="card-subtitle">Personal info and options to manage it. You can make some of this info, like your contact details, visible to others so they can reach you easily.</p>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="data-usage-bar" style="width: 0%"></div>
-          </div>
-        </div>
-        <div class="profile-card">
-          <div class="profile-header">
-            <div class="profile-avatar-large" id="profile-avatar-large"></div>
+          
+          <div class="profile-section">
+            <div class="profile-avatar" id="profile-avatar"></div>
             <div class="profile-info">
-              <h1 class="profile-name" id="profile-display-name">Your Name</h1>
-              <p class="profile-username" id="profile-username-display">@username</p>
-              <div class="profile-stats">
-                <div class="stat-item">
-                  <div class="stat-number" id="stat-friends">0</div>
-                  <div class="stat-label">Friends</div>
-                </div>
-                <div class="stat-item">
-                  <div class="stat-number" id="stat-credits">0</div>
-                  <div class="stat-label">Credits</div>
-                </div>
-                <div class="stat-item">
-                  <div class="stat-number" id="stat-system">None</div>
-                  <div class="stat-label">System</div>
-                </div>
+              <h2 id="profile-name">Your Name</h2>
+              <p class="username" id="profile-username">@username</p>
+              <p class="bio" id="profile-bio"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Basic info</h2>
+            <p class="card-subtitle">Some info may be visible to other people using Rotur services.</p>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Profile picture</div>
+            <div class="info-value">
+              <span>A profile picture helps personalise your account</span>
+              <div class="info-actions">
+                <button class="btn btn-text">Manage</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Name</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-name">Not set</span>
+              <div class="info-actions">
+                <button class="btn btn-text" onclick="editName()">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Username</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-username">@username</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Bio</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-bio">Not set</span>
+              <div class="info-actions">
+                <button class="btn btn-text" onclick="editBio()">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-row" id="pronouns-row" style="display: none;">
+            <div class="info-label">Pronouns</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-pronouns"></span>
+              <div class="info-actions">
+                <button class="btn btn-text" onclick="editPronouns()">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-row" id="followers-row" style="display: none;">
+            <div class="info-label">Followers</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-followers">0</span>
+            </div>
+          </div>
+
+          <div class="info-row" id="following-row" style="display: none;">
+            <div class="info-label">Following</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-following">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Contact info</h2>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Email</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-email"></span>
+              <div class="info-actions">
+                <button class="btn btn-text" onclick="editEmail()">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Phone</div>
+            <div class="info-value">
+              <span id="info-phone"></span>
+              <div class="info-actions">
+                <button class="btn btn-text" onclick="editPhone()">Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Account details</h2>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Account created</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-created">Loading...</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Credits</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-credits">0</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">System</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-system">None</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Storage used</div>
+            <div class="info-value">
+              <span class="primary-text" id="info-storage">0 MB of 1 GB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data & Privacy Tab -->
+      <div id="data-privacy" class="tab-content">
+        <div class="page-header">
+          <h1 class="page-title">Data & privacy</h1>
+          <p class="page-subtitle">Settings for how Rotur uses your data</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Privacy controls</h2>
+            <p class="card-subtitle">Manage what data is shared and how it's used</p>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Make profile private</div>
+            <div class="info-value">
+              <span>Hide your profile from other users</span>
+              <div class="info-actions">
+                <label style="display: flex; align-items: center; gap: 8px;">
+                  <input type="checkbox" id="privacy-toggle">
+                  <span style="font-size: 14px;">Private account</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Data that's always public</h2>
+            <p class="card-subtitle">This information is visible to everyone using Rotur services</p>
+          </div>
+
+          <div class="grid">
+            <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border: 1px solid #dadce0;">
+              <strong>Username</strong>
+              <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 13px;">Your unique identifier</p>
+            </div>
+            <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border: 1px solid #dadce0;">
+              <strong>Profile Picture</strong>
+              <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 13px;">Your avatar image</p>
+            </div>
+            <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border: 1px solid #dadce0;">
+              <strong>Account Creation Date</strong>
+              <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 13px;">When you joined Rotur</p>
+            </div>
+            <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border: 1px solid #dadce0;">
+              <strong>Credit Total</strong>
+              <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 13px;">Your current credit balance</p>
+            </div>
+            <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border: 1px solid #dadce0;">
+              <strong>System</strong>
+              <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 13px;">Your Rotur operating system</p>
+            </div>
+            <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border: 1px solid #dadce0;">
+              <strong>Bio</strong>
+              <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 13px;">Your profile description</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Tab -->
+      <div id="security" class="tab-content">
+        <div class="page-header">
+          <h1 class="page-title">Security</h1>
+          <p class="page-subtitle">Settings to help keep your account secure</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">How you sign in to Rotur</h2>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Refresh Token</div>
+            <div class="info-value">
+              <span>Keep your session active</span>
+              <div class="info-actions">
+                <button class="btn btn-text" onclick="refreshToken()">Refresh</button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div id="friends-container" class="main-card tab-content" data-tab="friends" style="display:none;">
-        <div class="main-header">
-          <span class="main-avatar" id="main-avatar-friends"></span>
-          <div>
-            <h2>Friends & Connections</h2>
-            <div class="main-system">Manage your friends and friend requests</div>
+
+      <!-- People & Sharing Tab -->
+      <div id="people-sharing" class="tab-content">
+        <div class="page-header">
+          <h1 class="page-title">People & sharing</h1>
+          <p class="page-subtitle">Manage your friends and connections</p>
+        </div>
+
+        <!-- Error/Success Messages -->
+        <div id="friends-message" class="message" style="display: none; padding: 12px; border-radius: var(--radius); margin-bottom: 16px; font-size: 14px;"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Add friends</h2>
+            <p class="card-subtitle">Send friend requests to other users</p>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Send friend request</div>
+            <div class="info-value" style="gap: 12px;">
+              <input type="text" id="friend-username-input" placeholder="Enter username" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px;">
+              <div class="info-actions">
+                <button class="btn btn-primary" onclick="sendFriendRequest()">Send Request</button>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <div class="friends-page-section">
-          <div class="section-header">
-            <div class="section-icon">👥</div>
-            <h3 class="section-title">Your Friends</h3>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Friend requests</h2>
+            <p class="card-subtitle">People who want to connect with you</p>
           </div>
-          <div class="friends-grid" id="friends-page-list">
-            <!-- Friends will be populated here -->
-          </div>
-        </div>
-        
-        <div class="friends-page-section">
-          <div class="section-header">
-            <div class="section-icon">📨</div>
-            <h3 class="section-title">Friend Requests</h3>
-          </div>
-          <div class="friends-grid" id="friend-requests-page">
+
+          <div id="friend-requests-list">
             <!-- Friend requests will be populated here -->
           </div>
         </div>
-      </div>
-      
-      <div id="privacy-container" class="main-card tab-content" data-tab="privacy" style="display:none;">
-        <div class="main-header">
-          <span class="main-avatar" id="main-avatar-settings4"></span>
-          <div>
-            <h2>Privacy</h2>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Your friends</h2>
+            <p class="card-subtitle">People you're connected with on Rotur</p>
+          </div>
+
+          <div id="friends-list">
+            <!-- Friends will be populated here -->
           </div>
         </div>
-        <form id="privacy-form">
-          <section class="section-block">
-            <h3 class="section-title">Privacy Settings</h3>
-            <div class="form-row">
-              <div class="form-group" style="flex:2;">
-                <label for="private2">Private Account?</label>
-                <input type="checkbox" id="private2" name="private" style="width:24px;height:24px;vertical-align:middle;">
-              </div>
-            </div>
-            <div style="margin:24px 0 8px 0;font-weight:600;color:#1a73e8;background:#e8f0fe;padding:12px 16px;border-radius:8px;border:1px solid #c3d3f7;">Public Data:</div>
-            <div class="privacy-public-list">
-              <div class="privacy-public-item">Username</div>
-              <div class="privacy-public-item">Profile Picture</div>
-              <div class="privacy-public-item">Banner</div>
-              <div class="privacy-public-item">Bio</div>
-              <div class="privacy-public-item">Theming And Colours</div>
-              <div class="privacy-public-item">Rotur Credit Total</div>
-              <div class="privacy-public-item">Your Rotur Operating System</div>
-              <div class="privacy-public-item">Account Creation Date</div>
-            </div>
-          </section>
-          <button type="submit" class="btn-primary">Save Privacy</button>
-          <div id="privacy-message"></div>
-        </form>
       </div>
-      <div id="transactions-container" class="main-card tab-content" data-tab="transactions" style="display:none;">
-        <div class="main-header">
-          <span class="main-avatar" id="main-avatar-settings4"></span>
-          <div>
-            <h2>Transaction History</h2>
-            <div class="main-system">View your credit transactions and account activity</div>
+
+      <!-- Payments Tab -->
+      <div id="payments" class="tab-content">
+        <div class="page-header">
+          <h1 class="page-title">Payments & subscriptions</h1>
+          <p class="page-subtitle">Your transaction history and subscription management</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Active subscriptions</h2>
+            <p class="card-subtitle">Services you're subscribed to from other users</p>
+          </div>
+
+          <div id="subscriptions-list">
+            <!-- Subscriptions will be populated here -->
           </div>
         </div>
-        
-        <div class="profile-section">
-          <div class="section-header">
-            <div class="section-icon">💳</div>
-            <h3 class="section-title">Recent Transactions</h3>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Recent transactions</h2>
+            <p class="card-subtitle">Your latest credit transactions</p>
           </div>
+
           <div id="transactions-list">
-            <!-- Real transactions will be populated here from sys.transactions -->
+            <!-- Transactions will be populated here -->
           </div>
         </div>
       </div>
-      
-      <div id="about-container" class="main-card tab-content" data-tab="about" style="display:none;">
-        <div class="main-header">
-          <span class="main-avatar" id="main-avatar-settings5"></span>
-          <div>
-            <h2>About</h2>
+
+      <!-- About Tab -->
+      <div id="about" class="tab-content">
+        <div class="page-header">
+          <h1 class="page-title">About</h1>
+          <p class="page-subtitle">Information about your Rotur account</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Rotur Account Dashboard</h2>
+            <p class="card-subtitle">Version 2.0</p>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Version</div>
+            <div class="info-value">
+              <span class="primary-text">2.0</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Last updated</div>
+            <div class="info-value">
+              <span class="primary-text">September 2025</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">Made by</div>
+            <div class="info-value">
+              <span class="primary-text">Rotur Team</span>
+            </div>
           </div>
         </div>
-        <div class="subtitle">Learn more about Rotur and this dashboard.</div>
-        <div style="color:#5f6368; font-size:15px; margin-top:12px;">Rotur Account Dashboard v2.0<br>Made with ❤️ by Rotur.</div>
       </div>
     </main>
   </div>
 
+  <!-- Auth Modal -->
   <div id="auth-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Authentication Required</h2>
       <p>You need to authenticate to view your account.</p>
-      <button class="btn-primary" id="auth-modal-btn">Authenticate</button>
+      <button class="btn btn-primary" id="auth-modal-btn">Sign in to Rotur</button>
+    </div>
+  </div>
+
+  <!-- Bio Edit Modal -->
+  <div id="bio-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3 class="modal-title">Edit your bio</h3>
+      <textarea id="bio-input" class="modal-input" placeholder="Tell people a little about yourself..."></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeBioModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveBio()">Save</button>
+      </div>
     </div>
   </div>
 
   <script>
-    function acceptFriend(name) {
-      alert(`Friend request from ${name} accepted!`);
-      // Here you would make an API call to accept the friend request
-    }
-    
-    function updateDataUsage(user) {
-      const maxSize = (user['max_size'] || 1000000000) / 1000000; // Default 1TB in MB
-      const usedSize = (user['used_size'] || 0) / 1000000;
-      const percentage = Math.min((usedSize / maxSize) * 100, 100);
-      
-      // Show in MB if under 1000MB, otherwise GB
-      const usedDisplay = usedSize < 1000 ? `${usedSize.toFixed(1)} MB` : `${(usedSize / 1000).toFixed(1)} GB`;
-      const maxDisplay = maxSize < 1000 ? `${maxSize.toFixed(1)} MB` : `${(maxSize / 1000).toFixed(1)} GB`;
-
-      document.getElementById('data-usage-text').textContent = `${usedDisplay} / ${maxDisplay}`;
-      document.getElementById('data-usage-bar').style.width = `${percentage}%`;
-    }
-    
-    function updateProfileStats(user) {
-      document.getElementById('stat-friends').textContent = user['sys.friends'] ? user['sys.friends'].length : 0;
-      document.getElementById('stat-credits').textContent = user['sys.currency'] || 0;
-      document.getElementById('stat-system').textContent = user.system || 'None';
-      
-      document.getElementById('profile-display-name').textContent = user.display_name || user.username;
-      document.getElementById('profile-username-display').textContent = '@' + (user.username || 'username');
-      document.getElementById('profile-avatar-large').style.backgroundImage = user.pfp ? `url('${user.pfp}')` : '';
-    }
-    
-    function formatTransactionTime(timestamp) {
-      const date = new Date(timestamp);
-      const now = new Date();
-      const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-      
-      if (diffDays === 0) {
-        return `Today, ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-      } else if (diffDays === 1) {
-        return `Yesterday, ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-      } else if (diffDays < 7) {
-        return `${diffDays} days ago, ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-      } else {
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      }
-    }
-    
-    function getTransactionIcon(type) {
-      switch(type) {
-        case 'in': return '+';
-        case 'out': return '-';
-        case 'tax': return '💰';
-        default: return '•';
-      }
-    }
-    
-    function getTransactionTitle(transaction) {
-      switch(transaction.type) {
-        case 'in': 
-          return transaction.note || `Credit from ${transaction.user}`;
-        case 'out': 
-          return transaction.note || `Payment to ${transaction.user}`;
-        case 'tax': 
-          return transaction.note || `Tax from ${transaction.user}`;
-        default: 
-          return transaction.note || 'Transaction';
-      }
-    }
-    
-    function populateTransactions(user) {
-      const transactionsList = document.getElementById('transactions-list');
-      
-      if (user['sys.transactions'] && user['sys.transactions'].length > 0) {
-        // Sort transactions by time (newest first)
-        const sortedTransactions = user['sys.transactions']
-          .sort((a, b) => b.time - a.time)
-          .slice(0, 20); // Show only the 20 most recent transactions
-        
-        transactionsList.innerHTML = sortedTransactions.map(transaction => {
-          const isCredit = transaction.type === 'in' || transaction.type === 'tax';
-          const iconClass = isCredit ? 'credit' : 'debit';
-          const amountClass = isCredit ? 'credit' : 'debit';
-          const amountPrefix = isCredit ? '+' : '-';
-          
-          return `
-            <div class="transaction-item">
-              <div class="transaction-icon ${iconClass}">${getTransactionIcon(transaction.type)}</div>
-              <div class="transaction-details">
-                <div class="transaction-title">${getTransactionTitle(transaction)}</div>
-                <div class="transaction-date">${formatTransactionTime(transaction.time)}</div>
-              </div>
-              <div class="transaction-amount ${amountClass}">${amountPrefix}${transaction.amount}</div>
-            </div>
-          `;
-        }).join('');
-      } else {
-        transactionsList.innerHTML = '<div style="padding: 16px; color: #5f6368; text-align: center;">No transactions yet</div>';
-      }
-    }
-    
-    function populateFriendsPage(user) {
-      const friendsPageList = document.getElementById('friends-page-list');
-      const requestsPageList = document.getElementById('friend-requests-page');
-      
-      // Populate friends grid
-      if (user['sys.friends'] && user['sys.friends'].length > 0) {
-        friendsPageList.innerHTML = user['sys.friends'].map(friendUsername => `
-          <div class="friend-card">
-            <div class="friend-card-avatar" style="background-image: url('https://avatars.rotur.dev/${friendUsername}');"></div>
-            <div class="friend-card-name">${friendUsername}</div>
-          </div>
-        `).join('');
-      } else {
-        friendsPageList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #5f6368; padding: 32px;">No friends yet. Start connecting with others!</div>';
-      }
-      
-      // Populate friend requests grid
-      if (user['sys.requests'] && user['sys.requests'].length > 0) {
-        requestsPageList.innerHTML = user['sys.requests'].map(requestUsername => `
-          <div class="friend-card friend-request-card">
-            <div class="friend-card-avatar" style="background-image: url('https://avatars.rotur.dev/${requestUsername}');"></div>
-            <div class="friend-card-name">${requestUsername}</div>
-            <div class="friend-card-status">Wants to be friends</div>
-            <button class="accept-friend-btn" onclick="acceptFriend('${requestUsername}')">Accept Request</button>
-          </div>
-        `).join('');
-      } else {
-        requestsPageList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #5f6368; padding: 32px;">No pending friend requests</div>';
-      }
-    }
-
     // Get token from URL or localStorage
     function getToken() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -939,159 +918,690 @@
       return token;
     }
 
-    // Tab navigation logic
-    function showTab(tab) {
+    // Tab navigation
+    function showTab(tabId) {
+      // Hide all tab contents
       document.querySelectorAll('.tab-content').forEach(el => {
         el.classList.remove('active');
-        el.style.display = 'none';
       });
-      const tabEl = document.querySelector(`.tab-content[data-tab="${tab}"]`);
-      if (tabEl) {
-        tabEl.classList.add('active');
-        tabEl.style.display = 'block';
+      
+      // Show selected tab
+      const selectedTab = document.getElementById(tabId);
+      if (selectedTab) {
+        selectedTab.classList.add('active');
       }
-      document.querySelectorAll('#sidebar-tabs li').forEach(li => {
-        li.classList.remove('active');
-        if (li.dataset.tab === tab) li.classList.add('active');
-      });
-    }
-
-    // File upload handlers
-    function setupFileUpload(fileInputId, previewId) {
-      const fileInput = document.getElementById(fileInputId);
-      const preview = document.getElementById(previewId);
-      if (!fileInput || !preview) return;
-      fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-          };
-          reader.readAsDataURL(file);
+      
+      // Update navigation
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.tab === tabId) {
+          item.classList.add('active');
         }
       });
     }
 
-    // Sidebar tab click events
-    document.querySelectorAll('#sidebar-tabs li').forEach(li => {
-      li.onclick = function() {
-        showTab(this.dataset.tab);
-      };
-    });
-    document.getElementById('auth-btn').onclick = function() {
-      window.location.href = 'https://rotur.dev/auth?return_to=' + encodeURIComponent(window.location.href);
-    };
-    document.getElementById('auth-modal-btn').onclick = function() {
-      window.location.href = 'https://rotur.dev/auth?return_to=' + encodeURIComponent(window.location.href);
-    };
+    // Format date nicely
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }
 
-    // On load, check for token and load user info
-    window.onload = async function() {
-      if (document.getElementById('pfp-file')) setupFileUpload('pfp-file', 'pfp-preview');
-      if (document.getElementById('banner-file')) setupFileUpload('banner-file', 'banner-preview');
+    // Format file size
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 MB';
+      const mb = bytes / (1024 * 1024);
+      const gb = mb / 1024;
+      
+      if (gb >= 1) {
+        return `${gb.toFixed(1)} GB`;
+      } else {
+        return `${mb.toFixed(1)} MB`;
+      }
+    }
+
+    // Populate user data
+    function populateUserData(user, publicProfile = null) {
+
+      // Header - use avatars.rotur.dev
+      document.getElementById('header-username').textContent = user.display_name || user.username || 'Account';
+      if (user.username) {
+        document.getElementById('header-avatar').style.backgroundImage = `url('https://avatars.rotur.dev/${user.username}')`;
+      }
+
+      // Profile section - use avatars.rotur.dev
+      if (user.username) {
+        document.getElementById('profile-avatar').style.backgroundImage = `url('https://avatars.rotur.dev/${user.username}')`;
+      }
+      document.getElementById('profile-name').textContent = user.display_name || user.username || 'Your Name';
+      document.getElementById('profile-username').textContent = '@' + (user.username || 'username');
+      
+      const bioEl = document.getElementById('profile-bio');
+      if (user.bio && user.bio.trim()) {
+        bioEl.textContent = user.bio;
+        bioEl.style.display = 'block';
+      } else {
+        bioEl.style.display = 'none';
+      }
+
+      // Basic info - only show data if it exists
+      document.getElementById('info-name').textContent = user.display_name || 'Not set';
+      document.getElementById('info-username').textContent = '@' + (user.username || 'username');
+      document.getElementById('info-bio').textContent = user.bio || 'Not set';
+      
+      // Email and phone - only show if they exist
+      const emailEl = document.getElementById('info-email');
+      if (user.email) {
+        emailEl.textContent = user.email;
+        emailEl.parentElement.parentElement.style.display = 'flex';
+      } else {
+        emailEl.parentElement.parentElement.style.display = 'none';
+      }
+
+      const phoneEl = document.getElementById('info-phone');
+      if (user.phone) {
+        phoneEl.textContent = user.phone;
+        phoneEl.parentElement.parentElement.style.display = 'flex';
+      } else {
+        phoneEl.parentElement.parentElement.style.display = 'none';
+      }
+
+      // Pronouns - show if available from public profile
+      if (publicProfile && publicProfile.pronouns) {
+        document.getElementById('info-pronouns').textContent = publicProfile.pronouns;
+        document.getElementById('pronouns-row').style.display = 'flex';
+      }
+
+      // Followers/Following - show if available from public profile
+      if (publicProfile && typeof publicProfile.followers !== 'undefined') {
+        document.getElementById('info-followers').textContent = publicProfile.followers.toLocaleString();
+        document.getElementById('followers-row').style.display = 'flex';
+      }
+
+      if (publicProfile && typeof publicProfile.following !== 'undefined') {
+        document.getElementById('info-following').textContent = publicProfile.following.toLocaleString();
+        document.getElementById('following-row').style.display = 'flex';
+      }
+
+      // Account details - use 'created' key as timestamp
+      if (user.created) {
+        document.getElementById('info-created').textContent = formatDate(new Date(user.created));
+      } else {
+        document.getElementById('info-created').textContent = 'Unknown';
+      }
+      document.getElementById('info-credits').textContent = (user['sys.currency'] || 0).toLocaleString();
+      document.getElementById('info-system').textContent = user.system || 'None';
+      
+      // Storage
+      const usedSize = user.used_size || 0;
+      const maxSize = user.max_size || publicProfile?.max_size || 1000000000; // 1GB default
+      document.getElementById('info-storage').textContent = `${formatFileSize(usedSize)} of ${formatFileSize(maxSize)}`;
+
+      // Privacy toggle
+      const privacyToggle = document.getElementById('privacy-toggle');
+      if (privacyToggle) {
+        privacyToggle.checked = !!user.private;
+      }
+    }
+
+    // Populate friends
+    function populateFriends(user) {
+      const friendsList = document.getElementById('friends-list');
+      const requestsList = document.getElementById('friend-requests-list');
+
+      // Friends
+      if (user['sys.friends'] && user['sys.friends'].length > 0) {
+        friendsList.innerHTML = user['sys.friends'].map(friend => `
+          <div class="list-item">
+            <div class="list-avatar" style="background-image: url('https://avatars.rotur.dev/${friend}'); cursor: pointer;" onclick="openProfile('${friend}')"></div>
+            <div class="list-content">
+              <div class="list-title"><a href="/profile#${friend}" style="color: var(--blue); text-decoration: none;">@${friend}</a></div>
+              <div class="list-subtitle">Connected</div>
+            </div>
+            <div class="info-actions">
+              <button class="btn btn-text" style="color: #ea4335;" onclick="removeFriend('${friend}')">Remove</button>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        friendsList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 24px;">No friends yet</p>';
+      }
+
+      // Friend requests
+      if (user['sys.requests'] && user['sys.requests'].length > 0) {
+        requestsList.innerHTML = user['sys.requests'].map(request => `
+          <div class="list-item">
+            <div class="list-avatar" style="background-image: url('https://avatars.rotur.dev/${request}'); cursor: pointer;" onclick="openProfile('${request}')"></div>
+            <div class="list-content">
+              <div class="list-title"><a href="/profile#${request}" style="color: var(--blue); text-decoration: none;">@${request}</a></div>
+              <div class="list-subtitle">Wants to connect</div>
+            </div>
+            <div class="info-actions">
+              <button class="btn btn-primary" onclick="acceptFriendRequest('${request}')">Accept</button>
+              <button class="btn btn-text" style="color: #ea4335;" onclick="rejectFriendRequest('${request}')">Reject</button>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        requestsList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 24px;">No pending requests</p>';
+      }
+    }
+
+    // Populate transactions
+    function populateTransactions(user) {
+      const transactionsList = document.getElementById('transactions-list');
+
+      if (user['sys.transactions'] && user['sys.transactions'].length > 0) {
+        const sortedTransactions = user['sys.transactions']
+          .sort((a, b) => b.time - a.time)
+          .slice(0, 10);
+
+        transactionsList.innerHTML = sortedTransactions.map(transaction => {
+          const isCredit = transaction.type === 'in' || transaction.type === 'tax';
+          const amount = isCredit ? `+${transaction.amount}` : `-${transaction.amount}`;
+          
+          let title = transaction.note;
+          if (!title && transaction.user) {
+            const userLink = `<a href="/profile#${transaction.user}" style="color: var(--blue); text-decoration: none;">@${transaction.user}</a>`;
+            title = isCredit ? `Credit from ${userLink}` : `Payment to ${userLink}`;
+          } else if (!title) {
+            title = isCredit ? 'Credit received' : 'Payment made';
+          }
+          
+          const date = new Date(transaction.time).toLocaleDateString();
+
+          return `
+            <div class="list-item">
+              <div class="list-avatar" style="background: ${isCredit ? '#e8f5e8' : '#fce8e6'}; color: ${isCredit ? '#34a853' : '#ea4335'}; display: flex; align-items: center; justify-content: center; font-weight: bold;">${isCredit ? '+' : '-'}</div>
+              <div class="list-content">
+                <div class="list-title">${title}</div>
+                <div class="list-subtitle">${date}</div>
+              </div>
+              <div style="font-weight: 500; color: ${isCredit ? '#34a853' : '#ea4335'};">${amount}</div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        transactionsList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 24px;">No transactions yet</p>';
+      }
+    }
+
+    // Populate subscriptions
+    async function populateSubscriptions() {
       const token = getToken();
+      if (!token) return;
+
+      const subscriptionsList = document.getElementById('subscriptions-list');
+      
+      try {
+        const response = await fetch(`https://api.rotur.dev/keys/mine?auth=${token}`);
+        const subscriptions = await response.json();
+        
+        console.log('Raw subscriptions data:', subscriptions); // Debug log
+        
+        if (subscriptions.error) {
+          subscriptionsList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 24px;">Error loading subscriptions</p>';
+          return;
+        }
+
+        const currentUser = localStorage.getItem('rotur_username');
+        console.log('Current user:', currentUser); // Debug log
+
+        // Filter to show subscriptions you're paying for (not services you own)
+        const userSubscriptions = subscriptions.filter(sub => {
+          console.log('Checking subscription:', sub.name, 'creator:', sub.creator, 'users:', Object.keys(sub.users || {})); // Debug log
+          
+          if (!currentUser) return false;
+          
+          // If you're not the creator, and it appears in /keys/mine, you're subscribed to it
+          const isNotOwnService = sub.creator && sub.creator.toLowerCase() !== currentUser.toLowerCase();
+          
+          console.log(`${sub.name}: isSubscribedTo=${isNotOwnService}`); // Debug log
+          
+          return isNotOwnService;
+        });
+
+        console.log('Filtered subscriptions:', userSubscriptions); // Debug log
+
+        if (userSubscriptions.length > 0) {
+          subscriptionsList.innerHTML = userSubscriptions.map(subscription => {
+            const currentUser = localStorage.getItem('rotur_username');
+            const subData = subscription.subscription;
+            const nextBilling = new Date(subData.next_billing * 1000);
+            const isActive = subData.active;
+
+            return `
+              <div class="list-item">
+                <div class="list-avatar" style="background-image: url('https://avatars.rotur.dev/${subscription.creator}'); cursor: pointer;" onclick="openProfile('${subscription.creator}')"></div>
+                <div class="list-content">
+                  <div class="list-title">${subscription.name}</div>
+                  <div class="list-subtitle">by <a href="/profile#${subscription.creator}" style="color: var(--blue); text-decoration: none;">@${subscription.creator}</a> • ${subscription.price} credits/month</div>
+                  <div class="list-subtitle">Next billing: ${nextBilling.toLocaleDateString()}</div>
+                </div>
+                <div class="info-actions">
+                  <button class="btn btn-text" style="color: #ea4335;" onclick="cancelSubscription('${subscription.key}', '${subscription.name}')">Cancel</button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          subscriptionsList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 24px;">No active subscriptions</p>';
+        }
+      } catch (error) {
+        console.error('Error loading subscriptions:', error);
+        subscriptionsList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 24px;">Error loading subscriptions</p>';
+      }
+    }
+
+    // Cancel subscription
+    async function cancelSubscription(keyId, subscriptionName) {
+      if (!confirm(`Are you sure you want to cancel your subscription to "${subscriptionName}"?`)) {
+        return;
+      }
+
+      const token = getToken();
+      if (!token) {
+        alert('Please authenticate first');
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.rotur.dev/keys/cancel/${keyId}?auth=${token}`, {
+          method: 'POST'
+        });
+        
+        const result = await response.json();
+        if (result.error) {
+          alert('Error cancelling subscription: ' + result.error);
+        } else {
+          alert('Subscription cancelled successfully!');
+          // Reload subscriptions
+          populateSubscriptions();
+        }
+      } catch (error) {
+        alert('Network error cancelling subscription');
+        console.error('Error cancelling subscription:', error);
+      }
+    }
+
+    // Friend management functions
+    function openProfile(username) {
+      window.open(`/profile#${username}`, '_blank');
+    }
+
+    function showFriendsMessage(message, isError = false) {
+      const messageEl = document.getElementById('friends-message');
+      messageEl.textContent = message;
+      messageEl.className = `message ${isError ? 'error' : 'success'}`;
+      messageEl.style.display = 'block';
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        messageEl.style.display = 'none';
+      }, 5000);
+    }
+
+    async function sendFriendRequest() {
+      const token = getToken();
+      if (!token) {
+        showFriendsMessage('Please authenticate first', true);
+        return;
+      }
+
+      const username = document.getElementById('friend-username-input').value.trim();
+      if (!username) {
+        showFriendsMessage('Please enter a username', true);
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.rotur.dev/friends/request/${username}?auth=${token}`, {
+          method: 'POST'
+        });
+        
+        const result = await response.json();
+        if (result.error) {
+          showFriendsMessage('Error sending friend request: ' + result.error, true);
+        } else {
+          showFriendsMessage('Friend request sent successfully!');
+          document.getElementById('friend-username-input').value = '';
+        }
+      } catch (error) {
+        showFriendsMessage('Network error sending friend request', true);
+        console.error('Error sending friend request:', error);
+      }
+    }
+
+    async function acceptFriendRequest(username) {
+      const token = getToken();
+      if (!token) {
+        showFriendsMessage('Please authenticate first', true);
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.rotur.dev/friends/accept/${username}?auth=${token}`, {
+          method: 'POST'
+        });
+        
+        const result = await response.json();
+        if (result.error) {
+          showFriendsMessage('Error accepting friend request: ' + result.error, true);
+        } else {
+          showFriendsMessage('Friend request accepted!');
+          // Reload the page to refresh friend lists
+          setTimeout(() => location.reload(), 1000);
+        }
+      } catch (error) {
+        showFriendsMessage('Network error accepting friend request', true);
+        console.error('Error accepting friend request:', error);
+      }
+    }
+
+    async function rejectFriendRequest(username) {
+      const token = getToken();
+      if (!token) {
+        showFriendsMessage('Please authenticate first', true);
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.rotur.dev/friends/reject/${username}?auth=${token}`, {
+          method: 'POST'
+        });
+        
+        const result = await response.json();
+        if (result.error) {
+          showFriendsMessage('Error rejecting friend request: ' + result.error, true);
+        } else {
+          showFriendsMessage('Friend request rejected');
+          // Reload the page to refresh friend lists
+          setTimeout(() => location.reload(), 1000);
+        }
+      } catch (error) {
+        showFriendsMessage('Network error rejecting friend request', true);
+        console.error('Error rejecting friend request:', error);
+      }
+    }
+
+    async function removeFriend(username) {
+      if (!confirm(`Are you sure you want to remove @${username} from your friends?`)) {
+        return;
+      }
+
+      const token = getToken();
+      if (!token) {
+        showFriendsMessage('Please authenticate first', true);
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.rotur.dev/friends/remove/${username}?auth=${token}`, {
+          method: 'POST'
+        });
+        
+        const result = await response.json();
+        if (result.error) {
+          showFriendsMessage('Error removing friend: ' + result.error, true);
+        } else {
+          showFriendsMessage('Friend removed successfully');
+          // Reload the page to refresh friend lists
+          setTimeout(() => location.reload(), 1000);
+        }
+      } catch (error) {
+        showFriendsMessage('Network error removing friend', true);
+        console.error('Error removing friend:', error);
+      }
+    }
+
+    // Bio editing functions
+    function editBio() {
+      const currentBio = document.getElementById('info-bio').textContent;
+      document.getElementById('bio-input').value = currentBio === 'Not set' ? '' : currentBio;
+      document.getElementById('bio-modal').style.display = 'flex';
+    }
+
+    function closeBioModal() {
+      document.getElementById('bio-modal').style.display = 'none';
+    }
+
+    async function saveBio() {
+      const token = getToken();
+      if (!token) {
+        alert('Please authenticate first');
+        return;
+      }
+
+      const newBio = document.getElementById('bio-input').value.trim();
+      
+      try {
+        const response = await fetch('https://api.rotur.dev/users', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            key: 'bio', 
+            value: newBio, 
+            auth: token 
+          })
+        });
+        
+        const result = await response.json();
+        if (result.error) {
+          alert('Error updating bio: ' + result.error);
+        } else {
+          // Update the display
+          document.getElementById('info-bio').textContent = newBio || 'Not set';
+          const profileBio = document.getElementById('profile-bio');
+          if (newBio) {
+            profileBio.textContent = newBio;
+            profileBio.style.display = 'block';
+          } else {
+            profileBio.style.display = 'none';
+          }
+          closeBioModal();
+        }
+      } catch (error) {
+        alert('Network error updating bio');
+        console.error('Error updating bio:', error);
+      }
+    }
+
+    // Other edit functions (placeholder)
+    function editName() {
+      const newName = prompt('Enter your display name:', document.getElementById('info-name').textContent === 'Not set' ? '' : document.getElementById('info-name').textContent);
+      if (newName !== null) {
+        updateUserField('display_name', newName.trim());
+      }
+    }
+
+    function editEmail() {
+      const newEmail = prompt('Enter your email:', document.getElementById('info-email').textContent);
+      if (newEmail !== null) {
+        updateUserField('email', newEmail.trim());
+      }
+    }
+
+    function editPhone() {
+      const newPhone = prompt('Enter your phone number:', document.getElementById('info-phone').textContent);
+      if (newPhone !== null) {
+        updateUserField('phone', newPhone.trim());
+      }
+    }
+
+    function editPronouns() {
+      const newPronouns = prompt('Enter your pronouns:', document.getElementById('info-pronouns').textContent);
+      if (newPronouns !== null) {
+        updateUserField('pronouns', newPronouns.trim());
+      }
+    }
+
+    async function updateUserField(key, value) {
+      const token = getToken();
+      if (!token) {
+        alert('Please authenticate first');
+        return;
+      }
+
+      try {
+        const response = await fetch('https://api.rotur.dev/users', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            key: key, 
+            value: value, 
+            auth: token 
+          })
+        });
+        
+        const result = await response.json();
+        if (result.error) {
+          alert(`Error updating ${key}: ` + result.error);
+        } else {
+          // Reload the page to show updated info
+          location.reload();
+        }
+      } catch (error) {
+        alert(`Network error updating ${key}`);
+        console.error(`Error updating ${key}:`, error);
+      }
+    }
+
+    // Refresh token function
+    async function refreshToken() {
+      const token = getToken();
+      if (!token) {
+        alert('Please authenticate first');
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.rotur.dev/me/refresh_token?auth=${token}`, {
+          method: 'POST'
+        });
+        const result = await response.json();
+        
+        if (result.error) {
+          alert('Error refreshing token: ' + result.error);
+        } else {
+          // Update stored token if a new one is provided
+          if (result.token) {
+            localStorage.setItem('rotur_token', result.token);
+          }
+          alert('Token refreshed successfully!');
+        }
+      } catch (error) {
+        alert('Network error refreshing token');
+        console.error('Error refreshing token:', error);
+      }
+    }
+
+    // Navigation click handlers
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const tabId = item.dataset.tab;
+        showTab(tabId);
+        
+        // Refresh subscriptions when payments tab is opened
+        if (tabId === 'payments') {
+          populateSubscriptions();
+        }
+      });
+    });
+
+    // Friend input Enter key handler
+    document.addEventListener('keypress', (e) => {
+      if (e.target.id === 'friend-username-input' && e.key === 'Enter') {
+        sendFriendRequest();
+      }
+    });
+
+    // Privacy toggle handler
+    document.addEventListener('change', async (e) => {
+      if (e.target.id === 'privacy-toggle') {
+        const token = getToken();
+        if (!token) return;
+
+        try {
+          const response = await fetch('https://api.rotur.dev/users', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              key: 'private', 
+              value: e.target.checked, 
+              auth: token 
+            })
+          });
+          
+          const result = await response.json();
+          if (result.error) {
+            console.error('Error updating privacy:', result.error);
+            e.target.checked = !e.target.checked; // Revert on error
+          }
+        } catch (error) {
+          console.error('Network error updating privacy:', error);
+          e.target.checked = !e.target.checked; // Revert on error
+        }
+      }
+    });
+
+    // Auth modal handler
+    document.getElementById('auth-modal-btn').addEventListener('click', () => {
+      window.location.href = 'https://rotur.dev/auth?return_to=' + encodeURIComponent(window.location.href);
+    });
+
+    // Load user data on page load
+    window.addEventListener('load', async () => {
+      const token = getToken();
+      
       if (!token) {
         document.getElementById('auth-modal').style.display = 'flex';
         return;
       }
-      showTab('profile');
-      // Fetch user info
+
       try {
-        const res = await fetch('https://social.rotur.dev/get_user?auth=' + token);
-        const user = await res.json();
+        // Get main user data
+        const response = await fetch('https://api.rotur.dev/get_user?auth=' + token);
+        const user = await response.json();
+        
         if (user.error) {
-          showTab('auth');
-          document.getElementById('auth-container').style.display = 'block';
-          document.getElementById('token-warning').textContent = user.error;
-          document.getElementById('token-warning').style.display = 'block';
+          document.getElementById('auth-modal').style.display = 'flex';
           return;
         }
-        
-        // Update data usage and profile stats
-        updateDataUsage(user);
-        updateProfileStats(user);
-        // Populate real transaction data
-        populateTransactions(user);
-        // Populate friends page
-        populateFriendsPage(user);
-        
-        // Sidebar avatar, name
-        document.getElementById('sidebar-avatar').style.backgroundImage = user.pfp ? `url('${user.pfp}')` : '';
-        document.getElementById('sidebar-name').textContent = user.name || user.username || '';
-        document.getElementById('sidebar-system').textContent = user.system ? `System: ${user.system}` : '';
-        document.getElementById('sidebar-currency').textContent = `${user['sys.currency'] || 0} Credits`;
-        
-        // Set avatars for all settings tabs
-        ['main-avatar-settings2', 'main-avatar-settings3', 'main-avatar-settings4', 'main-avatar-settings5', 'main-avatar-friends'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.style.backgroundImage = user.pfp ? `url('${user.pfp}')` : '';
-        });
-        
-        // Fill form fields
-        document.getElementById('display_name').value = user.display_name || '';
-        document.getElementById('username').value = user.username || '';
-        document.getElementById('bio').value = user.bio || '';
-        document.getElementById('pronouns').value = user.pronouns || '';
-        // Privacy toggle
-        document.getElementById('private').checked = !!user.private;
-        document.getElementById('private2').checked = !!user.private;
-        // Previews
-        if (user.pfp) {
-          document.getElementById('pfp-preview').src = user.pfp;
-          document.getElementById('pfp-preview').style.display = 'block';
-          document.getElementById('pfp-preview').parentElement.classList.add('has-image');
-        }
-        if (user.banner) {
-          document.getElementById('banner-preview').src = user.banner;
-          document.getElementById('banner-preview').style.display = 'block';
-          document.getElementById('banner-preview').parentElement.classList.add('has-image');
-        }
-      } catch (err) {
-        document.getElementById('profile-message').innerHTML = '<div class="error-message">Could not load user info.</div>';
-      }
-    };
 
-    // Privacy form
-    document.getElementById('privacy-form').onsubmit = async function(e) {
-      e.preventDefault();
-      const token = getToken();
-      if (!token) {
-        showTab('auth');
-        return;
-      }
-      const fields = [
-        { key: 'private', value: document.getElementById('private2').checked },
-      ];
-      
-      let errors = [];
-      let successes = [];
-      
-      for (const field of fields) {
+        // Get additional profile data
+        let publicProfile = null;
         try {
-          const res = await fetch('https://social.rotur.dev/users', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ key: field.key, value: field.value, auth: token })
-          });
-          const result = await res.json();
-          if (result.error) {
-            errors.push(`${field.key}: ${result.error}`);
-          } else {
-            successes.push(field.key);
-          }
-        } catch (err) {
-          errors.push(`${field.key}: Network error`);
+          const profileResponse = await fetch(`https://api.rotur.dev/profile?username=${user.username}`);
+          publicProfile = await profileResponse.json();
+        } catch (error) {
+          console.warn('Could not load public profile data:', error);
         }
+
+        // Populate the page with combined data
+        populateUserData(user, publicProfile);
+        populateFriends(user);
+        populateTransactions(user);
+        
+        // Store username for subscription filtering
+        if (user.username) {
+          localStorage.setItem('rotur_username', user.username);
+        }
+        
+        // Load subscriptions
+        populateSubscriptions();
+        
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        document.getElementById('auth-modal').style.display = 'flex';
       }
-      
-      if (errors.length > 0) {
-        document.getElementById('privacy-message').innerHTML = '<div class="error-message">' + errors.join('<br>') + '</div>';
-      } else if (successes.length > 0) {
-        document.getElementById('privacy-message').innerHTML = '<div class="success-message">Updated: ' + successes.join(', ') + '</div>';
-      }
-    };
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
   </script>
 </body>
+
 </html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotur Profile</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        :root {
+            --bg: #fafafa;
+            --card: #fff;
+            --border: #dadce0;
+            --text: #202124;
+            --text-secondary: #5f6368;
+            --blue: #1a73e8;
+            --blue-hover: #1557b0;
+            --hover-bg: #f8f9fa;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --focus: 0 0 0 2px rgba(26, 115, 232, 0.2);
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 24px 0;
+        }
+
+        /* Header */
+        .header {
+            display: none;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .profile-banner {
+            height: 200px;
+            background: linear-gradient(135deg, var(--blue), #4285f4);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .profile-content {
+            padding: 24px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--card);
+            background: var(--border);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: absolute;
+            top: -60px;
+            left: 24px;
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            margin-left: 140px;
+            margin-top: 10px;
+        }
+
+        .profile-name {
+            font-size: 32px;
+            font-weight: 500;
+            margin: 0 0 8px 0;
+            color: var(--text);
+        }
+
+        .profile-username {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin: 0 0 12px 0;
+        }
+
+        .profile-bio {
+            font-size: 16px;
+            color: var(--text);
+            margin: 0 0 16px 0;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+
+        .profile-pronouns {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0 0 16px 0;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 24px;
+            margin: 16px 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .info-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0 0 16px 0;
+            color: var(--text);
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            flex: 0 0 120px;
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .info-value {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .info-value.primary {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        /* Badges */
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            background: var(--hover-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+            text-transform: capitalize;
+        }
+
+        .badge.special {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .color-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 4px;
+            text-transform: capitalize;
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px 20px;
+            color: #ea4335;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .profile-info {
+                margin-left: 0;
+                margin-top: 70px;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+
+        /* Buttons */
+        .btn {
+            border: none;
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-hover);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--blue);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--hover-bg);
+        }
+
+        .btn-danger {
+            background: #ea4335;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d93025;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Container -->
+    <div class="container">
+        <div id="loading" class="loading">
+            <p>Loading profile...</p>
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            <p>Profile not found or failed to load.</p>
+        </div>
+
+        <div id="profile-content" style="display: none;">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-banner" id="profile-banner"></div>
+                <div class="profile-content">
+                    <div class="profile-avatar" id="profile-avatar"></div>
+                    <div class="profile-info">
+                        <h1 class="profile-name" id="profile-name">Username</h1>
+                        <p class="profile-username" id="profile-username">@username</p>
+                        <p class="profile-pronouns" id="profile-pronouns" style="display: none;"></p>
+                        <p class="profile-bio" id="profile-bio"></p>
+
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <span class="stat-number" id="followers-count">0</span>
+                                <span class="stat-label">Followers</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number" id="following-count">0</span>
+                                <span class="stat-label">Following</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number" id="credits-count">0</span>
+                                <span class="stat-label">Credits</span>
+                            </div>
+                        </div>
+
+                        <div id="follow-section" style="display: none; margin: 16px 0;">
+                            <button id="follow-btn" class="btn btn-primary" style="margin-right: 8px;"
+                                onclick="toggleFollow()">Follow</button>
+                            <button id="message-btn" class="btn btn-secondary" onclick="sendMessage()"
+                                style="display: none;">Message</button>
+                        </div>
+
+                        <div class="badges" id="badges-container" style="display: none;">
+                            <!-- Badges will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Details -->
+            <div class="info-card">
+                <h2 class="info-title">Account Details</h2>
+
+                <div class="info-row">
+                    <div class="info-label">Account #</div>
+                    <div class="info-value primary" id="account-index">#1</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">System</div>
+                    <div class="info-value primary" id="system">Unknown</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Subscription</div>
+                    <div class="info-value primary" id="subscription">None</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Member since</div>
+                    <div class="info-value" id="member-since">Unknown</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUsername = null;
+        let loggedInUser = null;
+        let isFollowing = false;
+
+        function getToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let token = urlParams.get('token');
+            if (token) {
+                localStorage.setItem('rotur_token', token);
+                window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+            } else {
+                token = localStorage.getItem('rotur_token');
+            }
+            return token;
+        }
+
+        async function checkAuth() {
+            const token = getToken();
+            if (!token) return null;
+
+            try {
+                const response = await fetch(`https://api.rotur.dev/get_user?auth=${token}`);
+                const userData = await response.json();
+
+                if (userData.error) {
+                    return null;
+                }
+
+                loggedInUser = userData;
+                return userData;
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                return null;
+            }
+        }
+
+        async function checkFollowStatus() {
+            if (!loggedInUser || !currentUsername) return false;
+
+            try {
+                const response = await fetch(`https://api.rotur.dev/following?name=${loggedInUser.username}&auth=${getToken()}`);
+                const result = await response.json();
+
+                if (result.following) {
+                    return result.following.some(username => username.toLowerCase() === currentUsername.toLowerCase());
+                }
+                return false;
+            } catch (error) {
+                console.error('Error checking follow status:', error);
+                return false;
+            }
+        }
+
+        async function toggleFollow() {
+            if (!loggedInUser || !currentUsername) {
+                alert('Please log in to follow users');
+                return;
+            }
+
+            if (loggedInUser.username.toLowerCase() === currentUsername.toLowerCase()) {
+                return;
+            }
+
+            const token = getToken();
+            const followBtn = document.getElementById('follow-btn');
+            const originalText = followBtn.textContent;
+
+            followBtn.disabled = true;
+            followBtn.textContent = 'Loading...';
+
+            try {
+                let response;
+                if (isFollowing) {
+                    response = await fetch(`https://api.rotur.dev/unfollow?name=${currentUsername}&auth=${token}`, {
+                        method: 'GET'
+                    });
+                } else {
+                    response = await fetch(`https://api.rotur.dev/follow?name=${currentUsername}&auth=${token}`, {
+                        method: 'GET'
+                    });
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Failed to ${isFollowing ? 'unfollow' : 'follow'}`);
+                }
+
+                const result = await response.json();
+                if (result.error) {
+                    alert('Error: ' + result.error);
+                } else {
+                    isFollowing = !isFollowing;
+                    updateFollowButton();
+
+                    const followerCount = document.getElementById('followers-count');
+                    const currentCount = parseInt(followerCount.textContent) || 0;
+
+                    if (isFollowing) {
+                        followerCount.textContent = currentCount + 1;
+                    } else {
+                        followerCount.textContent = Math.max(0, currentCount - 1);
+                    }
+                }
+            } catch (error) {
+                alert('Network error');
+                console.error('Follow toggle error:', error);
+            } finally {
+                followBtn.disabled = false;
+                if (followBtn.textContent === 'Loading...') {
+                    followBtn.textContent = originalText;
+                }
+            }
+        }
+
+        function updateFollowButton() {
+            const followBtn = document.getElementById('follow-btn');
+
+            if (isFollowing) {
+                followBtn.textContent = 'Unfollow';
+                followBtn.className = 'btn btn-danger';
+            } else {
+                followBtn.textContent = 'Follow';
+                followBtn.className = 'btn btn-primary';
+            }
+        }
+
+        function sendMessage() {
+            alert('Messaging feature coming soon!');
+        }
+
+        function getUsernameFromHash() {
+            const hash = window.location.hash.substring(1);
+            return hash || null;
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+
+        function applyTheme(theme) {
+            if (!theme) return;
+
+            const root = document.documentElement;
+            root.style.setProperty('--bg', theme.background || '#fafafa');
+            root.style.setProperty('--card', theme.primary || '#fff');
+            root.style.setProperty('--border', theme.secondary || '#dadce0');
+            root.style.setProperty('--text', theme.text || '#202124');
+            root.style.setProperty('--text-secondary', theme.tertiary || '#5f6368');
+            root.style.setProperty('--blue', theme.accent || '#1a73e8');
+            root.style.setProperty('--blue-hover', theme.accent ?
+                `color-mix(in srgb, ${theme.accent} 80%, black)` : '#1557b0');
+            root.style.setProperty('--hover-bg', theme.secondary || '#f8f9fa');
+        }
+
+        async function populateProfile(data) {
+            currentUsername = data.username;
+
+            const authUser = await checkAuth();
+
+            const isOwnProfile = authUser && authUser.username.toLowerCase() === data.username.toLowerCase();
+
+            const isPrivate = data.private === true;
+
+            if (data.theme && !isPrivate) {
+                applyTheme(data.theme);
+            }
+
+            document.getElementById('profile-name').textContent = data.username || 'Unknown User';
+            document.getElementById('profile-username').textContent = '@' + (data.username || 'unknown');
+
+            if (data.pfp) {
+                document.getElementById('profile-avatar').style.backgroundImage = `url('${data.pfp}')`;
+            }
+
+            if (authUser && !isOwnProfile && !isPrivate) {
+                document.getElementById('follow-section').style.display = 'block';
+
+                isFollowing = await checkFollowStatus();
+                updateFollowButton();
+            }
+
+            if (isPrivate) {
+
+                document.getElementById('profile-bio').textContent = 'This account is private';
+                document.getElementById('profile-pronouns').style.display = 'none';
+
+                document.getElementById('profile-banner').style.display = 'none';
+
+                document.getElementById('followers-count').textContent = '•';
+                document.getElementById('following-count').textContent = '•';
+                document.getElementById('credits-count').textContent = '•';
+
+                document.querySelector('.info-card').style.display = 'none';
+
+                document.getElementById('badges-container').style.display = 'none';
+                document.getElementById('theme-card').style.display = 'none';
+
+                return;
+            }
+
+            if (data.banner && !data.banner.includes('3x1')) {
+                const bannerImg = new Image();
+                bannerImg.onload = function () {
+                    if (this.width > 10 && this.height > 10) {
+                        document.getElementById('profile-banner').style.backgroundImage = `url('${data.banner}')`;
+                    } else {
+                        document.getElementById('profile-banner').style.display = 'none';
+                    }
+                };
+                bannerImg.onerror = function () {
+                    document.getElementById('profile-banner').style.display = 'none';
+                };
+                bannerImg.src = data.banner;
+            } else {
+                document.getElementById('profile-banner').style.display = 'none';
+            }
+
+            if (data.bio) {
+                document.getElementById('profile-bio').textContent = data.bio;
+            } else {
+                document.getElementById('profile-bio').style.display = 'none';
+            }
+
+            if (data.pronouns) {
+                document.getElementById('profile-pronouns').textContent = data.pronouns;
+                document.getElementById('profile-pronouns').style.display = 'block';
+            }
+
+            document.getElementById('followers-count').textContent = (data.followers || 0).toLocaleString();
+            document.getElementById('following-count').textContent = (data.following || 0).toLocaleString();
+            document.getElementById('credits-count').textContent = (data.currency || 0).toLocaleString();
+
+
+            document.getElementById('account-index').textContent = '#' + (data.index || '?');
+            document.getElementById('system').textContent = data.system || 'Unknown';
+            document.getElementById('subscription').textContent = data.subscription || 'None';
+
+            if (data.created) {
+                document.getElementById('member-since').textContent = formatDate(data.created);
+            }
+
+            if (data.badges && data.badges.length > 0) {
+                const badgesContainer = document.getElementById('badges-container');
+                badgesContainer.innerHTML = data.badges.map(badge => {
+                    const isSpecial = ['creator', 'rotur', 'originOS'].includes(badge);
+                    return `<span class="badge ${isSpecial ? 'special' : ''}">${badge}</span>`;
+                }).join('');
+                badgesContainer.style.display = 'flex';
+            }
+        }
+
+        async function loadProfile(username) {
+            if (!username) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').innerHTML = '<p>No username provided. Use /profile#username</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://api.rotur.dev/profile?name=${username}&include_posts=0`);
+                const data = await response.json();
+
+                if (data.error || !data.username) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('profile-content').style.display = 'block';
+
+                document.title = `${data.username} - Rotur Profile`;
+
+                await populateProfile(data);
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = getUsernameFromHash();
+            loadProfile(username);
+
+            lucide.createIcons();
+        });
+
+        window.addEventListener('hashchange', () => {
+            const username = getUsernameFromHash();
+
+            document.getElementById('profile-content').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('follow-section').style.display = 'none';
+
+            isFollowing = false;
+            currentUsername = null;
+
+            loadProfile(username);
+        });
+    </script>
+</body>
+</html>

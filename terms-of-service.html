@@ -892,7 +892,7 @@
         // Function to call the accept_tos API
         async function callAcceptTosAPI(token) {
             try {
-                const response = await fetch(`https://social.rotur.dev/accept_tos?auth=${encodeURIComponent(token)}`, {
+                const response = await fetch(`https://api.rotur.dev/accept_tos?auth=${encodeURIComponent(token)}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
