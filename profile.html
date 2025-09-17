@@ -573,8 +573,6 @@
                 document.getElementById('profile-bio').textContent = 'This account is private';
                 document.getElementById('profile-pronouns').style.display = 'none';
 
-                document.getElementById('profile-banner').style.display = 'none';
-
                 document.getElementById('followers-count').textContent = '•';
                 document.getElementById('following-count').textContent = '•';
                 document.getElementById('credits-count').textContent = '•';
@@ -590,18 +588,14 @@
             if (data.banner && !data.banner.includes('3x1')) {
                 const bannerImg = new Image();
                 bannerImg.onload = function () {
-                    if (this.width > 10 && this.height > 10) {
-                        document.getElementById('profile-banner').style.backgroundImage = `url('${data.banner}')`;
-                    } else {
-                        document.getElementById('profile-banner').style.display = 'none';
-                    }
+                    // Always set the banner image if it loads successfully, regardless of size
+                    document.getElementById('profile-banner').style.backgroundImage = `url('${data.banner}')`;
                 };
                 bannerImg.onerror = function () {
-                    document.getElementById('profile-banner').style.display = 'none';
+                    // Keep the banner element visible even if image fails to load
+                    console.log('Banner image failed to load');
                 };
                 bannerImg.src = data.banner;
-            } else {
-                document.getElementById('profile-banner').style.display = 'none';
             }
 
             if (data.bio) {
