@@ -836,9 +836,11 @@
             
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
             document.getElementById('create-item-btn').addEventListener('click', createNewItem);
-            document.getElementsByClassName('login-btn')[0].addEventListener('click', () => {
+            document.getElementsByClassName('login-btn')[0].addEventListener('click', loginToInventory);
+    
+            function loginToInventory() {
                 window.location.href = 'https://rotur.dev/auth?return_to=' + encodeURIComponent(window.location.href);
-            });
+            }
         });
 
         async function validateAuthAndFetchUser(token) {
@@ -1009,7 +1011,7 @@
             } else if (item.selling && (!authToken || !currentUser)) {
                 actionsHTML = `
                     <p style="color: #aaa; font-style: italic;">Login to purchase this item</p>
-                    <button onclick="window.location.href='https://rotur.dev/auth'" class="single-item-buy-btn">Login</button>
+                    <button onclick="loginToInventory()" class="single-item-buy-btn">Login</button>
                 `;
             } else if (item.owner && authToken && currentUser && item.owner.toLowerCase() === currentUser.toLowerCase()) {
                 actionsHTML = `
