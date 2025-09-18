@@ -350,7 +350,7 @@
         <!-- Login Section -->
         <div id="login-section" class="login-box">
             <h2>Authentication Required</h2>
-            <button onclick="window.location.href='https://rotur.dev/auth'" class="login-btn">Login</button>
+            <button class="login-btn">Login</button>
             <div id="login-error" class="error"></div>
         </div>
         
@@ -558,7 +558,10 @@
             
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
             document.getElementById('create-key-btn').addEventListener('click', createNewKey);
-            
+            document.getElementsByClassName('login-btn')[0].addEventListener('click', () => {
+                window.location.href = 'https://auth.rotur.dev/login?return_to=' + encodeURIComponent(window.location.href);
+            });
+
             // Add event listener for key type dropdown
             document.getElementById('new-key-type').addEventListener('change', function() {
                 const subscriptionFields = document.getElementById('subscription-fields');
