@@ -559,7 +559,7 @@
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
             document.getElementById('create-key-btn').addEventListener('click', createNewKey);
             document.getElementsByClassName('login-btn')[0].addEventListener('click', () => {
-                window.location.href = 'https://auth.rotur.dev/login?return_to=' + encodeURIComponent(window.location.href);
+                window.location.href = 'https://rotur.dev/auth?return_to=' + encodeURIComponent(window.location.href);
             });
 
             // Add event listener for key type dropdown
