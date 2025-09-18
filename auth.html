@@ -641,20 +641,16 @@
 
       try {
         const account_data = await requestAccount(username, hash);
-        if (account_data) {
+        if (!Object.hasOwn(account_data, 'error')) {
           account = account_data;
-          // Save successful login
           saveAccount(account_data);
           updateModalForLoggedInUser();
         } else {
-          // Clear cookies on failed login
           document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-          // Show error state
-          submitButton.innerHTML = 'Invalid credentials';
+          submitButton.innerHTML = account_data && account_data.error ? account_data.error : 'Invalid credentials';
           submitButton.style.background = '#ea4335';
 
-          // Reset after 2 seconds
           setTimeout(() => {
             submitButton.innerHTML = originalText;
             submitButton.style.background = '';
@@ -747,7 +743,7 @@
           setCookie("username", username, 7);
 
           const account_data = await requestAccount(username, hash);
-          if (account_data) {
+          if (!Object.hasOwn(account_data, 'error')) {
             account = account_data;
             saveAccount(account_data);
             updateModalForLoggedInUser();
@@ -783,6 +779,7 @@
         if (json.error.includes("Terms-Of-Service") && json.token) {
           // Return a special object indicating TOS needs to be accepted
           return {
+            error: json.error,
             key: json.token,
             username: username,
             "sys.tos_accepted": false,
@@ -790,7 +787,9 @@
           };
         }
         console.error(json.error);
-        return null;
+        return {
+          error: json.error
+        };
       }
       return json;
     }
