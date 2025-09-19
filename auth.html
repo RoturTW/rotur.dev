@@ -648,6 +648,16 @@
         } else {
           document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
+          if (account_data.requiresTOSAcceptance) {
+            // Redirect to TOS acceptance page with token and return_to
+            const tosUrl = new URL('./terms-of-service.html', window.location.href);
+            tosUrl.searchParams.set('token', account_data.key);
+            if (return_to) {
+              tosUrl.searchParams.set('return_to', return_to);
+            }
+            window.location.href = tosUrl.toString();
+            return;
+          }
           submitButton.innerHTML = account_data && account_data.error ? account_data.error : 'Invalid credentials';
           submitButton.style.background = '#ea4335';
 
@@ -748,6 +758,16 @@
             saveAccount(account_data);
             updateModalForLoggedInUser();
           } else {
+            if (account_data.requiresTOSAcceptance) {
+              // Redirect to TOS acceptance page with token and return_to
+              const tosUrl = new URL('./terms-of-service.html', window.location.href);
+              tosUrl.searchParams.set('token', account_data.key);
+              if (return_to) {
+                tosUrl.searchParams.set('return_to', return_to);
+              }
+              window.location.href = tosUrl.toString();
+              return;
+            }
             // Fallback to signin form if auto-login fails
             submitButton.innerHTML = 'Account created! Please sign in';
             submitButton.style.background = '#34a853';
