@@ -455,6 +455,12 @@
                                 <span class="subscription-badge" style="display: none;">Subscription</span>
                             </div>
                         </div>
+                        <div class="info-row">
+                            <div class="info-label">Total Income:</div>
+                            <div class="info-value">
+                                <span style="color: #6bff9f" class="total-income">${key.total_income || '0'} credits</span>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Subscription Info Section (Conditionally Displayed) -->
@@ -664,6 +670,7 @@
             
             keyItem.querySelector('.key-creator').textContent = key.creator;
             keyItem.querySelector('.key-price').textContent = key.price || '0';
+            keyItem.querySelector('.total-income').textContent = `${key.total_income || '0'} credits`;
             
             // Set up the price in summary
             const priceSummary = keyItem.querySelector('.key-price-summary');
@@ -913,29 +920,17 @@
         
         // Helper function to add financial information to subscription info
         function addSubscriptionFinancialInfo(key, container) {
-            // Add total income if available
-            if (key.total_income !== undefined) {
-                const incomeRow = document.createElement('div');
-                incomeRow.classList.add('info-row');
-                incomeRow.innerHTML = `
-                    <div class="info-label">Total Income:</div>
-                    <div class="info-value"><span style="color: #6bff9f">${key.total_income} credits</span></div>
-                `;
-                container.appendChild(incomeRow);
+            if (key.users && typeof key.users === 'object') {
+                const estimatedMonthlyIncome = calculateEstimatedIncome(key);
                 
-                // Calculate estimated monthly income if user data is available
-                if (key.users && typeof key.users === 'object') {
-                    const estimatedMonthlyIncome = calculateEstimatedIncome(key);
-                    
-                    if (estimatedMonthlyIncome > 0) {
-                        const estimatedRow = document.createElement('div');
-                        estimatedRow.classList.add('info-row');
-                        estimatedRow.innerHTML = `
-                            <div class="info-label">Est. Monthly:</div>
-                            <div class="info-value"><span style="color: #6bff9f">${estimatedMonthlyIncome} credits</span></div>
-                        `;
-                        container.appendChild(estimatedRow);
-                    }
+                if (estimatedMonthlyIncome > 0) {
+                    const estimatedRow = document.createElement('div');
+                    estimatedRow.classList.add('info-row');
+                    estimatedRow.innerHTML = `
+                        <div class="info-label">Est. Monthly:</div>
+                        <div class="info-value"><span style="color: #6bff9f">${estimatedMonthlyIncome} credits</span></div>
+                    `;
+                    container.appendChild(estimatedRow);
                 }
             }
         }
