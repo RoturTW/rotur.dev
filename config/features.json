@@ -14,7 +14,7 @@
       },
       {
         "name": "Rotur Economy",
-        "desc": "Our integrated currency allows users to transfer credits, aquire daily credits, and purchase items on the Rotur marketplace. Everything is handled on-server, with simples APIs to make implementing these features a breeze.",
+        "desc": "Our integrated currency allows users to transfer credits, aquire daily credits, and purchase items on the Rotur marketplace. Everything is handled on-server, with simple APIs to make implementing these features a breeze.",
         "icon": "assets/icons/economy.svg"
       },
       {
