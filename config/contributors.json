@@ -1,10 +1,5 @@
 [
   {
-    "name": "Iris",
-    "pfp": "https://avatars.rotur.dev/iris",
-    "link": "https://github.com/antiviirus"
-  },
-  {
     "name": "MikeDev101",
     "pfp": "https://avatars.githubusercontent.com/u/12957745?v=4",
     "link": "https://github.com/MikeDev101"
@@ -35,8 +30,23 @@
     "link": "https://github.com/JustN00ne"
   },
   {
-    "name": "There was absolutely no other contributors on the website so im using sophie as a placeholder yep",
-    "pfp": "https://avatars.rotur.dev/mist",
-    "link": "https://github.com/mistium"
+    "name": "ThatBeaverDev",
+    "pfp": "https://avatars.rotur.dev/thatbeaverdev",
+    "link": "https://github.com/ThatBeaverDev"
+  },
+  {
+    "name": "Stormy",
+    "pfp": "https://avatars.rotur.dev/stormy",
+    "link": "https://github.com/0hStormy"
+  },
+  {
+    "name": "adthoughtsglobal",
+    "pfp": "https://avatars.rotur.dev/darkdot",
+    "link": "https://github.com/adthoughtsglobal"
+  },
+  {
+    "name": "oAnblu",
+    "pfp": "https://avatars.rotur.dev/andrew",
+    "link": "https://github.com/oAnblu"
   }
 ]
