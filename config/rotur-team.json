@@ -1,0 +1,83 @@
+[
+  {
+    "name": "Sophie",
+    "role": "Lead Developer",
+    "pfp": "https://avatars.rotur.dev/mist",
+    "socials": {
+      "main": {
+        "link": "https://mistium.com/",
+        "name": "Website"
+      },
+      "alts": [
+        {
+          "link": "https://github.com/mistium",
+          "icon": "assets/icons/github.svg",
+          "name": "GitHub"
+        },
+        {
+          "link": "https://discord.gg/ReyzwPx2g9",
+          "icon": "assets/icons/discord.svg",
+          "name": "Discord"
+        },
+        {
+          "link": "https://www.youtube.com/@Mistium",
+          "icon": "assets/icons/youtube.svg",
+          "name": "Youtube"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Flufi",
+    "role": "Core Developer",
+    "pfp": "https://avatars.rotur.dev/flufi",
+    "socials": {
+      "main": {
+        "link": "https://github.com/Flufi-Boi",
+        "name": "Github"
+      },
+      "alts": [
+        {
+          "link": "https://discord.gg/zTqgd3Gdx6",
+          "icon": "assets/icons/discord.svg",
+          "name": "Discord"
+        },
+        {
+          "link": "https://www.youtube.com//@Flufi_Boi",
+          "icon": "assets/icons/youtube.svg",
+          "name": "Youtube"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Iris",
+    "role": "Website Developer",
+    "pfp": "https://avatars.rotur.dev/iris",
+    "socials": {
+      "main": {
+        "link": "https://iris.mistium.com/",
+        "name": "Website"
+      },
+      "alts": [
+        {
+          "link": "https://github.com/antiviiris",
+          "icon": "assets/icons/github.svg",
+          "name": "GitHub"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Layz",
+    "role": "Consultant",
+    "pfp": "https://avatars.rotur.dev/B1j2754",
+    "socials": {
+      "main": {
+        "link": "https://github.com/b1j2754",
+        "name": "Github"
+      },
+      "alts": []
+    }
+  }
+]

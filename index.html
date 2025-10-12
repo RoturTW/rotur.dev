@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <title>Rotur: A Web Standard for Communication.</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Improved OpenGraph Meta Tags -->
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cal+Sans&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- OpenGraph Meta Tags -->
   <meta property="og:title" content="Rotur: A Web Standard for Communication" />
   <meta property="og:description" content="A powerful WebSocket-based networking protocol and unified account system for Web-Based operating systems. Connect with friends, share content, and access your data across platforms." />
   <meta property="og:url" content="https://rotur.dev" />
@@ -25,299 +30,172 @@
   <!-- General Meta Tags -->
   <meta name="description" content="Rotur is a powerful WebSocket-based networking protocol and account system for Web-Based operating systems with social features and cross-platform connectivity." />
   <meta name="theme-color" content="#121212" />
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="./styles.css">
+
+  <!-- preload the json files for faster loading -->
+  <link rel="preload" href="/config/contributors.json" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="/config/rotur-team.json" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="/config/features.json" as="fetch" crossorigin="anonymous">
 </head>
+<!-- Template for fast loading speeds -->
+<template id="tpl-contributor">
+  <div class="pfp" draggable="false" (dragstart)="false;" class="unselectable">
+    <img src="@pfp" class="unselectable" title="@name">
+  </div>
+</template>
+
+<template id="tpl-social">
+  <a class="social" title="@platform" href="@link">
+    <img class="icon" src="@icon">
+  </a>
+</template>
+
+<template id="tpl-placeholder">
+  <div class="placeholder"></div>
+</template>
+
+<template id="tpl-card">
+  <div class="card row">
+    <img src="@pfp" class="pfp">
+    <div class="column">
+      <div class="name row">
+        <div class="user">
+          @name
+        </div>
+        <div class="role">
+          @role
+        </div>
+      </div>
+      <div class="links row">
+        <a class="profile" href="@link">
+          @platform
+        </a>
+        @social0
+        @social1
+        @social2
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-featls">
+  <div class="feature-list column">
+    <p class="title">
+      @title
+    </p>
+    @list
+  </div>
+</template>
+
+<template id="tpl-feat">
+  <div class="feature-item">
+    <div class="row">
+      <img src="@icon">
+      <p class="topic title">@topic</p>
+    </div>
+    <p class="desc body">@desc</p>
+  </div>
+</template>
 
 <body>
-  <div id="navbar-placeholder"></div>
-  <div class="hero container">
-    <div class="headings fade-in">
-      <h1>Rotur</h1>
-      <p>An accounts system<br>over websockets</p><br>
-      <button id="get_button" onclick="downloadExtension()">
-        <p>Get The Extension</p>
-      </button>
-    </div>
-    <img src="./Rotur Hero.png" id="tilt" alt="Rotur Logo" draggable="false" class="fade-in" loading="lazy">
-    <div class="scroll-indicator" onclick="scrollToSection('.about')">
-      <i class="fa-solid fa-chevron-down"></i>
-      <p>Scroll to learn more</p>
+  <div id="header-wrapper">
+    <div id="header" class="row">
+      <img src="assets/branding/rotur-logo.svg" id="logo">
+      <div class="vrule"></div>
+      <a href="https://github.com/roturTW" class="tab">
+        <p>Github</p>
+      </a>
+      <a href="https://rotur.dev/systems" class="tab">
+        <p>Systems</p>
+      </a>
+      <a href="https://rotur.dev/status" class="tab">
+        <p>Status</p>
+      </a>
+      <a href="https://docs.rotur.dev/" class="tab">
+        <p>Docs</p>
+      </a>
     </div>
   </div>
-  <div class="about">
-    <div class="about-content fade-in">
-      <h1>About Rotur</h1>
-      <p>
-        Rotur is a powerful WebSocket-based networking protocol and account system,
-        specifically designed to enhance the connectivity of Web-Based operating systems.
-        Our platform provides a seamless, unified experience across various applications
-        with a focus on interconnectivity, social features and ease of use.
+
+  <div id="backdrop"></div>
+
+  <div id="content" class="column">
+
+    <div id="wrapper-about" class="row">
+      <div id="about" class="column">
+        <p class="title">
+          About Rotur
+        </p>
+        <div class="rule"></div>
+        <p class="body">
+          Rotur is a robust networking protocol and account system based on websockets. We aim to create a seamless,
+          unified experience across multiple applications through the use of a central account system. Our tools make it
+          easier than ever to socialize, sync data, and connect with multiple platforms at the same time.
+        </p>
+      </div>
+      <div id="gallery" class="column">
+        <img src="assets/branding/rotur-logo.png" alt="Rotur Logo" class="logo">
+      </div>
+    </div>
+
+    <div id="wrapper-team" class="column">
+      <p class="title">
+        Meet the Team
       </p>
-      <div class="about-highlights">
-        <div class="highlight">
-          <i class="fa-solid fa-user-group"></i>
-          <p>Social Connectivity</p>
-        </div>
-        <div class="highlight">
-          <i class="fa-solid fa-key"></i>
-          <p>Unified Accounts</p>
-        </div>
-        <div class="highlight">
-          <i class="fa-solid fa-coins"></i>
-          <p>Integrated Economy</p>
-        </div>
-        <div class="highlight">
-          <i class="fa-solid fa-database"></i>
-          <p>Cloud Storage</p>
+      <div id="team-cards">
+        <!-- Injected via index.js -->
+      </div>
+      <p class="body">
+        Rotur is an open-source project with many contributors, including the people below.
+      </p>
+      <div id="carousel">
+        <!-- Injected via index.js -->
+        <div id="carousel-wrapper" class="row">
+          <div class="channel row"></div>
+          <div class="channel row"></div>
         </div>
       </div>
     </div>
 
-    <div class="devs-container fade-in">
-      <p>Who are we?</p>
-      <div class="devs">
-        <div class="dev-card">
-          <img src="https://avatars.rotur.dev/mist" alt="Mistium">
-          <div class="name">Mistium</div>
-          <div class="role">Lead Developer</div>
-          <div class="social-links">
-            <a href="https://github.com/mistium" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-            <a href="https://dsc.gg/originOS" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
-            <a href="https://mistium.com" aria-label="Website"><i class="fa-solid fa-globe"></i></a>
-            <a href="https://www.youtube.com/@Mistium" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-          </div>
-          <a href="https://mistium.com" class="profile-link">View Profile</a>
-        </div>
-
-        <div class="dev-card">
-          <img src="https://avatars.rotur.dev/flufi" alt="Flufi">
-          <div class="name">Flufi</div>
-          <div class="role">Core Developer</div>
-          <div class="social-links">
-            <a href="https://github.com/Flufi-Boi" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-            <a href="https://discord.gg/zTqgd3Gdx6" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
-            <a href="https://flufi.gay" aria-label="Website"><i class="fa-solid fa-globe"></i></a>
-            <a href="https://www.youtube.com//@Flufi_Boi" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-          </div>
-          <a href="https://github.com/Flufi-Boi" class="profile-link">View Profile</a>
-        </div>
-        
-        <div class="dev-card">
-          <img src="https://avatars.rotur.dev/b1j2754" alt="Layz">
-          <div class="name">B1j2754</div>
-          <div class="role">Consultant</div>
-          <div class="social-links">
-            <a href="https://github.com/b1j2754" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-          </div>
-          <a href="https://github.com/b1j2754" class="profile-link">View Profile</a>
-        </div>
+    <div id="wrapper-features" class="column">
+      <p class="feature-title title">
+        Features
+      </p>
+      <div class="rule2"></div>
+      <div id="features" class="row">
+        <!-- Injected via index.js -->
       </div>
+    </div>
+
+    <div id="wrapper-try" class="column">
+      <p class="body">
+        If any of this sounds interesting to you, we invite you to try out Rotur!
+      </p>
+      <div class="row">
+        <a href="https://extensions.mistium.com/featured/Rotur.js" class="button-link">
+          MistWarp Extension
+        </a>
+        <a href="https://docs.rotur.dev/" class="button-link">
+          Rotur Documentation
+        </a>
+      </div>
+    </div>
+
+    <div id="footer" class="column">
+      <div class="legal row">
+        <a href="https://rotur.dev/terms-of-service.html">
+          Terms of Service
+        </a>
+        <div class="vrule2"></div>
+        <a href="https://rotur.dev/privacy-policy.html">
+          Privacy Policy
+        </a>
+      </div>
+      <p class="body">
+        © 2025 Rotur. All rights reserved.
+      </p>
     </div>
   </div>
-  <div class="contributors-wrapper container">
-    <h1 class="fade-in">Contributors</h1>
-    <div class="contributors-grid">
-      <a href="https://github.com/MikeDev101">
-        <img src="https://avatars.githubusercontent.com/u/12957745?v=4" width="100px" draggable="false" style="border-radius: 50%;">
-      </a>
-      <a href="https://github.com/MiloDev123">
-        <img src="https://avatars.rotur.dev/milodev123" width="100px" draggable="false" style="border-radius: 50%;">
-      </a>
-      <a href="https://github.com/wolfieboy09">
-        <img src="https://avatars.rotur.dev/wolfieboy09" width="100px" draggable="false" style="border-radius: 50%;">
-      </a>
-      <a href="https://github.com/allucat1000">
-        <img src="https://avatars.rotur.dev/allucat1000" width="100px" draggable="false" style="border-radius: 50%;">
-      </a>
-      <a href="https://github.com/IzKuipers">
-        <img src="https://avatars.rotur.dev/izkuipers" width="100px" draggable="false" style="border-radius: 50%;">
-      </a>
-      <a href="https://github.com/JustN00ne">
-        <img src="https://avatars.rotur.dev/justnoone" width="100px" draggable="false" style="border-radius: 50%;">
-      </a>
-      <a href="https://github.com/delusionsGH">
-        <img src="https://avatars.rotur.dev/delusions" width="100px" draggable="false" style="border-radius: 50%;">
-      </a>
-    </div>
-  </div>
-  <div class="features-section">
-    <h1>Features</h1>
-    
-    <!-- Core Platform -->
-    <h3 class="feature-category">Core Platform</h3>
-    <div class="features-grid">
-      <div class="feature-card" id="oneacc">
-        <i class="fa-solid fa-key"></i>
-        <h2>Unified Account System</h2>
-        <p>One account works everywhere. Sign in once and access any game or operating system 
-           that integrates with Rotur, creating a seamless cross-platform experience.</p>
-      </div>
-      
-      <div class="feature-card" id="networking">
-        <i class="fa-solid fa-network-wired"></i>
-        <h2>Advanced Networking</h2>
-        <p>Built on an enhanced version of cloudlink, Rotur's networking layer transmits rich user data
-           and context with each packet, enabling more sophisticated application interactions.</p>
-      </div>
-      
-      <div class="feature-card" id="avatars">
-        <i class="fa-solid fa-user-circle"></i>
-        <h2>Universal Avatars</h2>
-        <p>Access user profile images through our simple avatars.rotur.dev service. Just append any 
-           username to instantly retrieve their 256×256 JPEG profile picture for seamless UI integration.</p>
-      </div>
-    </div>
-    
-    <!-- Communication Features -->
-    <h3 class="feature-category">Communication</h3>
-    <div class="features-grid">
-      <div class="feature-card" id="friends">
-        <i class="fa-solid fa-user-group"></i>
-        <h2>Social Connections</h2>
-        <p>Connect with friends across the Rotur ecosystem. Send and manage friend requests,
-           see who's online, and interact with your network across all integrated platforms.</p>
-      </div>
-      
-      <div class="feature-card" id="rmail">
-        <i class="fa-solid fa-envelope"></i>
-        <h2>Rmail Messaging</h2>
-        <p>Send and receive messages to any Rotur user through our built-in mail system.
-           Communications persist across sessions and platforms for true connectivity.</p>
-      </div>
-      
-      <div class="feature-card" id="calling">
-        <i class="fa-solid fa-phone"></i>
-        <h2>Voice Communication</h2>
-        <p>Make real-time voice calls between Rotur users on any platform. Developed in 
-           collaboration with CL5 and MikeDev, this feature enables seamless voice interaction.</p>
-      </div>
-      
-      <div class="feature-card" id="claw">
-        <i class="fa-solid fa-comment-dots"></i>
-        <h2>Claw Social Platform</h2>
-        <p>A Twitter-like social media platform built on Rotur. Claw features a simple, algorithm-free
-           single feed that's perfect for adding social functionality to your Rotur client operating systems.</p>
-      </div>
-    </div>
-    
-    <!-- Data & Sync Features -->
-    <h3 class="feature-category">Storage & Synchronization</h3>
-    <div class="features-grid">
-      <div class="feature-card" id="storage">
-        <i class="fa-solid fa-database"></i>
-        <h2>Cloud Storage</h2>
-        <p>Store key-value pairs securely in the cloud. Perfect for game saves, user preferences,
-           documents, and any data you want accessible across multiple devices and platforms.</p>
-      </div>
-      
-      <div class="feature-card" id="syncvars">
-        <i class="fa-solid fa-rotate"></i>
-        <h2>Real-time Data Sync</h2>
-        <p>Synchronize variables between peers with minimal latency. Build collaborative 
-           applications and multiplayer experiences with our advanced variable sync system.</p>
-      </div>
-    </div>
-    
-    <!-- Economy Features -->
-    <h3 class="feature-category">Economy & Rewards</h3>
-    <div class="features-grid">
-      <div class="feature-card" id="credits">
-        <i class="fa-solid fa-coins"></i>
-        <h2>Rotur Economy</h2>
-        <p>Our integrated currency system awards 1 credit daily to active users. Transfer 
-           credits between accounts and participate in the Rotur marketplace with this universal currency.</p>
-      </div>
-      
-      <div class="feature-card" id="items">
-        <i class="fa-solid fa-shop"></i>
-        <h2>Digital Marketplace</h2>
-        <p>Buy, sell, and trade digital items using Rotur Credits. The marketplace enables
-           content creators to distribute assets and users to enhance their experience.</p>
-      </div>
-      
-      <div class="feature-card" id="badges">
-        <i class="fa-solid fa-certificate"></i>
-        <h2>Achievement System</h2>
-        <p>Collect and display badges on your profile to showcase your accomplishments
-           across the Rotur ecosystem.</p>
-      </div>
-    </div>
-  </div>
-
-  <script src="./nav.js"></script>
-  <script>
-    function downloadExtension() {
-      const link = document.createElement('a');
-      link.href = 'https://extensions.mistium.com/featured/Rotur.js';
-      link.download = 'roturv6.js';
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    let accounts = "sys-rotur";
-    let server = "wss://rotur.mistium.com";
-    function getCookie(name) {
-      const value = "; " + document.cookie;
-      const parts = value.split("; " + name + "=");
-      if (parts.length === 2) return parts.pop().split(";").shift();
-    }
-
-    let username = getCookie("username");
-
-    if (username) {
-      (function waitForElements() {
-        const txt = document.getElementById("roturTXT");
-        const img = document.getElementById("roturIMG");
-        if (txt && img) {
-          txt.innerText = username;
-          img.src = `https://avatars.rotur.dev/${username}`;
-        } else {
-          setTimeout(waitForElements, 100);
-        }
-      })();
-    }
-
-    function isElementInViewport(el) {
-      const rect = el.getBoundingClientRect();
-      return (rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.85 && rect.bottom >= 0);
-    }
-
-    function handleScrollAnimations() {
-      document.querySelectorAll('.fade-in').forEach(element => { if (isElementInViewport(element)) element.classList.add('visible'); });
-      const featureCards = document.querySelectorAll('.feature-card');
-      featureCards.forEach((card, index) => { if (isElementInViewport(card)) { setTimeout(() => { card.classList.add('visible'); }, index * 100); } });
-    }
-
-    function scrollToSection(selector) { const section = document.querySelector(selector); if (section) { window.scrollTo({ top: section.offsetTop, behavior: 'smooth' }); } }
-
-    function enhanceBackgroundDots() { /* pulse removed for calmer flat aesthetic */ }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => { document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible')); }, 300);
-      enhanceBackgroundDots();
-      const featureCards = document.querySelectorAll('.feature-card');
-      featureCards.forEach(card => { card.addEventListener('mouseenter', () => { card.style.transform = 'translateY(-4px)'; }); card.addEventListener('mouseleave', () => { card.style.transform = ''; }); });
-    });
-
-    window.addEventListener('scroll', handleScrollAnimations);
-    handleScrollAnimations();
-  </script>
-  <script src="https://kit.fontawesome.com/16f6b70bf6.js" crossorigin="anonymous"></script>
-  <script src="./connectToRotur.js"></script>
-  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-  <footer>
-    <div>
-      <a href="/terms-of-service.html">Terms of Service</a>
-      |
-      <a href="/privacy-policy.html">Privacy Policy</a>
-    </div>
-    <div>&copy; 2025 Rotur. All rights reserved.</div>
-  </footer>
+  <script src="index.js" async defer></script>
 </body>
 
 </html>

@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Accounts System",
+    "items": [
+      {
+        "name": "Unified Accounts",
+        "desc": "One account works everywhere. Sign in once and access any game or operating system that integrates with Rotur, creating a seamless cross-platform experience.",
+        "icon": "assets/icons/accounts.svg"
+      },
+      {
+        "name": "Universal Avatars",
+        "desc": "Access user profile images through our simple avatars.rotur.dev service. Just append any username to instantly retrieve their 256×256 JPEG profile picture for seamless UI integration.",
+        "icon": "assets/icons/universal.svg"
+      },
+      {
+        "name": "Rotur Economy",
+        "desc": "Our integrated currency allows users to transfer credits, aquire daily credits, and purchase items on the Rotur marketplace. Everything is handled on-server, with simples APIs to make implementing these features a breeze.",
+        "icon": "assets/icons/economy.svg"
+      },
+      {
+        "name": "Achievement System",
+        "desc": "Collect and display badges on your profile to showcase your accomplishments across the Rotur ecosystem.",
+        "icon": "assets/icons/badge.svg"
+      }
+    ]
+  },
+  {
+    "name": "Communication",
+    "items": [
+      {
+        "name": "Social Connections",
+        "desc": "Connect with friends across the Rotur ecosystem. Send and manage friend requests, see who's online, and interact with your network across all integrated platforms.",
+        "icon": "assets/icons/social.svg"
+      },
+      {
+        "name": "Claw Social Platform",
+        "desc": "A Twitter-like social media platform built on Rotur. Claw features a simple, algorithm-free single feed that's perfect for adding social functionality to your Rotur client operating systems.",
+        "icon": "assets/icons/chat.svg"
+      },
+      {
+        "name": "RMail Messaging",
+        "desc": "Send and receive messages to any Rotur user through our built-in mail system. Communications persist across sessions and platforms for true connectivity.",
+        "icon": "assets/icons/rmail.svg"
+      },
+      {
+        "name": "Voice Communication",
+        "desc": "Make real-time voice calls between Rotur users on any platform. Developed in collaboration with CL5 and MikeDev, this feature enables seamless voice interaction.",
+        "icon": "assets/icons/voice.svg"
+      }
+    ]
+  },
+  {
+    "name": "Networking",
+    "items": [
+      {
+        "name": "Advanced Networking",
+        "desc": "Built on an enhanced version of cloudlink, Rotur's networking layer transmits rich user data and context with each packet, enabling more sophisticated application interactions.",
+        "icon": "assets/icons/networking.svg"
+      },
+      {
+        "name": "Cloud Storage",
+        "desc": "Store key-value pairs securely in the cloud. Perfect for game saves, user preferences, documents, and any data you want accessible across multiple devices and platforms.",
+        "icon": "assets/icons/storage.svg"
+      },
+      {
+        "name": "Real-time Data Sync",
+        "desc": "Synchronize variables between peers with minimal latency. Build collaborative applications and multiplayer experiences with our advanced variable sync system.",
+        "icon": "assets/icons/sync.svg"
+      },
+      {
+        "name": "Authentication",
+        "desc": "Versitile and easy-to-use authentication systems make logging in and verifying accounts straightforward.",
+        "icon": "assets/icons/auth.svg"
+      }
+    ]
+  }
+]
