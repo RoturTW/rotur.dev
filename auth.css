@@ -264,6 +264,12 @@ body {
     box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
 }
 
+.h-captcha {
+  display: flex;
+  justify-content: center;
+  margin: 12px auto;
+}
+
 .btn-welcome-secondary {
     background: transparent;
     border: 1px solid #dadce0;
