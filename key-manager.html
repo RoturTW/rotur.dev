@@ -506,6 +506,12 @@
                             <button class="update-price-btn">Update Price</button>
                         </div>
                         
+                        <div class="admin-group webhook-actions">
+                            <h4>Webhook URL <a href="https://docs.rotur.dev/keys#webhook-format" target="_blank" style="color: #6bff9f; font-size: 12px; text-decoration: none;">(?)</a></h4>
+                            <input type="url" class="update-webhook-input" placeholder="https://example.com/webhook">
+                            <button class="update-webhook-btn">Update Webhook</button>
+                        </div>
+                        
                         <div class="admin-group key-actions">
                             <h4>Key Management</h4>
                             <button class="revoke-key-btn">Revoke Key</button>
@@ -795,12 +801,22 @@
                 keyItem.querySelector('.update-name-input').value = key.name;
             }
             
-            // Set up the name update button
+            if (key.webhook) {                
+                keyItem.querySelector('.update-webhook-input').value = key.webhook;
+            }
+            
             const nameUpdateButton = keyItem.querySelector('.update-name-btn');
             nameUpdateButton.setAttribute('data-key', key.key);
             nameUpdateButton.addEventListener('click', (e) => {
                 e.stopPropagation(); // Prevent event bubbling
                 updateKeyName(key.key, keyItemDiv);
+            });
+            
+            const webhookUpdateButton = keyItem.querySelector('.update-webhook-btn');
+            webhookUpdateButton.setAttribute('data-key', key.key);
+            webhookUpdateButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                updateKeyWebhook(key.key, keyItemDiv);
             });
             
             // Check if current user is the creator (for admin functions visibility)
@@ -938,7 +954,7 @@
         async function createNewKey() {
             const priceInput = document.getElementById('new-key-price');
             const keyType = document.getElementById('new-key-type').value;
-            const nameInput = document.getElementById('new-key-name'); // new line
+            const nameInput = document.getElementById('new-key-name');
             const createKeyResult = document.getElementById('create-key-result');
             
             // Clear previous messages
@@ -986,7 +1002,7 @@
                     
                     // 7. Reset form fields
                     priceInput.value = '';
-                    nameInput.value = ''; // reset name field
+                    nameInput.value = '';
                     document.getElementById('new-key-type').value = 'regular';
                     document.getElementById('subscription-fields').style.display = 'none';
                     
@@ -1197,6 +1213,51 @@
                 console.error('Update name error:', error);
                 
                 // Clear error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
+            }
+        }
+
+        async function updateKeyWebhook(keyId, keyElement) {
+            const webhookInput = keyElement.querySelector('.update-webhook-input');
+            const webhook = webhookInput.value.trim();
+            const messageDiv = keyElement.querySelector('.key-message');
+            const errorDiv = keyElement.querySelector('.key-error');
+            
+            messageDiv.textContent = '';
+            errorDiv.textContent = '';
+            
+            if (webhook && !webhook.match(/^https?:\/\/.+/)) {
+                errorDiv.textContent = 'Please enter a valid URL (must start with http:// or https://)';
+                setTimeout(() => {
+                    errorDiv.textContent = '';
+                }, 3000);
+                return;
+            }
+            
+            try {
+                const url = `${API_BASE_URL}/keys/update/${keyId}?auth=${encodeURIComponent(authToken)}&key=webhook&data=${encodeURIComponent(webhook)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.textContent = webhook ? 'Webhook URL updated successfully' : 'Webhook URL removed';
+                    
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                    }, 3000);
+                } else {
+                    errorDiv.textContent = data.error || 'Failed to update webhook URL';
+                    
+                    setTimeout(() => {
+                        errorDiv.textContent = '';
+                    }, 3000);
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error occurred. Please try again.';
+                console.error('Update webhook error:', error);
+                
                 setTimeout(() => {
                     errorDiv.textContent = '';
                 }, 3000);
