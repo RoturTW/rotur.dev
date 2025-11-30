@@ -82,9 +82,9 @@
     .dot-down { background:var(--red); }
     .dot-part { background:var(--yellow); }
     .uptime-percent { margin-left:auto; font-size:.75rem; font-weight:600; letter-spacing:.5px; color:var(--text-dim); }
-    .bar-wrapper { display:flex; flex-wrap:nowrap; gap:3px; align-items:center; }
-    .square-bar { display:grid; grid-auto-flow:column; grid-auto-columns:10px; gap:3px; width:100%; overflow:hidden; }
-    .sq { width:10px; height:22px; border-radius:2px; background:var(--panel-alt); position:relative; cursor:help; transition:var(--transition); }
+    .bar-wrapper { display:flex; flex-wrap:nowrap; gap:3px; align-items:center; overflow-x:auto; }
+    .square-bar { display:grid; grid-auto-flow:column; grid-auto-columns:7px; gap:3px; width:100%; overflow:visible; }
+    .sq { width:8px; height:22px; border-radius:2px; background:var(--panel-alt); position:relative; cursor:help; transition:var(--transition); z-index:1; }
     .sq.ok { background:var(--green-alt); }
     .sq.down { background:var(--red); }
     .sq.part { background:var(--yellow); }
@@ -212,7 +212,7 @@
           tr.innerHTML = `<td>${new Date(d.timestamp).toLocaleString()}</td><td>${d.error ? d.error : (d.status?d.status.status:'?')}</td>`; tableBody.appendChild(tr);
         });
         const sorted = data.slice().sort((a,b)=> a.timestamp - b.timestamp);
-        const windowEntries = sorted.slice(-90);
+        const windowEntries = sorted.slice(-97);
         const relevant = windowEntries.filter(e=> (e.status && typeof e.status.status === 'string') || e.error);
         const okEntries = relevant.filter(e=> e.status && e.status.status === 'ok');
         const uptimePercent = relevant.length ? (okEntries.length / relevant.length) * 100 : 0;
